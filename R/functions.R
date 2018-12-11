@@ -1,14 +1,25 @@
 
-
+#' Extract value column and present it as ts
+#'
+#' Extract value column and present it as ts
+#'
+#' Extract value column and present it as ts
+#'
+#' @param model_sample preferably tsibble with "value" column
+#' @return univariate time series 
+#' @export
+#' @examples
+#' test = tsibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
+#' extract_value(test)
 extract_value = function(model_sample) {
-  y = model_sample %>% select(value) %>% as.ts()
+  y = stats::as.ts(dplyr::select(model_sample, value))
   return(y)
 }
 
 ets_fun = function(model_sample, h) {
   # h is ignored!
   y = extract_value(model_sample)
-  model = ets(y)
+  model = forecast::ets(y)
   return(model)
 }
 
@@ -16,21 +27,21 @@ ets_fun = function(model_sample, h) {
 arima_fun = function(model_sample, h) {
   # h is ignored!
   y = extract_value(model_sample)
-  model = Arima(y)
+  model = forecast::Arima(y)
   return(model)
 }
 
 arima11_fun = function(model_sample, h) {
   # h is ignored!
   y = extract_value(model_sample)
-  model = Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1))
+  model = forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1))
   return(model)
 }
 
 tbats_fun = function(model_sample, h) {
   # h is ignored!
   y = extract_value(model_sample)
-  model = tbats(y)
+  model = forecast::tbats(y)
   return(model)
 }
 
@@ -41,7 +52,7 @@ forecast_2_scalar = function(forecast_object, h = 1) {
 
 uni_model_2_scalar_forecast = function(model, h = 1, model_sample = NA) {
   # model_sample is unused in univariate models
-  forecast_object = forecast(model, h = h)
+  forecast_object = forecast::forecast(model, h = h)
   y_hat = forecast_2_scalar(forecast_object, h = h)
   return(y_hat)
 }
@@ -54,23 +65,23 @@ uni_model_2_scalar_forecast = function(model, h = 1, model_sample = NA) {
 
 
 add_fourier = function(original, K_fourier = Inf) {
-  original_ts = as.ts(original)
-  freq = frequency(original)
+  original_ts = stats::as.ts(original)
+  freq = stats::frequency(original)
   K_fourier = min(floor(freq/2), K_fourier)
   
-  X_fourier = fourier(original_ts, K = K_fourier)
+  X_fourier = forecast::fourier(original_ts, K = K_fourier)
   fourier_names = colnames(X_fourier)
-  fourier_names = str_replace(fourier_names, "-", "_") %>% str_to_lower()
+  fourier_names = stringr::str_replace(fourier_names, "-", "_") %>% stringr::str_to_lower()
   colnames(X_fourier) = fourier_names
-  X_fourier_tibble = as_tibble(X_fourier)
+  X_fourier_tibble = tibble::as_tibble(X_fourier)
   
-  augmented = bind_cols(original, X_fourier_tibble)
+  augmented = dplyr::bind_cols(original, X_fourier_tibble)
   return(augmented)
 }
 
 add_trend = function(original) {
   nobs = nrow(original)
-  augmented = mutate(original, trend_lin = 1:nobs, trend_root = sqrt(1:nobs))
+  augmented = dplyr::mutate(original, trend_lin = 1:nobs, trend_root = sqrt(1:nobs))
   return(augmented)
 }
 
@@ -78,11 +89,11 @@ add_trend = function(original) {
 
 # works only for one variable (without quotes)
 add_lags = function(original, variable, lags = c(1, 2)) {
-  variable = enquo(variable)
-  variable_name = quo_name(variable)
+  variable = rlang::enquo(variable)
+  variable_name = rlang::quo_name(variable)
   for (lag in lags) {
     new_variable_name = paste0("lag", lag, "_", variable_name)
-    original = mutate(original, !!new_variable_name := lag(!!variable, lag))
+    original = dplyr::mutate(original, !!new_variable_name := dplyr::lag(!!variable, lag))
   }
   return(original)
 }
@@ -93,8 +104,8 @@ add_lags2 = function(original, variable_names, lags = c(1, 2)) {
   for (variable_name in variable_names) {
     for (lag in lags) {
       new_variable_name = paste0("lag", lag, "_", variable_name)
-      new_value = original %>% pull(variable_name) %>% lag(lag)
-      original = mutate(original, !!new_variable_name := new_value)
+      new_value = dplyr::lag(dplyr::pull(original, variable_name), lag)
+      original = dplyr::mutate(original, !!new_variable_name := new_value)
     }
   }
   return(original)
@@ -103,9 +114,8 @@ add_lags2 = function(original, variable_names, lags = c(1, 2)) {
 
 
 get_last_date = function(original) {
-  date_variable = index(original)
-  date = original %>% pull(!!date_variable) 
-  # interval = pull_interval(date)
+  date_variable = tsibble::index(original)
+  date = dplyr::pull(original, !!date_variable) 
   last_date = max(date)
   return(last_date)
 }
@@ -116,34 +126,34 @@ get_last_date = function(original) {
 
 
 augment_tsibble_4_regression = function(original, h = 1) {
-  frequency = frequency(original)
-  augmented = original %>% append_row(n = h) %>% 
+  frequency = stats::frequency(original)
+  augmented = original %>% tsibble::append_row(n = h) %>% 
     add_trend() %>% add_fourier() %>% 
     add_lags(value, lags = c(h, h + 1, frequency, frequency + 1))
-  regressor_names = setdiff(colnames(original), c("value", "date"))
+  regressor_names = dplyr::setdiff(colnames(original), c("value", "date"))
   augmented = augmented %>% add_lags2(regressor_names, lags = c(h, h + 1, frequency, frequency + 1))
-  augmented = augmented %>% select(-!!regressor_names)
+  augmented = dplyr::select(augmented, -!!regressor_names)
   return(augmented)
 }
 
 
 lasso_augmented_estimate = function(augmented, seed = 777) {
-  yX_tsibble = na.omit(augmented)
-  y = yX_tsibble %>% pull("value")
-  X = as_tibble(yX_tsibble) %>% select(-value, -date) %>% as.matrix()
+  yX_tsibble = stats::na.omit(augmented)
+  y = yX_tsibble %>% dplyr::pull("value")
+  X = tibble::as_tibble(yX_tsibble) %>% dplyr::select(-value, -date) %>% as.matrix()
   
   set.seed(seed)
-  lasso_model = cv.glmnet(X, y)
+  lasso_model = glmnet::cv.glmnet(X, y)
   return(lasso_model)
 }
 
 
 
 ranger_augmented_estimate = function(augmented, seed = 777) {
-  yX_tsibble = na.omit(augmented)
+  yX_tsibble = stats::na.omit(augmented)
   
   set.seed(seed)
-  ranger_model = ranger(data = yX_tsibble, value ~ . - date)
+  ranger_model = ranger::ranger(data = yX_tsibble, value ~ . - date)
   return(ranger_model)  
 }
 
@@ -171,8 +181,8 @@ lasso_2_scalar_forecast = function(model, h = 1, model_sample, s = c("lambda.min
   s = match.arg(s)
   
   augmented_sample = augment_tsibble_4_regression(model_sample, h = h)
-  yX_future_tsibble = tail(augmented_sample, 1)
-  X_future = as_tibble(yX_future_tsibble) %>% select(-value, -date) %>% as.matrix()
+  yX_future_tsibble = utils::tail(augmented_sample, 1)
+  X_future = tibble::as_tibble(yX_future_tsibble) %>% dplyr::select(-value, -date) %>% as.matrix()
   
   point_forecast = predict(model, X_future, s = s)
   
@@ -183,7 +193,7 @@ lasso_2_scalar_forecast = function(model, h = 1, model_sample, s = c("lambda.min
 ranger_2_scalar_forecast = function(model, h = 1, model_sample, seed = 777) {
   
   augmented_sample = augment_tsibble_4_regression(model_sample, h = h)
-  yX_future_tsibble = tail(augmented_sample, 1)
+  yX_future_tsibble = utils::tail(augmented_sample, 1)
   
   ranger_pred = predict(model, data = yX_future_tsibble)
   point_forecast = ranger_pred$predictions
@@ -195,37 +205,37 @@ ranger_2_scalar_forecast = function(model, h = 1, model_sample, seed = 777) {
 
 # for quality evaluation
 prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_test, window_type = "sliding") {
-  model_list = crossing(date = dates_test, h = h_all, model_fun = model_fun_tibble$model_fun)
+  model_list = tidyr::crossing(date = dates_test, h = h_all, model_fun = model_fun_tibble$model_fun)
   message("Возможное предупреждение `.named` can no longer be a width идет от функции crossing, ничего страшного")
   
-  model_list = left_join(model_list, select(series_data, value), by = "date")
+  model_list = dplyr::left_join(model_list, dplyr::select(series_data, value), by = "date")
   
-  model_list = mutate(model_list, train_end_date = date - months(h * 12 / frequency(series_data)))
+  model_list = dplyr::mutate(model_list, train_end_date = date - months(h * 12 / stats::frequency(series_data)))
   
   full_sample_start_date = min(series_data$date)
   full_sample_last_date = max(series_data$date)
   test_sample_start_date = min(model_list$date)
-  window_min_length = round(interval(full_sample_start_date, test_sample_start_date) /  months(12 / frequency(series_data))) - max(h_all) + 1
+  window_min_length = round(interval(full_sample_start_date, test_sample_start_date) /  months(12 / stats::frequency(series_data))) - max(h_all) + 1
   
   
   if (window_type == "stretching") {
-    model_list = mutate(model_list, train_start_date = min(pull(series_data, date)))
+    model_list = dplyr::mutate(model_list, train_start_date = min(pull(series_data, date)))
   } else {
     # sliding window case
-    model_list = mutate(model_list, train_start_date = train_end_date - months((window_min_length - 1) * 12 / frequency(series_data) ))
+    model_list = dplyr::mutate(model_list, train_start_date = train_end_date - months((window_min_length - 1) * 12 / stats::frequency(series_data) ))
   }
   
-  model_list = mutate(model_list, 
-                      train_sample = pmap(list(x = train_start_date, y = train_end_date), 
-                                          ~ filter(series_data, date >= .x, date <= .y)))
+  model_list = dplyr::mutate(model_list, 
+                      train_sample = purrr::pmap(list(x = train_start_date, y = train_end_date), 
+                                          ~ dplyr::filter(series_data, date >= .x, date <= .y)))
   
   
   # we estimate some models only with maximal h -----------------------------------
   
-  model_list = left_join(model_list,  model_fun_tibble, by = "model_fun")
+  model_list = dplyr::left_join(model_list,  model_fun_tibble, by = "model_fun")
   
-  model_list = model_list %>% group_by(train_end_date, train_start_date, model_fun) %>%
-    mutate(duplicate_model = h_agnostic & (h < max(h))) %>% ungroup()
+  model_list = model_list %>% dplyr::group_by(train_end_date, train_start_date, model_fun) %>%
+    dplyr::mutate(duplicate_model = h_agnostic & (h < max(h))) %>% dplyr::ungroup()
   
   return(model_list)
 }
@@ -239,23 +249,23 @@ prepare_model_list2 = function(h_all = 1, model_fun_tibble, series_data) {
   full_sample_last_date = as.Date(max(series_data$date))
   full_sample_start_date = as.Date(min(series_data$date))
   
-  model_list = crossing(h = h_all, model_fun = model_fun_tibble$model_fun)
-  model_list = mutate(model_list, date = full_sample_last_date + months(h * 12 / frequency(series_data)))
-  model_list = mutate(model_list, train_end_date = full_sample_last_date)
-  model_list = mutate(model_list, train_start_date = full_sample_start_date)
+  model_list = tidyr::crossing(h = h_all, model_fun = model_fun_tibble$model_fun)
+  model_list = dplyr::mutate(model_list, date = full_sample_last_date + months(h * 12 / frequency(series_data)))
+  model_list = dplyr::mutate(model_list, train_end_date = full_sample_last_date)
+  model_list = dplyr::mutate(model_list, train_start_date = full_sample_start_date)
   
   
-  model_list = mutate(model_list, 
+  model_list = dplyr::mutate(model_list, 
                       train_sample = pmap(list(x = train_start_date, y = train_end_date), 
-                                          ~ filter(series_data, date >= .x, date <= .y)))
+                                          ~ dplyr::filter(series_data, date >= .x, date <= .y)))
   
   
   # we estimate some models only with maximal h -----------------------------------
   
-  model_list = left_join(model_list,  model_fun_tibble, by = "model_fun")
+  model_list = dplyr::left_join(model_list,  model_fun_tibble, by = "model_fun")
   
-  model_list = model_list %>% group_by(train_end_date, train_start_date, model_fun) %>%
-    mutate(duplicate_model = h_agnostic & (h < max(h))) %>% ungroup()
+  model_list = model_list %>% dplyr::group_by(train_end_date, train_start_date, model_fun) %>%
+    dplyr::mutate(duplicate_model = h_agnostic & (h < max(h))) %>% dplyr::ungroup()
   return(model_list)
 }
 
@@ -274,8 +284,8 @@ estimate_nonduplicate_models = function(model_list, store_models = c("tibble", "
     stop("File storage of models not implemented yet")
   }
   
-  model_list_half_fitted = filter(model_list, !duplicate_model)
-  model_list_half_fitted = model_list_half_fitted %>% mutate(
+  model_list_half_fitted = dplyr::filter(model_list, !duplicate_model)
+  model_list_half_fitted = model_list_half_fitted %>% dplyr::mutate(
     fitted_model = pmap(list(train_sample, h, model_fun), ~ do.call(..3, list(h = ..2, model_sample = ..1)))
   )
   return(model_list_half_fitted)
@@ -285,33 +295,33 @@ estimate_nonduplicate_models = function(model_list, store_models = c("tibble", "
 # fill duplicate models ---------------------------------------------------
 
 fill_duplicate_models = function(model_list_half_fitted, full_model_list) {
-  right_tibble = model_list_half_fitted %>% filter(h_agnostic) %>%
-    select(model_fun, train_start_date, train_end_date, fitted_model) 
+  right_tibble = model_list_half_fitted %>% dplyr::filter(h_agnostic) %>%
+    dplyr::select(model_fun, train_start_date, train_end_date, fitted_model) 
   
-  duplicate_models = full_model_list %>% filter(duplicate_model)
+  duplicate_models = full_model_list %>% dplyr::filter(duplicate_model)
   
-  duplicate_models_fitted = left_join(duplicate_models, right_tibble, 
+  duplicate_models_fitted = dplyr::left_join(duplicate_models, right_tibble, 
                                       by = c("model_fun", "train_start_date", "train_end_date"))
   
-  model_list_fitted = bind_rows(model_list_half_fitted, duplicate_models_fitted)
+  model_list_fitted = dplyr::bind_rows(model_list_half_fitted, duplicate_models_fitted)
   return(model_list_fitted)
 }
 
 add_point_forecasts = function(model_list_fitted) {
-  model_list_fitted = mutate(model_list_fitted, 
-                             point_forecast = pmap_dbl(list(fitted_model, h, train_sample, forecast_extractor), 
+  model_list_fitted = dplyr::mutate(model_list_fitted, 
+                             point_forecast = purrr::pmap_dbl(list(fitted_model, h, train_sample, forecast_extractor), 
                                                        ~ do.call(..4, list(model = ..1, h = ..2, model_sample = ..3))
                              ))
   return(model_list_fitted)
 }
 
 calculate_mae_table = function(model_list_fitted) {
-  mae_table = model_list_fitted %>% select(h, model_fun, value, point_forecast) %>%
-    mutate(abs_diff = abs(value - point_forecast))  %>%
-    group_by(h, model_fun) %>% summarise(mae = mean(abs_diff))
+  mae_table = model_list_fitted %>% dplyr::select(h, model_fun, value, point_forecast) %>%
+    dplyr::mutate(abs_diff = abs(value - point_forecast))  %>%
+    dplyr::group_by(h, model_fun) %>% dplyr::summarise(mae = mean(abs_diff))
   
   # sort by mae for each h:
-  mae_table = mae_table %>% arrange(h, mae) 
+  mae_table = dplyr::arrange(mae_table, h, mae) 
   
   return(mae_table)
 }
@@ -321,7 +331,7 @@ calculate_mae_table = function(model_list_fitted) {
 
 get_last_n_obs = function(hf_data, lf_date, n_lags = 1, one_row = TRUE) {
   
-  ts_subset = filter(hf_data, date <= lf_date) %>% tail(n_lags)
+  ts_subset = dplyr::filter(hf_data, date <= lf_date) %>% utils::tail(n_lags)
 
   n_actual = nrow(ts_subset)
   if (n_actual < n_lags) {
@@ -329,27 +339,27 @@ get_last_n_obs = function(hf_data, lf_date, n_lags = 1, one_row = TRUE) {
     empty_df = ts_subset[FALSE, ]
     empty_df[1:(n_lags - n_actual), ] = NA
     # append it before
-    ts_subset = bind_rows(empty_df, ts_subset)
+    ts_subset = dplyr::bind_rows(empty_df, ts_subset)
   } 
 
   if (one_row) {
-    ts_subset = mutate(ts_subset, lag_no = n_lags:1)
-    ts_long = ts_subset %>% as_tibble() %>% select(-date) %>% gather(key = "variable", value = "value", -lag_no) %>%
-      unite(variable, lag_no, col = "var_lag", sep = "_")
+    ts_subset = dplyr::mutate(ts_subset, lag_no = n_lags:1)
+    ts_long = ts_subset %>% tibble::as_tibble() %>% dplyr::select(-date) %>% tidyr::gather(key = "variable", value = "value", -lag_no) %>%
+      tidyr::unite(variable, lag_no, col = "var_lag", sep = "_")
     
-    ts_one_row = spread(ts_long, key = "var_lag", value = "value")
+    ts_one_row = tidyr::spread(ts_long, key = "var_lag", value = "value")
     return(ts_one_row)
   } else {
-    ts_subset = rename(ts_subset, hf_date = date)
+    ts_subset = dplyr::rename(ts_subset, hf_date = date)
     return(ts_subset)
   }
 }
 
 ts_2_tibble = function(ts_data) {
-  if (is.ts(ts_data)) {
+  if (stats::is.ts(ts_data)) {
     ts_data = tsibble::as_tsibble(ts_data, gather = FALSE) %>% rename(date = index) 
   } 
-  ts_data = as_tibble(ts_data)
+  ts_data = tibble::as_tibble(ts_data)
   return(ts_data)
 }
 
@@ -363,58 +373,15 @@ add_hf_lags = function(lf_data, hf_data, hf_variable = NULL, n_lags = 1, one_row
   if (is.null(hf_variable)) {
     hf_variable = setdiff(colnames(hf_data), "date")
   }
-  hf_data = select(hf_data, date, !!hf_variable) %>% na.omit() 
+  hf_data = dplyr::select(hf_data, date, !!hf_variable) %>% stats::na.omit() 
   
-  augmented_lf_data = mutate(lf_data, hf_obs = map(date, 
+  augmented_lf_data = dplyr::mutate(lf_data, hf_obs = purrr::map(date, 
                 ~ get_last_n_obs(hf_data = hf_data, ., n_lags = n_lags, one_row = one_row)))
-  augmented_lf_data = unnest(augmented_lf_data)
+  augmented_lf_data = tidyr::unnest(augmented_lf_data)
   return(augmented_lf_data)
 }
 
 
-read_datastream = function(filename, correct_names = TRUE) {
-  data = rio::import(filename, skip = 5)
-  data_cols = rio::import(filename, skip = 4)
-  colnames(data) = colnames(data_cols)
-  
-  if (correct_names) {
-    colnames(data) = str_replace_all(colnames(data), "\\.", "_")
-    colnames(data) = str_replace_all(colnames(data), "%", "p")
-  }  
-  
-  return(data)
-}
-
-
-
-
-get_last_version_path = function(source_url, watchdog) {
-  watchdog_line = get_watchdog_line(source_url, watchdog)
-  download_date = watchdog_line$last_download
-  file_name = watchdog_line$file
-  last_version_path = paste0("../raw/", download_date, "/", file_name)
-  return(last_version_path)
-}
-
-replace_extension = function(filename, new_ext = "_converted.csv") {
-  new_filename = paste0(tools::file_path_sans_ext(filename), new_ext)
-  return(new_filename)
-}
-
-get_watchdog_line = function(source_url, watchdog) {
-  if (!(source_url %in% watchdog$url)) {
-    stop("The file ", source_url, " is not guarded by watchdog :)")
-  }
-  watchdog_line = filter(watchdog, url == source_url)
-  return(watchdog_line)  
-}
-
-
-get_last_version_download_date = function(source_url, watchdog) {
-  watchdog_line = get_watchdog_line(source_url, watchdog)
-  download_date = watchdog_line$last_download
-  return(download_date)  
-}
 
 
 
