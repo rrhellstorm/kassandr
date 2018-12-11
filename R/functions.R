@@ -9,7 +9,7 @@
 #' @return univariate time series 
 #' @export
 #' @examples
-#' test = tsibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
+#' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
 #' extract_value(test)
 extract_value = function(model_sample) {
   y = stats::as.ts(dplyr::select(model_sample, value))

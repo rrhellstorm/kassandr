@@ -19,6 +19,6 @@ Extract value column and present it as ts
 Extract value column and present it as ts
 }
 \examples{
-test = tsibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
+test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
 extract_value(test)
 }
