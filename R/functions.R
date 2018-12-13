@@ -78,6 +78,20 @@ arima11_fun = function(model_sample, h) {
   return(model)
 }
 
+
+#' Do forecast using auto TBATS
+#'
+#' Do forecast using auto TBATS
+#'
+#' Do forecast using auto TBATS
+#'
+#' @param model_sample preferably tsibble with "value" column
+#' @param h forecasting horizon, is ignored
+#' @return auto TBATS model 
+#' @export
+#' @examples
+#' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
+#' tbats_fun(test, 1)
 tbats_fun = function(model_sample, h) {
   # h is ignored!
   y = extract_value(model_sample)
@@ -85,11 +99,41 @@ tbats_fun = function(model_sample, h) {
   return(model)
 }
 
+#' Extract one scalar forecast from forecast object
+#'
+#' Extract one scalar forecast from forecast object
+#'
+#' Extract one scalar forecast from forecast object
+#'
+#' @param forecast_object forecast object
+#' @param h forecasting horizon
+#' @return mean scalar forecast
+#' @export
+#' @examples
+#' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
+#' tbats = tbats_fun(test, 1)
+#' fcst = forecast(tbats, h = 2)
+#' forecast_2_scalar(fcst, h = 2)
 forecast_2_scalar = function(forecast_object, h = 1) {
   y_hat = forecast_object$mean[h]
   return(y_hat)
 }
 
+#' Extract one scalar forecast from univariate model
+#'
+#' Extract one scalar forecast from univariate model
+#'
+#' Extract one scalar forecast from univariate model
+#'
+#' @param model univariate model
+#' @param h forecasting horizon
+#' @param model_sample ignored
+#' @return mean scalar forecast
+#' @export
+#' @examples
+#' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
+#' tbats = tbats_fun(test, 1)
+#' uni_model_2_scalar_forecast(tbats, h = 2)
 uni_model_2_scalar_forecast = function(model, h = 1, model_sample = NA) {
   # model_sample is unused in univariate models
   forecast_object = forecast::forecast(model, h = h)
@@ -119,6 +163,18 @@ add_fourier = function(original, K_fourier = Inf) {
   return(augmented)
 }
 
+#' Add linear and root trends to tibble
+#'
+#' Add linear and root trends to tibble
+#'
+#' Add linear and root trends to tibble
+#'
+#' @param original tibble
+#' @return tibble with trend_lin and trend_root columns
+#' @export
+#' @examples
+#' # dumb example: add trend to cross section :) :)
+#' add_trend(cars)
 add_trend = function(original) {
   nobs = nrow(original)
   augmented = dplyr::mutate(original, trend_lin = 1:nobs, trend_root = sqrt(1:nobs))
