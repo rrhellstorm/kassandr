@@ -1,4 +1,3 @@
-
 #' Extract value column and present it as ts
 #'
 #' Extract value column and present it as ts
@@ -16,6 +15,21 @@ extract_value = function(model_sample) {
   return(y)
 }
 
+
+
+#' Do forecast using auto ETS
+#'
+#' Do forecast using auto ETS
+#'
+#' Do forecast using auto ETS
+#'
+#' @param model_sample preferably tsibble with "value" column
+#' @param h forecasting horizon, is ignored
+#' @return auto ETS model 
+#' @export
+#' @examples
+#' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
+#' ets_fun(test, 1)
 ets_fun = function(model_sample, h) {
   # h is ignored!
   y = extract_value(model_sample)
@@ -24,6 +38,19 @@ ets_fun = function(model_sample, h) {
 }
 
 
+#' Do forecast using auto ARIMA
+#'
+#' Do forecast using auto ARIMA
+#'
+#' Do forecast using auto ARIMA
+#'
+#' @param model_sample preferably tsibble with "value" column
+#' @param h forecasting horizon, is ignored
+#' @return auto ARIMA model 
+#' @export
+#' @examples
+#' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
+#' arima_fun(test, 1)
 arima_fun = function(model_sample, h) {
   # h is ignored!
   y = extract_value(model_sample)
@@ -31,6 +58,19 @@ arima_fun = function(model_sample, h) {
   return(model)
 }
 
+#' Do forecast using ARIMA(1,0,1)-SARIMA[12](1,0,1)
+#'
+#' Do forecast using ARIMA(1,0,1)-SARIMA[12](1,0,1)
+#'
+#' Do forecast using ARIMA(1,0,1)-SARIMA[12](1,0,1)
+#'
+#' @param model_sample preferably tsibble with "value" column
+#' @param h forecasting horizon, is ignored
+#' @return ARIMA(1,0,1)-SARIMA[12](1,0,1) model 
+#' @export
+#' @examples
+#' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
+#' arima11_fun(test, 1)
 arima11_fun = function(model_sample, h) {
   # h is ignored!
   y = extract_value(model_sample)
