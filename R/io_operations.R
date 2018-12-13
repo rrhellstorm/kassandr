@@ -28,7 +28,7 @@ read_datastream = function(filename, correct_names = TRUE) {
 #' Write csv file for cyrillic MS office
 #'
 #' Write csv file for cyrillic MS office
-#' Uses ";" as separator, CP1251 encoding, no column names.
+#' Uses ";" as separator, CP1251 encoding, no raw names.
 #'
 #' @param x data frame
 #' @param path path to file
@@ -39,6 +39,6 @@ read_datastream = function(filename, correct_names = TRUE) {
 #' test = dplyr::tibble(x = c("Привет", "Пока"), z = c(1, 2))
 #' write_csv2_cp1251(test, path = tempfile())
 write_csv2_cp1251 = function(x, path) {
-  res = utils::write.table(x, file = path, sep = ";", fileEncoding = "CP1251", col.names = FALSE)
+  res = utils::write.table(x, file = path, sep = ";", fileEncoding = "CP1251", col.names = TRUE, row.names = FALSE)
   return(invisible(res))
 }
