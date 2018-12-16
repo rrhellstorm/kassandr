@@ -23,6 +23,6 @@ Extract one scalar forecast from forecast object
 \examples{
 test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
 tbats = tbats_fun(test, 1)
-fcst = forecast(tbats, h = 2)
+fcst = forecast::forecast(tbats, h = 2)
 forecast_2_scalar(fcst, h = 2)
 }

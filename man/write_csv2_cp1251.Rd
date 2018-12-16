@@ -19,7 +19,7 @@ Write csv file for cyrillic MS office
 }
 \details{
 Write csv file for cyrillic MS office
-Uses ";" as separator, CP1251 encoding, no column names.
+Uses ";" as separator, CP1251 encoding, no raw names.
 }
 \examples{
 test = dplyr::tibble(x = c("Привет", "Пока"), z = c(1, 2))

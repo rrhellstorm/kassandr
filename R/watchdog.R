@@ -30,7 +30,8 @@ get_watchdog_line = function(source_url, watchdog) {
 #' @return path to last downloaded version
 #' @export
 #' @examples
-#' watchdog_demo = dplyr::tibble(url = c("a", "b"), file = c("xxx.xls", "yyy.xlsx"), last_download = c("2011-11-11", "2010-10-10"))
+#' watchdog_demo = dplyr::tibble(url = c("a", "b"), file = c("xxx.xls", "yyy.xlsx"), 
+#'   last_download = c("2011-11-11", "2010-10-10"))
 #' get_last_version_path("a", watchdog_demo)
 get_last_version_path = function(source_url, watchdog) {
   watchdog_line = get_watchdog_line(source_url, watchdog)
@@ -70,7 +71,8 @@ replace_extension = function(filename, new_ext = "_converted.csv") {
 #' @return date of last downloaded version
 #' @export
 #' @examples
-#' watchdog_demo = dplyr::tibble(url = c("a", "b"), file = c("xxx.xls", "yyy.xlsx"), last_download = c("2011-11-11", "2010-10-10"))
+#' watchdog_demo = dplyr::tibble(url = c("a", "b"), file = c("xxx.xls", "yyy.xlsx"), 
+#'   last_download = c("2011-11-11", "2010-10-10"))
 #' get_last_version_download_date("a", watchdog_demo)
 get_last_version_download_date = function(source_url, watchdog) {
   watchdog_line = get_watchdog_line(source_url, watchdog)

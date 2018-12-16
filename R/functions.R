@@ -112,7 +112,7 @@ tbats_fun = function(model_sample, h) {
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
 #' tbats = tbats_fun(test, 1)
-#' fcst = forecast(tbats, h = 2)
+#' fcst = forecast::forecast(tbats, h = 2)
 #' forecast_2_scalar(fcst, h = 2)
 forecast_2_scalar = function(forecast_object, h = 1) {
   y_hat = forecast_object$mean[h]
@@ -280,7 +280,7 @@ lasso_2_scalar_forecast = function(model, h = 1, model_sample, s = c("lambda.min
   yX_future_tsibble = utils::tail(augmented_sample, 1)
   X_future = tibble::as_tibble(yX_future_tsibble) %>% dplyr::select(-value, -date) %>% as.matrix()
   
-  point_forecast = predict(model, X_future, s = s)
+  point_forecast = stats::predict(model, X_future, s = s)
   
   return(point_forecast)
 }
@@ -291,7 +291,7 @@ ranger_2_scalar_forecast = function(model, h = 1, model_sample, seed = 777) {
   augmented_sample = augment_tsibble_4_regression(model_sample, h = h)
   yX_future_tsibble = utils::tail(augmented_sample, 1)
   
-  ranger_pred = predict(model, data = yX_future_tsibble)
+  ranger_pred = stats::predict(model, data = yX_future_tsibble)
   point_forecast = ranger_pred$predictions
   
   return(point_forecast)
@@ -302,7 +302,8 @@ ranger_2_scalar_forecast = function(model, h = 1, model_sample, seed = 777) {
 # for quality evaluation
 prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_test, window_type = "sliding") {
   model_list = tidyr::crossing(date = dates_test, h = h_all, model_fun = model_fun_tibble$model_fun)
-  message("Возможное предупреждение `.named` can no longer be a width идет от функции crossing, ничего страшного")
+  message("You may see the warning: `.named` can no longer be a width")
+  message("Don't worry :) :) Origin: crossing function")
   
   model_list = dplyr::left_join(model_list, dplyr::select(series_data, value), by = "date")
   
@@ -346,7 +347,7 @@ prepare_model_list2 = function(h_all = 1, model_fun_tibble, series_data) {
   full_sample_start_date = as.Date(min(series_data$date))
   
   model_list = tidyr::crossing(h = h_all, model_fun = model_fun_tibble$model_fun)
-  model_list = dplyr::mutate(model_list, date = full_sample_last_date + months(h * 12 / frequency(series_data)))
+  model_list = dplyr::mutate(model_list, date = full_sample_last_date + months(h * 12 / stats::frequency(series_data)))
   model_list = dplyr::mutate(model_list, train_end_date = full_sample_last_date)
   model_list = dplyr::mutate(model_list, train_start_date = full_sample_start_date)
   
