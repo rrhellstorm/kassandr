@@ -4,14 +4,15 @@
 #'
 #' Extract value column and present it as ts
 #'
-#' @param model_sample preferably tsibble with "value" column
+#' @param model_sample preferably tsibble 
+#' @param target name of the target variable, "value" by default
 #' @return univariate time series 
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
 #' extract_value(test)
-extract_value = function(model_sample) {
-  y = stats::as.ts(dplyr::select(model_sample, value))
+extract_value = function(model_sample, target = "value") {
+  y = stats::as.ts(dplyr::select(model_sample, !!target))
   return(y)
 }
 

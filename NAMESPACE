@@ -3,6 +3,7 @@
 export(add_trend)
 export(arima11_fun)
 export(arima_fun)
+export(download_watchdog_files)
 export(ets_fun)
 export(extract_value)
 export(forecast_2_scalar)

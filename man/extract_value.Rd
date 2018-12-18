@@ -4,10 +4,12 @@
 \alias{extract_value}
 \title{Extract value column and present it as ts}
 \usage{
-extract_value(model_sample)
+extract_value(model_sample, target = "value")
 }
 \arguments{
-\item{model_sample}{preferably tsibble with "value" column}
+\item{model_sample}{preferably tsibble}
+
+\item{target}{name of the target variable, "value" by default}
 }
 \value{
 univariate time series
