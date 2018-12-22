@@ -95,7 +95,7 @@ get_last_version_download_date = function(source_url, watchdog) {
 #' # new_watchdog = download_watchdog_files(raw_data_folder)
 download_watchdog_files = function(raw_data_folder, watchdog_file = "watchdog.csv") {
   watchdog = rio::import(paste0(raw_data_folder, "/", watchdog_file))
-  today = as.character(today())
+  today = as.character(lubridate::today())
   today_folder = paste0(raw_data_folder, "/", today)
                          
   new_watchdog = watchdog 
