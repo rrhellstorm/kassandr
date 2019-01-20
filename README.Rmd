@@ -1,0 +1,19 @@
+---
+title: "Пакет kassandr"
+output: html_document
+---
+
+Пакет для проекта Кассандра :)
+
+Прогнозирование российских макро-экономических показателей.
+
+Установка
+```{r, eval=FALSE}
+devtools::install_github("kassandra-ru/kassandr")
+```
+
+
+Веб-странички документации подготовлены с помощью пакета `pkgdown`
+```{r, eval=FALSE}
+pkgdown::build_cite()
+```
