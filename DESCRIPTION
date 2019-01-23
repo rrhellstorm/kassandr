@@ -1,6 +1,6 @@
 Package: kassandr
 Title: What the Package Does (one line, title case)
-Version: 0.0.0.91
+Version: 0.0.0.92
 Authors@R: c(person("Boris", "Demeshev", email = "boris.demeshev@gmail.com",
     role = c("aut", "cre")))
 Description: What the package does (one paragraph).
@@ -22,5 +22,6 @@ Imports:
     stringr (>= 1.3.1),
     purrr (>= 0.2.5),
     digest (>= 0.6.10),
-    lubridate (>= 1.7.1)
+    lubridate (>= 1.7.1),
+    magrittr (>= 1.3)
 RoxygenNote: 6.1.1
