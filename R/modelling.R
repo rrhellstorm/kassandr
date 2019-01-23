@@ -143,12 +143,21 @@ uni_model_2_scalar_forecast = function(model, h = 1, model_sample = NA) {
 }
 
 
-# make augmented tsibble ------------------------------------------------------------
 
-# input: tsibble
-# output: tsibble
-
-
+#' Add fourier terms to tsibble
+#'
+#' Add fourier terms to tsibble
+#'
+#' Add fourier terms to tsibble
+#'
+#' @param original original tsibble
+#' @param K_fourier number of fourier terms
+#' @return tsibble with fourier terms
+#' @export
+#' @examples
+#' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
+#' test_tsibble = tsibble::as_tsibble(test_ts)
+#' add_fourier(test_tsibble)
 add_fourier = function(original, K_fourier = Inf) {
   original_ts = stats::as.ts(original)
   freq = stats::frequency(original)
@@ -163,6 +172,8 @@ add_fourier = function(original, K_fourier = Inf) {
   augmented = dplyr::bind_cols(original, X_fourier_tibble)
   return(augmented)
 }
+
+
 
 #' Add linear and root trends to tibble
 #'
@@ -183,21 +194,23 @@ add_trend = function(original) {
 }
 
 
-
-# works only for one variable (without quotes)
-add_lags = function(original, variable, lags = c(1, 2)) {
-  variable = rlang::enquo(variable)
-  variable_name = rlang::quo_name(variable)
-  for (lag in lags) {
-    new_variable_name = paste0("lag", lag, "_", variable_name)
-    original = dplyr::mutate(original, !!new_variable_name := dplyr::lag(!!variable, lag))
-  }
-  return(original)
-}
-
-
-# works for many quoted variables
-add_lags2 = function(original, variable_names, lags = c(1, 2)) {
+#' Add lags of many variables
+#'
+#' Add lags of many variables
+#'
+#' Add lags of many variables
+#' The name of variables should be with quotes.
+#' Designed mainly for explanatory variables.
+#' @param original original tsibble
+#' @param variable_names variables to add lags, with quotes! Like "gdp" and not gdp.
+#' @param lags desired lags, a vector
+#' @return tsibble with lags of specified variables
+#' @export
+#' @examples
+#' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
+#' test_tsibble = tsibble::as_tsibble(test_ts)
+#' add_lags(test_tsibble, "value", 1:7)
+add_lags = function(original, variable_names, lags = c(1, 2)) {
   for (variable_name in variable_names) {
     for (lag in lags) {
       new_variable_name = paste0("lag", lag, "_", variable_name)
@@ -209,7 +222,18 @@ add_lags2 = function(original, variable_names, lags = c(1, 2)) {
 }
 
 
-
+#' Get last date from tsibble
+#'
+#' Get last date from tsibble
+#'
+#' Get last date from tsibble
+#' @param original original tsibble
+#' @return last date
+#' @export
+#' @examples
+#' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
+#' test_tsibble = tsibble::as_tsibble(test_ts)
+#' get_last_date(test_tsibble)
 get_last_date = function(original) {
   date_variable = tsibble::index(original)
   date = dplyr::pull(original, !!date_variable) 
@@ -219,25 +243,61 @@ get_last_date = function(original) {
 
 
 
-# forecast for h using lasso ----------------------------------------------------------
-
-
-augment_tsibble_4_regression = function(original, h = 1) {
+#' Augment tsibble with usual regressors
+#'
+#' Augment tsibble with usual regressors
+#'
+#' Augment tsibble with usual regressors.
+#' Adds trend, fourier terms, lags of regressor and dependen variables.
+#' Also appends h rows for forecasting.
+#' @param original original tsibble
+#' @param h number of rows to append in the future
+#' @param dependent name of the dependent variable
+#' @return augmented tibble
+#' @export
+#' @examples
+#' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
+#' test_tsibble = tsibble::as_tsibble(test_ts)
+#' augment_tsibble_4_regression(test_tsibble, h = 4)
+augment_tsibble_4_regression = function(original, dependent = "value", h = 1) {
   frequency = stats::frequency(original)
   augmented = original %>% tsibble::append_row(n = h) %>% 
     add_trend() %>% add_fourier() %>% 
-    add_lags(value, lags = c(h, h + 1, frequency, frequency + 1))
-  regressor_names = dplyr::setdiff(colnames(original), c("value", "date"))
-  augmented = augmented %>% add_lags2(regressor_names, lags = c(h, h + 1, frequency, frequency + 1))
+    add_lags(dependent, lags = c(h, h + 1, frequency, frequency + 1))
+
+  date_variable = tsibble::index(original)
+  regressor_names = dplyr::setdiff(colnames(original), c(dependent, date_variable))
+  augmented = augmented %>% add_lags(regressor_names, lags = c(h, h + 1, frequency, frequency + 1))
   augmented = dplyr::select(augmented, -!!regressor_names)
   return(augmented)
 }
 
 
-lasso_augmented_estimate = function(augmented, seed = 777) {
+
+
+#' Estimate lasso model using tsibble with regressors
+#'
+#' Estimate lasso model using tsibble with regressors
+#'
+#' Estimate lasso model using tsibble with regressors
+#' Regressors should already include lags, fourier terms, trend etc
+#' @param augmented tsibble with all predictors with lags.
+#' May be obtained using `augment_tsibble_4_regression`.
+#' @param seed random seed
+#' @param dependent name of the dependent variable
+#' @return lasso model
+#' @export
+#' @examples
+#' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
+#' test_tsibble = tsibble::as_tsibble(test_ts) %>% dplyr::rename(date = index)
+#' augmented = augment_tsibble_4_regression(test_tsibble, h = 4)
+#' model = lasso_augmented_estimate(augmented)
+lasso_augmented_estimate = function(augmented, dependent = "value", seed = 777) {
   yX_tsibble = stats::na.omit(augmented)
-  y = yX_tsibble %>% dplyr::pull("value")
-  X = tibble::as_tibble(yX_tsibble) %>% dplyr::select(-value, -date) %>% as.matrix()
+  y = yX_tsibble %>% dplyr::pull(dependent)
+  
+  date_variable = tsibble::index(augmented)
+  X = tibble::as_tibble(yX_tsibble) %>% dplyr::select(-!!dependent, -!!date_variable) %>% as.matrix()
   
   set.seed(seed)
   lasso_model = glmnet::cv.glmnet(X, y)
@@ -245,12 +305,31 @@ lasso_augmented_estimate = function(augmented, seed = 777) {
 }
 
 
-
-ranger_augmented_estimate = function(augmented, seed = 777) {
+#' Estimate random forest (ranger) model using tsibble with regressors
+#'
+#' Estimate random forest (ranger) using tsibble with regressors
+#'
+#' Estimate random forest (ranger) model using tsibble with regressors.
+#' Regressors should already include lags, fourier terms, trend etc
+#' @param augmented tsibble with all predictors with lags.
+#' May be obtained using `augment_tsibble_4_regression`.
+#' @param seed random seed
+#' @param dependent name of the dependent variable
+#' @return lasso model
+#' @export
+#' @examples
+#' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
+#' test_tsibble = tsibble::as_tsibble(test_ts)
+#' augmented = augment_tsibble_4_regression(test_tsibble, h = 4)
+#' model = ranger_augmented_estimate(augmented)
+ranger_augmented_estimate = function(augmented, dependent = "value", seed = 777) {
   yX_tsibble = stats::na.omit(augmented)
   
   set.seed(seed)
-  ranger_model = ranger::ranger(data = yX_tsibble, value ~ . - date)
+  date_variable = tsibble::index(augmented)
+  formula = paste0(dependent, " ~ . - ", date_variable)
+
+  ranger_model = ranger::ranger(data = yX_tsibble, formula = formula)
   return(ranger_model)  
 }
 

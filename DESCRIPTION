@@ -1,9 +1,9 @@
 Package: kassandr
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.92
+Title: Functions to Forecast Russian Macro Data in Kassandra Project
+Version: 0.0.0.93
 Authors@R: c(person("Boris", "Demeshev", email = "boris.demeshev@gmail.com",
     role = c("aut", "cre")))
-Description: What the package does (one paragraph).
+Description: Automatically load data. The goal is to make consice and easy to replicate forecasts.
 Depends: R (>= 3.5.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
