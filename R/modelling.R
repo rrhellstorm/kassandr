@@ -289,7 +289,7 @@ augment_tsibble_4_regression = function(original, dependent = "value", h = 1) {
     add_trend() %>% add_fourier() %>% 
     add_lags(dependent, lags = c(h, h + 1, frequency, frequency + 1))
 
-  date_variable = tsibble::index(original)
+  date_variable = tsibble::index(original) %>% as.character()
   regressor_names = dplyr::setdiff(colnames(original), c(dependent, date_variable))
   augmented = augmented %>% add_lags(regressor_names, lags = c(h, h + 1, frequency, frequency + 1))
   augmented = dplyr::select(augmented, -!!regressor_names)
@@ -492,7 +492,7 @@ prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_te
   message("Don't worry :) :) Origin: crossing function")
   window_type = match.arg(window_type)
   
-  date_variable = tsibble::index(series_data)
+  date_variable = tsibble::index(series_data) %>% as.character()
   data_frequency = stats::frequency(series_data)
   
   model_list = dplyr::left_join(model_list, dplyr::select(series_data, !!dependent), by = date_variable)
