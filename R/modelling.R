@@ -242,6 +242,29 @@ get_last_date = function(original) {
 }
 
 
+#' Get first date from tsibble
+#'
+#' Get first date from tsibble
+#'
+#' Get first date from tsibble
+#' @param original original tsibble
+#' @return first date
+#' @export
+#' @examples
+#' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
+#' test_tsibble = tsibble::as_tsibble(test_ts)
+#' get_first_date(test_tsibble)
+get_first_date = function(original) {
+  date_variable = tsibble::index(original)
+  date = dplyr::pull(original, !!date_variable) 
+  last_date = min(date)
+  return(last_date)
+}
+
+
+
+
+
 
 #' Augment tsibble with usual regressors
 #'
@@ -447,27 +470,46 @@ ranger_2_scalar_forecast = function(model, h = 1, dependent = "value", model_sam
 
 
 
-# for quality evaluation
-prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_test, window_type = "sliding") {
+#' Prepare model tibble for cross-validation
+#'
+#' Prepare model tibble for cross-validation
+#'
+#' Prepare model tibble for cross-validation
+#' @param h_all vector of forecasting horizons
+#' @param window_type sliding or stretching
+#' @param dependent name of the dependent variable
+#' @param model_fun_tibble tibble with names of estimator functions and scalar forecast extractors
+#' @param series_data tsibble with full data sample
+#' @param dates_test test dates
+#' @return tibble with one row per model
+#' @export
+#' @examples
+#' # no yet
+prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_test, 
+                              window_type = c("sliding", "stretching"), dependent = "value") {
   model_list = tidyr::crossing(date = dates_test, h = h_all, model_fun = model_fun_tibble$model_fun)
   message("You may see the warning: `.named` can no longer be a width")
   message("Don't worry :) :) Origin: crossing function")
+  window_type = match.arg(window_type)
   
-  model_list = dplyr::left_join(model_list, dplyr::select(series_data, value), by = "date")
+  date_variable = tsibble::index(series_data)
+  data_frequency = stats::frequency(series_data)
   
-  model_list = dplyr::mutate(model_list, train_end_date = date - months(h * 12 / stats::frequency(series_data)))
+  model_list = dplyr::left_join(model_list, dplyr::select(series_data, !!dependent), by = date_variable)
+  
+  model_list = dplyr::mutate(model_list, train_end_date = date - months(h * 12 / data_frequency))
   
   full_sample_start_date = min(series_data$date)
   full_sample_last_date = max(series_data$date)
   test_sample_start_date = min(model_list$date)
-  window_min_length = round(interval(full_sample_start_date, test_sample_start_date) /  months(12 / stats::frequency(series_data))) - max(h_all) + 1
+  window_min_length = round(interval(full_sample_start_date, test_sample_start_date) /  months(12 / data_frequency)) - max(h_all) + 1
   
   
   if (window_type == "stretching") {
     model_list = dplyr::mutate(model_list, train_start_date = min(pull(series_data, date)))
   } else {
     # sliding window case
-    model_list = dplyr::mutate(model_list, train_start_date = train_end_date - months((window_min_length - 1) * 12 / stats::frequency(series_data) ))
+    model_list = dplyr::mutate(model_list, train_start_date = train_end_date - months((window_min_length - 1) * 12 / data_frequency ))
   }
   
   model_list = dplyr::mutate(model_list, 
@@ -488,8 +530,20 @@ prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_te
 
 
 
-# for forecasts
-prepare_model_list2 = function(h_all = 1, model_fun_tibble, series_data) {
+#' Prepare model tibble for forecasts
+#'
+#' Prepare model tibble for forecasts
+#'
+#' Prepare model tibble for forecasts
+#' @param h_all vector of forecasting horizons
+#' @param dependent name of the dependent variable
+#' @param model_fun_tibble tibble with names of estimator functions and scalar forecast extractors
+#' @param series_data tsibble with full data sample
+#' @return tibble with one row per model
+#' @export
+#' @examples
+#' # no yet
+prepare_model_list2 = function(h_all = 1, model_fun_tibble, series_data, dependent = "value") {
   
   full_sample_last_date = as.Date(max(series_data$date))
   full_sample_start_date = as.Date(min(series_data$date))
@@ -515,13 +569,22 @@ prepare_model_list2 = function(h_all = 1, model_fun_tibble, series_data) {
 }
 
 
-# TODO: reconsider two prepare_model functions
 
 
 
-# models in tibble version ------------------------------------------------
 
-
+#' Estimate non-duplicate models from model tibble
+#'
+#' Estimate non-duplicate models from model tibble
+#'
+#' Estimate non-duplicate models from model tibble.
+#' If model is the same for different h it is estimated only once.
+#' @param model_list tibble with one model per row
+#' @param store_models inside tibble or in one separate file per model
+#' @return rows of the orignal tibble correspinding to non-duplicate models plus column with estimated models
+#' @export
+#' @examples
+#' # no yet
 estimate_nonduplicate_models = function(model_list, store_models = c("tibble", "file")) {
   store_models = match.arg(store_models)
   
@@ -537,8 +600,18 @@ estimate_nonduplicate_models = function(model_list, store_models = c("tibble", "
 }
 
 
-# fill duplicate models ---------------------------------------------------
 
+#' Fill duplicate models into model tibble
+#'
+#' Fill duplicate models into model tibble
+#'
+#' Fill duplicate models into model tibble.
+#' @param model_list_half_fitted tibble with estimated non-duplicate models
+#' @param full_model_list tibble with complete list of duplicated and non-duplicated models
+#' @return full original tibble with one estimated model per row
+#' @export
+#' @examples
+#' # no yet
 fill_duplicate_models = function(model_list_half_fitted, full_model_list) {
   right_tibble = model_list_half_fitted %>% dplyr::filter(h_agnostic) %>%
     dplyr::select(model_fun, train_start_date, train_end_date, fitted_model) 
@@ -552,6 +625,17 @@ fill_duplicate_models = function(model_list_half_fitted, full_model_list) {
   return(model_list_fitted)
 }
 
+
+#' Add point forecast to models tibble
+#'
+#' Add point forecast to models tibble
+#'
+#' Add point forecast to models tibble.
+#' @param model_list_fitted tibble with one model per row
+#' @return original tibble plus point forecasts
+#' @export
+#' @examples
+#' # no yet
 add_point_forecasts = function(model_list_fitted) {
   model_list_fitted = dplyr::mutate(model_list_fitted, 
                              point_forecast = purrr::pmap_dbl(list(fitted_model, h, train_sample, forecast_extractor), 
@@ -560,6 +644,49 @@ add_point_forecasts = function(model_list_fitted) {
   return(model_list_fitted)
 }
 
+
+
+#' Estimate and forecast all models from model tibble
+#'
+#' Estimate and forecast all models from model tibble
+#'
+#' Estimate and forecast all models from model tibble
+#' In this tibble dependent variable is always named value.
+#' @param model_list tibble with one model per row
+#' @return tibble with estimated models and point forecasts
+#' @export
+#' @examples
+#' # no yet
+estimate_and_forecast = function(model_list) {
+  message("Estimating non-duplicate models.")
+  non_duplicate_fitted = estimate_nonduplicate_models(model_list)
+  
+  message("Filling duplicate models.")
+  model_list_fitted = fill_duplicate_models(non_duplicate_fitted, model_list)
+  
+  message("Extracting point forecasts.")
+  model_list_fitted = add_point_forecasts(model_list_fitted)
+  
+  return(model_list_fitted)
+}
+
+
+
+
+
+
+
+#' Calculate mae table from estimated models tibble
+#'
+#' Calculate mae table from estimated models tibble
+#'
+#' Calculate mae table from estimated models tibble.
+#' In this tibble dependent variable is always named value.
+#' @param model_list_fitted tibble with one model per row
+#' @return tibble with mae
+#' @export
+#' @examples
+#' # no yet
 calculate_mae_table = function(model_list_fitted) {
   mae_table = model_list_fitted %>% dplyr::select(h, model_fun, value, point_forecast) %>%
     dplyr::mutate(abs_diff = abs(value - point_forecast))  %>%
@@ -570,14 +697,4 @@ calculate_mae_table = function(model_list_fitted) {
   
   return(mae_table)
 }
-
-
-
-
-
-
-
-
-
-
 

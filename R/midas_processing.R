@@ -25,6 +25,19 @@ get_last_n_obs = function(hf_data, lf_date, n_lags = 1, one_row = TRUE) {
   }
 }
 
+
+#' Transform ts to tibble
+#'
+#' Transform ts to tibble
+#'
+#' Transform ts to tibble.
+#' Column with dates is called "date".
+#' @param ts_data ts object
+#' @return tsibble 
+#' @export
+#' @examples
+#' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
+#' ts_2_tibble(test_ts)
 ts_2_tibble = function(ts_data) {
   if (stats::is.ts(ts_data)) {
     ts_data = tsibble::as_tsibble(ts_data, gather = FALSE) %>% dplyr::rename(date = index) 
@@ -46,7 +59,7 @@ add_hf_lags = function(lf_data, hf_data, hf_variable = NULL, n_lags = 1, one_row
   hf_data = dplyr::select(hf_data, date, !!hf_variable) %>% stats::na.omit() 
   
   augmented_lf_data = dplyr::mutate(lf_data, hf_obs = purrr::map(date, 
-                                                                 ~ get_last_n_obs(hf_data = hf_data, ., n_lags = n_lags, one_row = one_row)))
+                                      ~ get_last_n_obs(hf_data = hf_data, ., n_lags = n_lags, one_row = one_row)))
   augmented_lf_data = tidyr::unnest(augmented_lf_data)
   return(augmented_lf_data)
 }
