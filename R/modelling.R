@@ -251,7 +251,8 @@ get_last_date = function(original) {
 #' Adds trend, fourier terms, lags of regressor and dependen variables.
 #' Also appends h rows for forecasting.
 #' @param original original tsibble
-#' @param h number of rows to append in the future
+#' @param h forecasting horizon
+#' h rows to append in the future, corresponding lags will be added to tsibble
 #' @param dependent name of the dependent variable
 #' @return augmented tibble
 #' @export
@@ -334,10 +335,25 @@ ranger_augmented_estimate = function(augmented, dependent = "value", seed = 777)
 }
 
 
-
-lasso_fun = function(model_sample, h = 1) {
-  augmented_sample = augment_tsibble_4_regression(model_sample, h = h)
-  model = lasso_augmented_estimate(augmented_sample)
+#' Augment data and estimate lasso model 
+#'
+#' Augment data and estimate lasso model 
+#'
+#' Augment data and estimate lasso model.
+#' Trend, fourier terms, lags are added before estimation of lasso model.
+#' @param model_sample tsibble that will be augmented with trend etc
+#' @param seed random seed
+#' @param dependent name of the dependent variable
+#' @param h forecasting horizon
+#' @return lasso model
+#' @export
+#' @examples
+#' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
+#' test_tsibble = tsibble::as_tsibble(test_ts)
+#' model = lasso_fun(test_tsibble)
+lasso_fun = function(model_sample, seed = 777, dependent = "value", h = 1) {
+  augmented_sample = augment_tsibble_4_regression(model_sample, dependent = "value", h = h)
+  model = lasso_augmented_estimate(augmented_sample, seed = 777, dependent = "value")
   
   return(model)
 }

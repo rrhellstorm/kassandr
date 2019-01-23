@@ -11,7 +11,8 @@ augment_tsibble_4_regression(original, dependent = "value", h = 1)
 
 \item{dependent}{name of the dependent variable}
 
-\item{h}{number of rows to append in the future}
+\item{h}{forecasting horizon
+h rows to append in the future, corresponding lags will be added to tsibble}
 }
 \value{
 augmented tibble
