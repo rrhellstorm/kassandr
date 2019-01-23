@@ -1,4 +1,16 @@
-
+#' Get last high frequency observations
+#'
+#' Get last high frequency observations
+#'
+#' Get last high frequency observations
+#' @param lf_date low frequency date
+#' @param hf_data high frequency data
+#' @param n_lags number of lags to add
+#' @param one_row output representation
+#' @return tsibble with high frequency lags added
+#' @export
+#' @examples
+#' # no yet
 get_last_n_obs = function(hf_data, lf_date, n_lags = 1, one_row = TRUE) {
   
   ts_subset = dplyr::filter(hf_data, date <= lf_date) %>% utils::tail(n_lags)
@@ -46,6 +58,22 @@ ts_2_tibble = function(ts_data) {
   return(ts_data)
 }
 
+
+
+#' Add high frequency lags to low frequency tsibble
+#'
+#' Add high frequency lags to low frequency tsibble
+#'
+#' Add high frequency lags to low frequency tsibble.
+#' @param lf_data low frequency data
+#' @param hf_data high frequency data
+#' @param hf_variable names of high frequency time series, all by default
+#' @param n_lags number of lags to add
+#' @param one_row output representation
+#' @return tsibble with high frequency lags added
+#' @export
+#' @examples
+#' # no yet
 add_hf_lags = function(lf_data, hf_data, hf_variable = NULL, n_lags = 1, one_row = TRUE) {
   
   # go from ts class to tsibble (dataframe)
