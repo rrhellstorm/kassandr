@@ -358,9 +358,25 @@ lasso_fun = function(model_sample, seed = 777, dependent = "value", h = 1) {
   return(model)
 }
 
-ranger_fun = function(model_sample, h = 1) {
-  augmented_sample = augment_tsibble_4_regression(model_sample, h = h)
-  model = ranger_augmented_estimate(augmented_sample)
+#' Augment data and estimate ranger model 
+#'
+#' Augment data and estimate ranger model 
+#'
+#' Augment data and estimate random forest (ranger) model.
+#' Trend, fourier terms, lags are added before estimation of lasso model.
+#' @param model_sample tsibble that will be augmented with trend etc
+#' @param seed random seed
+#' @param dependent name of the dependent variable
+#' @param h forecasting horizon
+#' @return ranger model
+#' @export
+#' @examples
+#' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
+#' test_tsibble = tsibble::as_tsibble(test_ts)
+#' model = ranger_fun(test_tsibble)
+ranger_fun = function(model_sample, seed = 777, dependent = "value", h = 1) {
+  augmented_sample = augment_tsibble_4_regression(model_sample, dependent = "value", h = h)
+  model = ranger_augmented_estimate(augmented_sample, seed = 777, dependent = "value")
   
   return(model)
 }
@@ -368,13 +384,32 @@ ranger_fun = function(model_sample, h = 1) {
 
 
 
-
-lasso_2_scalar_forecast = function(model, h = 1, model_sample, s = c("lambda.min", "lambda.1se")) {
+#' Obtain scalar forecast from lasso model
+#'
+#' Obtain scalar forecast from lasso model
+#'
+#' Obtain scalar forecast from lasso model.
+#' The function automatically augments data with lags, fourier terms, trend etc.
+#' @param model estimated lasso model
+#' @param model_sample non-augmented data set for model estimation
+#' @param s criterion to select best regularization lambda in lasso
+#' @param dependent name of the dependent variable
+#' @param h forecasting horizon
+#' @return scalar forecast for given h
+#' @export
+#' @examples
+#' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
+#' test_tsibble = tsibble::as_tsibble(test_ts)
+#' model = lasso_fun(test_tsibble, h = 1)
+#' lasso_2_scalar_forecast(model, h = 1, model_sample = test_tsibble)
+lasso_2_scalar_forecast = function(model, h = 1, dependent = "value", model_sample, s = c("lambda.min", "lambda.1se")) {
   s = match.arg(s)
   
-  augmented_sample = augment_tsibble_4_regression(model_sample, h = h)
+  augmented_sample = augment_tsibble_4_regression(model_sample, h = h, dependent = dependent)
   yX_future_tsibble = utils::tail(augmented_sample, 1)
-  X_future = tibble::as_tibble(yX_future_tsibble) %>% dplyr::select(-value, -date) %>% as.matrix()
+  
+  date_variable = tsibble::index(augmented_sample)
+  X_future = tibble::as_tibble(yX_future_tsibble) %>% dplyr::select(-!!dependent, -!!date_variable) %>% as.matrix()
   
   point_forecast = stats::predict(model, X_future, s = s)
   
@@ -382,9 +417,26 @@ lasso_2_scalar_forecast = function(model, h = 1, model_sample, s = c("lambda.min
 }
 
 
-ranger_2_scalar_forecast = function(model, h = 1, model_sample, seed = 777) {
+#' Obtain scalar forecast from random forest (ranger) model
+#'
+#' Obtain scalar forecast from random forest (ranger) model
+#'
+#' Obtain scalar forecast from random forest (ranger) model.
+#' The function automatically augments data with lags, fourier terms, trend etc.
+#' @param model estimated ranger model
+#' @param model_sample non-augmented data set for model estimation
+#' @param dependent name of the dependent variable
+#' @param h forecasting horizon
+#' @return scalar forecast for given h
+#' @export
+#' @examples
+#' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
+#' test_tsibble = tsibble::as_tsibble(test_ts)
+#' model = ranger_fun(test_tsibble, h = 1)
+#' ranger_2_scalar_forecast(model, h = 1, model_sample = test_tsibble)
+ranger_2_scalar_forecast = function(model, h = 1, dependent = "value", model_sample) {
   
-  augmented_sample = augment_tsibble_4_regression(model_sample, h = h)
+  augmented_sample = augment_tsibble_4_regression(model_sample, h = h, dependent = dependent)
   yX_future_tsibble = utils::tail(augmented_sample, 1)
   
   ranger_pred = stats::predict(model, data = yX_future_tsibble)
@@ -520,59 +572,6 @@ calculate_mae_table = function(model_list_fitted) {
 }
 
 
-
-
-get_last_n_obs = function(hf_data, lf_date, n_lags = 1, one_row = TRUE) {
-  
-  ts_subset = dplyr::filter(hf_data, date <= lf_date) %>% utils::tail(n_lags)
-
-  n_actual = nrow(ts_subset)
-  if (n_actual < n_lags) {
-    # create empty data frame
-    empty_df = ts_subset[FALSE, ]
-    empty_df[1:(n_lags - n_actual), ] = NA
-    # append it before
-    ts_subset = dplyr::bind_rows(empty_df, ts_subset)
-  } 
-
-  if (one_row) {
-    ts_subset = dplyr::mutate(ts_subset, lag_no = n_lags:1)
-    ts_long = ts_subset %>% tibble::as_tibble() %>% dplyr::select(-date) %>% tidyr::gather(key = "variable", value = "value", -lag_no) %>%
-      tidyr::unite(variable, lag_no, col = "var_lag", sep = "_")
-    
-    ts_one_row = tidyr::spread(ts_long, key = "var_lag", value = "value")
-    return(ts_one_row)
-  } else {
-    ts_subset = dplyr::rename(ts_subset, hf_date = date)
-    return(ts_subset)
-  }
-}
-
-ts_2_tibble = function(ts_data) {
-  if (stats::is.ts(ts_data)) {
-    ts_data = tsibble::as_tsibble(ts_data, gather = FALSE) %>% rename(date = index) 
-  } 
-  ts_data = tibble::as_tibble(ts_data)
-  return(ts_data)
-}
-
-add_hf_lags = function(lf_data, hf_data, hf_variable = NULL, n_lags = 1, one_row = TRUE) {
-
-  # go from ts class to tsibble (dataframe)
-  lf_data = ts_2_tibble(lf_data)
-  hf_data = ts_2_tibble(hf_data)
-
-  # if not specified take all variables
-  if (is.null(hf_variable)) {
-    hf_variable = setdiff(colnames(hf_data), "date")
-  }
-  hf_data = dplyr::select(hf_data, date, !!hf_variable) %>% stats::na.omit() 
-  
-  augmented_lf_data = dplyr::mutate(lf_data, hf_obs = purrr::map(date, 
-                ~ get_last_n_obs(hf_data = hf_data, ., n_lags = n_lags, one_row = one_row)))
-  augmented_lf_data = tidyr::unnest(augmented_lf_data)
-  return(augmented_lf_data)
-}
 
 
 
