@@ -12,7 +12,7 @@
 #' @examples
 #' # no yet
 I_ipc_xls_convert = function(path_to_source, access_date) {
-  data = rio::import(last_version_path)
+  data = rio::import(path_to_source)
   
   data <- data[5:16,-1]
   data <- tidyr::gather(data, year, value)
@@ -41,7 +41,7 @@ I_ipc_xls_convert = function(path_to_source, access_date) {
 #' @examples
 #' # no yet
 tab5a_xls_convert = function(path_to_source, access_date) {
-  data = rio::import(last_version_path)
+  data = rio::import(path_to_source)
   
   data_vector <- t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
   
@@ -87,7 +87,7 @@ tab6b_xls_convert = function(path_to_source, access_date) {
 #' @examples
 #' # no yet
 tab9_xls_convert = function(path_to_source, access_date) {
-  data = rio::import(last_version_path)
+  data = rio::import(path_to_source)
   
   data_vector <- t(data[4, ]) %>% stats::na.omit() %>% as.numeric()
   
@@ -114,7 +114,7 @@ tab9_xls_convert = function(path_to_source, access_date) {
 #' @examples
 #' # no yet
 tab9a_xls_convert = function(path_to_source, access_date) {
-  data = rio::import(last_version_path)
+  data = rio::import(path_to_source)
   
   data <- t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
   
