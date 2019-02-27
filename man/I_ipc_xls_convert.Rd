@@ -4,7 +4,7 @@
 \alias{I_ipc_xls_convert}
 \title{Converts I_ipc file from rosstat to tibble}
 \usage{
-I_ipc_xls_convert(path_to_source, access_date)
+I_ipc_xls_convert(path_to_source, access_date = Sys.Date())
 }
 \arguments{
 \item{path_to_source}{name of the original I_ipc.xls file}

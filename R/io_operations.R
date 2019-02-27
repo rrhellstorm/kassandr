@@ -42,3 +42,26 @@ write_csv2_cp1251 = function(x, path) {
   res = utils::write.table(x, file = path, sep = ";", fileEncoding = "CP1251", col.names = TRUE, row.names = FALSE)
   return(invisible(res))
 }
+
+
+#' Convert russian numbers with comma into numeric
+#'
+#' Convert russian numbers with comma into numeric
+#'
+#' Converts russian numbers with comma into numeric. 
+#' Comma is replaced by dot and than `as.numeric` is applied.
+#'
+#' @param x vector of russian numbers, i.e. "45,34"
+#' 
+#' @return numeric vectors
+#' @export
+#' @examples
+#' as_numeric_cyrillic(c("56,23", "-23,12"))
+as_numeric_cyrillic = function(x) {
+  return(as.numeric(stringr::str_replace(x, ",", ".")))
+}
+
+
+
+
+

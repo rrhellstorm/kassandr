@@ -4,7 +4,7 @@
 \alias{tab6b_xls_convert}
 \title{Converts tab6b file from rosstat to tibble}
 \usage{
-tab6b_xls_convert(path_to_source, access_date)
+tab6b_xls_convert(path_to_source, access_date = Sys.Date())
 }
 \arguments{
 \item{path_to_source}{name of the original tab6b.xls file}
