@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read excel files saved from data stream — read_datastream • kassandr</title>
+<title>Get last date from tsibble — get_last_date • kassandr</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Read excel files saved from data stream — read_datastream" />
+<meta property="og:title" content="Get last date from tsibble — get_last_date" />
 
-<meta property="og:description" content="Read excel files saved from data stream" />
+<meta property="og:description" content="Get last date from tsibble" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -94,42 +94,41 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read excel files saved from data stream</h1>
+    <h1>Get last date from tsibble</h1>
     
-    <div class="hidden name"><code>read_datastream.Rd</code></div>
+    <div class="hidden name"><code>get_last_date.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Read excel files saved from data stream</p>
+    <p>Get last date from tsibble</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>read_datastream</span>(<span class='no'>filename</span>, <span class='kw'>correct_names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>get_last_date</span>(<span class='no'>original</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>filename</th>
-      <td><p>name of the excel file from datastream</p></td>
-    </tr>
-    <tr>
-      <th>correct_names</th>
-      <td><p>logical (TRUE) whether column names should be corrected</p></td>
+      <th>original</th>
+      <td><p>original tsibble</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data frame</p>
+    <p>last date</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Read excel files saved from data stream
-Transform bad column names</p>
+    <p>Get last date from tsibble</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>test_ts</span> <span class='kw'>=</span> <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/ts'>ts</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>100</span>), <span class='kw'>start</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2000</span>, <span class='fl'>1</span>), <span class='kw'>freq</span> <span class='kw'>=</span> <span class='fl'>12</span>)
+<span class='no'>test_tsibble</span> <span class='kw'>=</span> <span class='kw pkg'>tsibble</span><span class='kw ns'>::</span><span class='fu'><a href='https://pkg.earo.me/tsibble/reference/as-tsibble.html'>as_tsibble</a></span>(<span class='no'>test_ts</span>)
+<span class='fu'>get_last_date</span>(<span class='no'>test_tsibble</span>)</div><div class='output co'>#&gt; [1] "2008 апр"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -139,7 +138,9 @@ Transform bad column names</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

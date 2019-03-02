@@ -22,7 +22,7 @@ parse_lendrate <- function(access_date = Sys.Date()) {
   
   colnames(lendrate) = c("date", "dur_1_day", "dur_2_7_days", "dur_8_30_days", "dur_31_90_days", "dur_91_180_days", "dur_181_plus_days")
   
-  first_date = lubridate::dmy(paste0("1 ", head(lendrate$date, 1)))
+  first_date = lubridate::dmy(paste0("1 ", utils::head(lendrate$date, 1)))
   
   lendrate = dplyr::mutate_at(lendrate, dplyr::vars(dplyr::starts_with("dur")), ~ as_numeric_cyrillic(.))
   

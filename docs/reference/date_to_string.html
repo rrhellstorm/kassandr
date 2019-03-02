@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read excel files saved from data stream — read_datastream • kassandr</title>
+<title>Converts strings into dates in Russian language — date_to_string • kassandr</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Read excel files saved from data stream — read_datastream" />
+<meta property="og:title" content="Converts strings into dates in Russian language — date_to_string" />
 
-<meta property="og:description" content="Read excel files saved from data stream" />
+<meta property="og:description" content="Converts strings into dates in Russian language" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -94,42 +94,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read excel files saved from data stream</h1>
+    <h1>Converts strings into dates in Russian language</h1>
     
-    <div class="hidden name"><code>read_datastream.Rd</code></div>
+    <div class="hidden name"><code>date_to_string.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Read excel files saved from data stream</p>
+    <p>Converts strings into dates in Russian language</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>read_datastream</span>(<span class='no'>filename</span>, <span class='kw'>correct_names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>date_to_string</span>(<span class='no'>date</span>, <span class='kw'>freq</span> <span class='kw'>=</span> <span class='fl'>12</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>filename</th>
-      <td><p>name of the excel file from datastream</p></td>
+      <th>date</th>
+      <td><p>date in the following format: "2019-02-23"</p></td>
     </tr>
     <tr>
-      <th>correct_names</th>
-      <td><p>logical (TRUE) whether column names should be corrected</p></td>
+      <th>freq</th>
+      <td><p>equal to 4 for quarters, equal to 12 for months</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data frame</p>
+    <p>date in the form of the string</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Read excel files saved from data stream
-Transform bad column names</p>
+    <p>Converts strings into dates in Russian language</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>date</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"2019-02-23"</span>, <span class='st'>"2011-01-07"</span>)
+<span class='fu'>date_to_string</span>(<span class='no'>date</span>, <span class='kw'>freq</span> <span class='kw'>=</span> <span class='fl'>12</span>)</div><div class='output co'>#&gt; [1] "февраль 2019" "январь 2011" </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -139,7 +141,9 @@ Transform bad column names</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

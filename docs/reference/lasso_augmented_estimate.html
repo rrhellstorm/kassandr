@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read excel files saved from data stream — read_datastream • kassandr</title>
+<title>Estimate lasso model using tsibble with regressors — lasso_augmented_estimate • kassandr</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Read excel files saved from data stream — read_datastream" />
+<meta property="og:title" content="Estimate lasso model using tsibble with regressors — lasso_augmented_estimate" />
 
-<meta property="og:description" content="Read excel files saved from data stream" />
+<meta property="og:description" content="Estimate lasso model using tsibble with regressors" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -94,42 +94,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read excel files saved from data stream</h1>
+    <h1>Estimate lasso model using tsibble with regressors</h1>
     
-    <div class="hidden name"><code>read_datastream.Rd</code></div>
+    <div class="hidden name"><code>lasso_augmented_estimate.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Read excel files saved from data stream</p>
+    <p>Estimate lasso model using tsibble with regressors</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>read_datastream</span>(<span class='no'>filename</span>, <span class='kw'>correct_names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>lasso_augmented_estimate</span>(<span class='no'>augmented</span>, <span class='kw'>dependent</span> <span class='kw'>=</span> <span class='st'>"value"</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>777</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>filename</th>
-      <td><p>name of the excel file from datastream</p></td>
+      <th>augmented</th>
+      <td><p>tsibble with all predictors with lags.
+May be obtained using `augment_tsibble_4_regression`.</p></td>
     </tr>
     <tr>
-      <th>correct_names</th>
-      <td><p>logical (TRUE) whether column names should be corrected</p></td>
+      <th>dependent</th>
+      <td><p>name of the dependent variable</p></td>
+    </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>random seed</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data frame</p>
+    <p>lasso model</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Read excel files saved from data stream
-Transform bad column names</p>
+    <p>Estimate lasso model using tsibble with regressors
+Regressors should already include lags, fourier terms, trend etc</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>test_ts</span> <span class='kw'>=</span> <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/ts'>ts</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>100</span>), <span class='kw'>start</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2000</span>, <span class='fl'>1</span>), <span class='kw'>freq</span> <span class='kw'>=</span> <span class='fl'>12</span>)
+<span class='no'>test_tsibble</span> <span class='kw'>=</span> <span class='kw pkg'>tsibble</span><span class='kw ns'>::</span><span class='fu'><a href='https://pkg.earo.me/tsibble/reference/as-tsibble.html'>as_tsibble</a></span>(<span class='no'>test_ts</span>) <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>rename</a></span>(<span class='kw'>date</span> <span class='kw'>=</span> <span class='no'>index</span>)
+<span class='no'>augmented</span> <span class='kw'>=</span> <span class='fu'><a href='augment_tsibble_4_regression.html'>augment_tsibble_4_regression</a></span>(<span class='no'>test_tsibble</span>, <span class='kw'>h</span> <span class='kw'>=</span> <span class='fl'>4</span>)
+<span class='no'>model</span> <span class='kw'>=</span> <span class='fu'>lasso_augmented_estimate</span>(<span class='no'>augmented</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -139,7 +149,9 @@ Transform bad column names</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

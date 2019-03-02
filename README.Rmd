@@ -15,5 +15,5 @@ devtools::install_github("kassandra-ru/kassandr")
 
 Веб-странички документации подготовлены с помощью пакета `pkgdown`
 ```{r, eval=FALSE}
-pkgdown::build_cite()
+pkgdown::build_site()
 ```

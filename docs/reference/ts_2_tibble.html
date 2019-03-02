@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read excel files saved from data stream — read_datastream • kassandr</title>
+<title>Transform ts to tibble — ts_2_tibble • kassandr</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Read excel files saved from data stream — read_datastream" />
+<meta property="og:title" content="Transform ts to tibble — ts_2_tibble" />
 
-<meta property="og:description" content="Read excel files saved from data stream" />
+<meta property="og:description" content="Transform ts to tibble" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -94,42 +94,54 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read excel files saved from data stream</h1>
+    <h1>Transform ts to tibble</h1>
     
-    <div class="hidden name"><code>read_datastream.Rd</code></div>
+    <div class="hidden name"><code>ts_2_tibble.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Read excel files saved from data stream</p>
+    <p>Transform ts to tibble</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>read_datastream</span>(<span class='no'>filename</span>, <span class='kw'>correct_names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>ts_2_tibble</span>(<span class='no'>ts_data</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>filename</th>
-      <td><p>name of the excel file from datastream</p></td>
-    </tr>
-    <tr>
-      <th>correct_names</th>
-      <td><p>logical (TRUE) whether column names should be corrected</p></td>
+      <th>ts_data</th>
+      <td><p>ts object</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data frame</p>
+    <p>tsibble</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Read excel files saved from data stream
-Transform bad column names</p>
+    <p>Transform ts to tibble.
+Column with dates is called "date".</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>test_ts</span> <span class='kw'>=</span> <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/ts'>ts</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>100</span>), <span class='kw'>start</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2000</span>, <span class='fl'>1</span>), <span class='kw'>freq</span> <span class='kw'>=</span> <span class='fl'>12</span>)
+<span class='fu'>ts_2_tibble</span>(<span class='no'>test_ts</span>)</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 100 x 2</span><span>
+#&gt;        date  value
+#&gt;       </span><span style='color: #949494;font-style: italic;'>&lt;mth&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> 2000 янв  0.365
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> 2000 фев -</span><span style='color: #BB0000;'>0.924</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> 2000 мар  0.751
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> 2000 апр  0.147
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> 2000 мая  0.530
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> 2000 июн  0.603
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> 2000 июл -</span><span style='color: #BB0000;'>0.438</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> 2000 авг -</span><span style='color: #BB0000;'>0.499</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> 2000 сен -</span><span style='color: #BB0000;'>0.590</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> 2000 окт  0.369
+#&gt; </span><span style='color: #949494;'># … with 90 more rows</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -139,7 +151,9 @@ Transform bad column names</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

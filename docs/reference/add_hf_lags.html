@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read excel files saved from data stream — read_datastream • kassandr</title>
+<title>Add high frequency lags to low frequency tsibble — add_hf_lags • kassandr</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Read excel files saved from data stream — read_datastream" />
+<meta property="og:title" content="Add high frequency lags to low frequency tsibble — add_hf_lags" />
 
-<meta property="og:description" content="Read excel files saved from data stream" />
+<meta property="og:description" content="Add high frequency lags to low frequency tsibble" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -94,42 +94,57 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read excel files saved from data stream</h1>
+    <h1>Add high frequency lags to low frequency tsibble</h1>
     
-    <div class="hidden name"><code>read_datastream.Rd</code></div>
+    <div class="hidden name"><code>add_hf_lags.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Read excel files saved from data stream</p>
+    <p>Add high frequency lags to low frequency tsibble</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>read_datastream</span>(<span class='no'>filename</span>, <span class='kw'>correct_names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>add_hf_lags</span>(<span class='no'>lf_data</span>, <span class='no'>hf_data</span>, <span class='kw'>hf_variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_lags</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>one_row</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>filename</th>
-      <td><p>name of the excel file from datastream</p></td>
+      <th>lf_data</th>
+      <td><p>low frequency data</p></td>
     </tr>
     <tr>
-      <th>correct_names</th>
-      <td><p>logical (TRUE) whether column names should be corrected</p></td>
+      <th>hf_data</th>
+      <td><p>high frequency data</p></td>
+    </tr>
+    <tr>
+      <th>hf_variable</th>
+      <td><p>names of high frequency time series, all by default</p></td>
+    </tr>
+    <tr>
+      <th>n_lags</th>
+      <td><p>number of lags to add</p></td>
+    </tr>
+    <tr>
+      <th>one_row</th>
+      <td><p>output representation</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data frame</p>
+    <p>tsibble with high frequency lags added</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Read excel files saved from data stream
-Transform bad column names</p>
+    <p>Add high frequency lags to low frequency tsibble.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'># no yet
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -139,7 +154,9 @@ Transform bad column names</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
