@@ -68,7 +68,7 @@ convert_tab5a_xls = function(path_to_source, access_date = Sys.Date()) {
 #' @examples
 #' # no yet
 convert_tab6b_xls = function(path_to_source, access_date = Sys.Date()) {
-  data_tsibble = tab5a_xls_convert(path_to_source, access_date)
+  data_tsibble = convert_tab5a_xls(path_to_source, access_date)
   return(data_tsibble)
 }
 

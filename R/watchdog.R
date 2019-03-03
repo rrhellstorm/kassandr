@@ -146,7 +146,7 @@ download_watchdog_files = function(raw_data_folder, watchdog_file = "watchdog.cs
 #' path = "../raw/"
 #' # download_log_new = download_statistics(path, watchdog)
 download_statistics = function(path, watchdog, access_date = Sys.Date()) {
-  download_log = watchdog %>% mutate(access_date = access_date, access_status = NA, hash_raw = NA, hash_main = NA)
+  download_log = watchdog %>% mutate(access_date = access_date, download_status = NA, processing_status = NA, hash_raw = NA, hash_main = NA)
   
   today_folder = paste0(path, access_date, "/")
   if (!dir.exists(today_folder)) {
@@ -165,7 +165,7 @@ download_statistics = function(path, watchdog, access_date = Sys.Date()) {
         download_log$access_status[file_no] = as.character(attempt)
       } else {
         download_log$hash_raw[file_no] = digest::digest(file = file_raw)
-        download_log$access_status[file_no] = "successful download"
+        download_log$download_status[file_no] = "success"
       }
     }
   }
@@ -175,16 +175,21 @@ download_statistics = function(path, watchdog, access_date = Sys.Date()) {
     url = download_log$url[file_no]
     processing = download_log$processing[file_no]
     if (is.na(url)) {
-      data_processed = do.call(processing, list(access_date))
+      data_processed = try(do.call(processing, list(access_date)))
     } else {
       file_raw = paste0(today_folder, download_log$file_raw[file_no])
-      data_processed = do.call(processing, list(file_raw, access_date))
+      data_processed = try(do.call(processing, list(file_raw, access_date)))
     }
-    file_main = paste0(today_folder, download_log$file_main[file_no])
-    download_log$hash_main[file_no] = digest::digest(file = file_main)
-    rio::export(data_processed, file_main)
+    if (class(data_processed) == "try-error") {
+      # ошибка при обработке: запомним её
+      download_log$processing_status[file_no] = as.character(data_processed)
+    } else {
+      download_log$processing_status[file_no] = "success"
+      file_main = paste0(today_folder, download_log$file_main[file_no])
+      rio::export(data_processed, file_main)
+      download_log$hash_main[file_no] = digest::digest(file = file_main)
+    }
   }
-    
   return(download_log)
 }
 
