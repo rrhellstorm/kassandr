@@ -28,8 +28,10 @@ date_to_string <- function(date, freq = 12) {
       date_splited[,2] == "11" ~ "ноябрь",
       date_splited[,2] == "12" ~ "декабрь"
     )
-    date_string <- stringr::str_c(date_month, date_splited[,1], sep = " ")
-  }
+    #date_string <- stringr::str_c(date_month, date_splited[,1], sep = " ")
+    date_string <- paste(date_month, date_splited[,1])
+    
+    }
   if (freq == 4) {
     date_quarter <- dplyr::case_when(
       date_splited[,2] == "01" ~ "I квартал",
@@ -37,7 +39,7 @@ date_to_string <- function(date, freq = 12) {
       date_splited[,2] == "07" ~ "III квартал",
       date_splited[,2] == "10" ~ "IV квартал"
     )
-    date_string <- stringr::str_c(date_quarter, date_splited[,1], sep = " ")
+    date_string <- paste(date_quarter, date_splited[,1])
   }
   return(date_string)
 }
