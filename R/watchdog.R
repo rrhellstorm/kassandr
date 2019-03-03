@@ -12,6 +12,7 @@
 #' watchdog_demo = dplyr::tibble(url = c("a", "b"), x = c(1, 2))
 #' get_watchdog_line("a", watchdog_demo)
 get_watchdog_line = function(source_url, watchdog) {
+  .Deprecated("download_statistics")
   if (!(source_url %in% watchdog$url)) {
     stop("The file ", source_url, " is not guarded by watchdog :)")
   }
@@ -34,6 +35,7 @@ get_watchdog_line = function(source_url, watchdog) {
 #'   last_download = c("2011-11-11", "2010-10-10"))
 #' get_last_version_path("a", watchdog_demo)
 get_last_version_path = function(source_url, watchdog) {
+  .Deprecated("download_statistics")
   watchdog_line = get_watchdog_line(source_url, watchdog)
   download_date = watchdog_line$last_download
   file_name = watchdog_line$file
@@ -75,6 +77,7 @@ replace_extension = function(filename, new_ext = "_converted.csv") {
 #'   last_download = c("2011-11-11", "2010-10-10"))
 #' get_last_version_download_date("a", watchdog_demo)
 get_last_version_download_date = function(source_url, watchdog) {
+  .Deprecated("download_statistics")
   watchdog_line = get_watchdog_line(source_url, watchdog)
   download_date = watchdog_line$last_download
   return(download_date)  
@@ -94,6 +97,7 @@ get_last_version_download_date = function(source_url, watchdog) {
 #' raw_data_folder = "../raw/"
 #' # new_watchdog = download_watchdog_files(raw_data_folder)
 download_watchdog_files = function(raw_data_folder, watchdog_file = "watchdog.csv") {
+  .Deprecated("download_statistics")
   watchdog = rio::import(paste0(raw_data_folder, "/", watchdog_file))
   today = as.character(lubridate::today())
   today_folder = paste0(raw_data_folder, "/", today)
