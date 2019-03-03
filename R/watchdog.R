@@ -130,3 +130,68 @@ download_watchdog_files = function(raw_data_folder, watchdog_file = "watchdog.cs
   return(new_watchdog)
 }
 
+
+path = "~/Documents/kassandra/data/raw/"
+
+watchdog_file = paste0(path, "watchdog.csv")
+watchdog = import(watchdog_file)
+
+download_log_new = watchdog %>% mutate(access_date = Sys.Date(), access_status = NA, hash_raw = NA, hash_main = NA)
+
+download_log_file = paste0(path, "download_log.csv")
+
+# this was done to setup download log file for the first time
+# download_log_first = download_log_new %>% head(0)
+# export(download_log_first, download_log_file)
+download_log = import(download_log_file)
+
+download_log
+
+download_folder = paste0(path, Sys.Date())
+
+
+download_statistics = function(path, watchdog, access_date = Sys.Date()) {
+  download_log = watchdog %>% mutate(access_date = access_date, access_status = NA, hash_raw = NA, hash_main = NA)
+  
+  today_folder = paste0(path, access_date, "/")
+  if (!dir.exists(today_folder)) {
+    dir.create(today_folder)
+  }
+  
+  # download stage
+  for (file_no in 1:nrow(download_log)) {
+    url = download_log$url[file_no]
+    if (!is.na(url)) {
+      file_raw = paste0(today_folder, download_log$file_raw[file_no])
+      message("Downloading ", url, ".")
+      attempt = try(utils::download.file(url = url, destfile = file_raw, method = "curl"))
+      if (class(attempt) == "try-error") {
+        # ошибка при скачивании: запомним её
+        download_log$access_status[file_no] = as.character(attempt)
+      } else {
+        download_log$hash_raw[file_no] = digest::digest(file = file_raw)
+        download_log$access_status[file_no] = "successful download"
+      }
+    }
+  }
+
+  # processing stage
+  for (file_no in 1:nrow(download_log)) {
+    url = download_log$url[file_no]
+    processing = download_log$processing[file_no]
+    if (is.na(url)) {
+      data_processed = do.call(processing, list(access_date))
+    } else {
+      file_raw = paste0(today_folder, download_log$file_raw[file_no])
+      data_processed = do.call(processing, list(file_raw, access_date))
+    }
+    file_main = paste0(today_folder, download_log$file_main[file_no])
+    download_log$hash_main[file_no] = digest::digest(file = file_main)
+    rio::export(data_processed, file_main)
+  }
+    
+  return(download_log)
+}
+
+download_statistics(path, watchdog)
+
