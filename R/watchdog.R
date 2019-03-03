@@ -12,6 +12,7 @@
 #' watchdog_demo = dplyr::tibble(url = c("a", "b"), x = c(1, 2))
 #' get_watchdog_line("a", watchdog_demo)
 get_watchdog_line = function(source_url, watchdog) {
+  .Deprecated("download_statistics")
   if (!(source_url %in% watchdog$url)) {
     stop("The file ", source_url, " is not guarded by watchdog :)")
   }
@@ -34,6 +35,7 @@ get_watchdog_line = function(source_url, watchdog) {
 #'   last_download = c("2011-11-11", "2010-10-10"))
 #' get_last_version_path("a", watchdog_demo)
 get_last_version_path = function(source_url, watchdog) {
+  .Deprecated("download_statistics")
   watchdog_line = get_watchdog_line(source_url, watchdog)
   download_date = watchdog_line$last_download
   file_name = watchdog_line$file
@@ -75,6 +77,7 @@ replace_extension = function(filename, new_ext = "_converted.csv") {
 #'   last_download = c("2011-11-11", "2010-10-10"))
 #' get_last_version_download_date("a", watchdog_demo)
 get_last_version_download_date = function(source_url, watchdog) {
+  .Deprecated("download_statistics")
   watchdog_line = get_watchdog_line(source_url, watchdog)
   download_date = watchdog_line$last_download
   return(download_date)  
@@ -94,6 +97,7 @@ get_last_version_download_date = function(source_url, watchdog) {
 #' raw_data_folder = "../raw/"
 #' # new_watchdog = download_watchdog_files(raw_data_folder)
 download_watchdog_files = function(raw_data_folder, watchdog_file = "watchdog.csv") {
+  .Deprecated("download_statistics")
   watchdog = rio::import(paste0(raw_data_folder, "/", watchdog_file))
   today = as.character(lubridate::today())
   today_folder = paste0(raw_data_folder, "/", today)
@@ -109,7 +113,7 @@ download_watchdog_files = function(raw_data_folder, watchdog_file = "watchdog.cs
     attempt = try(utils::download.file(url = url, destfile = tempfile, method = "curl"))
     new_watchdog$last_access[file_no] = today
                            
-    if (class(attempt) == "try-error") {
+    if ("try-error" %in% class(attempt)) {
       # ошибка при скачивании: запомним её
       new_watchdog$last_status[file_no] = as.character(attempt)
     } else {
@@ -129,4 +133,79 @@ download_watchdog_files = function(raw_data_folder, watchdog_file = "watchdog.cs
   }
   return(new_watchdog)
 }
+
+
+#' Download all statistics
+#'
+#' Download all statistics
+#'
+#' Download all statistics
+#'
+#' @param path path to raw data folde
+#' @param watchdog watchdog file
+#' Structure of watchdog:
+#' url - url of file to download, may be NA
+#' file_raw - name for local raw file
+#' file_main - name for local processed file
+#' processing - name of processing function
+#' univariate - TRUE/FALSE
+#' frequency - 4/12/etc
+#' comment - self explanatory :)
+#' @param access_date access date
+#' @return downloads log
+#' @export
+#' @examples
+#' path = tempdir()
+#' mini_watchdog = tibble::tibble(url = "http://www.gks.ru/free_doc/new_site/prices/potr/I_ipc.xlsx", 
+#'     file_raw = "i_ipc.xlsx", file_main = "i_ipc.csv", processing = "convert_i_ipc_xlsx")
+#' download_log_new = download_statistics(path, mini_watchdog)
+download_statistics = function(path, watchdog, access_date = Sys.Date()) {
+  download_log = watchdog %>% dplyr::mutate(access_date = access_date, download_status = NA, processing_status = NA, hash_raw = NA, hash_main = NA)
+  
+  today_folder = paste0(path, access_date, "/")
+  if (!dir.exists(today_folder)) {
+    dir.create(today_folder)
+  }
+  
+  # download stage
+  for (file_no in 1:nrow(download_log)) {
+    url = download_log$url[file_no]
+    if (!is.na(url)) {
+      file_raw = paste0(today_folder, download_log$file_raw[file_no])
+      message("Downloading ", url, ".")
+      attempt = try(utils::download.file(url = url, destfile = file_raw, method = "curl"))
+      if ("try-error" %in% class(attempt)) {
+        # ошибка при скачивании: запомним её
+        download_log$access_status[file_no] = as.character(attempt)
+      } else {
+        download_log$hash_raw[file_no] = digest::digest(file = file_raw)
+        download_log$download_status[file_no] = "success"
+      }
+    }
+  }
+
+  # processing stage
+  for (file_no in 1:nrow(download_log)) {
+    url = download_log$url[file_no]
+    processing = download_log$processing[file_no]
+    if (is.na(url)) {
+      data_processed = try(do.call(processing, list(access_date)))
+    } else {
+      file_raw = paste0(today_folder, download_log$file_raw[file_no])
+      data_processed = try(do.call(processing, list(file_raw, access_date)))
+    }
+    if ("try-error" %in% class(data_processed)) {
+      # ошибка при обработке: запомним её
+      download_log$processing_status[file_no] = as.character(data_processed)
+    } else {
+      download_log$processing_status[file_no] = "success"
+      file_main = paste0(today_folder, download_log$file_main[file_no])
+      rio::export(data_processed, file_main)
+      download_log$hash_main[file_no] = digest::digest(file = file_main)
+    }
+  }
+  return(download_log)
+}
+
+
 
