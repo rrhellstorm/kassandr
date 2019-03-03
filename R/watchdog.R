@@ -109,7 +109,7 @@ download_watchdog_files = function(raw_data_folder, watchdog_file = "watchdog.cs
     attempt = try(utils::download.file(url = url, destfile = tempfile, method = "curl"))
     new_watchdog$last_access[file_no] = today
                            
-    if (class(attempt) == "try-error") {
+    if ("try-error" %in% class(attempt)) {
       # ошибка при скачивании: запомним её
       new_watchdog$last_status[file_no] = as.character(attempt)
     } else {
@@ -139,14 +139,24 @@ download_watchdog_files = function(raw_data_folder, watchdog_file = "watchdog.cs
 #'
 #' @param path path to raw data folde
 #' @param watchdog watchdog file
+#' Structure of watchdog:
+#' url - url of file to download, may be NA
+#' file_raw - name for local raw file
+#' file_main - name for local processed file
+#' processing - name of processing function
+#' univariate - TRUE/FALSE
+#' frequency - 4/12/etc
+#' comment - self explanatory :)
 #' @param access_date access date
 #' @return downloads log
 #' @export
 #' @examples
-#' path = "../raw/"
-#' # download_log_new = download_statistics(path, watchdog)
+#' path = tempdir()
+#' mini_watchdog = tibble::tibble(url = "http://www.gks.ru/free_doc/new_site/prices/potr/I_ipc.xlsx", 
+#'     file_raw = "i_ipc.xlsx", file_main = "i_ipc.csv", processing = "convert_i_ipc_xlsx")
+#' download_log_new = download_statistics(path, mini_watchdog)
 download_statistics = function(path, watchdog, access_date = Sys.Date()) {
-  download_log = watchdog %>% mutate(access_date = access_date, download_status = NA, processing_status = NA, hash_raw = NA, hash_main = NA)
+  download_log = watchdog %>% dplyr::mutate(access_date = access_date, download_status = NA, processing_status = NA, hash_raw = NA, hash_main = NA)
   
   today_folder = paste0(path, access_date, "/")
   if (!dir.exists(today_folder)) {
@@ -160,7 +170,7 @@ download_statistics = function(path, watchdog, access_date = Sys.Date()) {
       file_raw = paste0(today_folder, download_log$file_raw[file_no])
       message("Downloading ", url, ".")
       attempt = try(utils::download.file(url = url, destfile = file_raw, method = "curl"))
-      if (class(attempt) == "try-error") {
+      if ("try-error" %in% class(attempt)) {
         # ошибка при скачивании: запомним её
         download_log$access_status[file_no] = as.character(attempt)
       } else {
@@ -180,7 +190,7 @@ download_statistics = function(path, watchdog, access_date = Sys.Date()) {
       file_raw = paste0(today_folder, download_log$file_raw[file_no])
       data_processed = try(do.call(processing, list(file_raw, access_date)))
     }
-    if (class(data_processed) == "try-error") {
+    if ("try-error" %in% class(data_processed)) {
       # ошибка при обработке: запомним её
       download_log$processing_status[file_no] = as.character(data_processed)
     } else {

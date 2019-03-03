@@ -9,7 +9,15 @@ download_statistics(path, watchdog, access_date = Sys.Date())
 \arguments{
 \item{path}{path to raw data folde}
 
-\item{watchdog}{watchdog file}
+\item{watchdog}{watchdog file
+Structure of watchdog:
+url - url of file to download, may be NA
+file_raw - name for local raw file
+file_main - name for local processed file
+processing - name of processing function
+univariate - TRUE/FALSE
+frequency - 4/12/etc
+comment - self explanatory :)}
 
 \item{access_date}{access date}
 }
@@ -23,6 +31,8 @@ Download all statistics
 Download all statistics
 }
 \examples{
-path = "../raw/"
-# download_log_new = download_statistics(path, watchdog)
+path = tempdir()
+mini_watchdog = tibble::tibble(url = "http://www.gks.ru/free_doc/new_site/prices/potr/I_ipc.xlsx", 
+    file_raw = "i_ipc.xlsx", file_main = "i_ipc.csv", processing = "convert_i_ipc_xlsx")
+download_log_new = download_statistics(path, mini_watchdog)
 }
