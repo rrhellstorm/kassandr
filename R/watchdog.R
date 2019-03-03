@@ -131,25 +131,20 @@ download_watchdog_files = function(raw_data_folder, watchdog_file = "watchdog.cs
 }
 
 
-path = "~/Documents/kassandra/data/raw/"
-
-watchdog_file = paste0(path, "watchdog.csv")
-watchdog = import(watchdog_file)
-
-download_log_new = watchdog %>% mutate(access_date = Sys.Date(), access_status = NA, hash_raw = NA, hash_main = NA)
-
-download_log_file = paste0(path, "download_log.csv")
-
-# this was done to setup download log file for the first time
-# download_log_first = download_log_new %>% head(0)
-# export(download_log_first, download_log_file)
-download_log = import(download_log_file)
-
-download_log
-
-download_folder = paste0(path, Sys.Date())
-
-
+#' Download all statistics
+#'
+#' Download all statistics
+#'
+#' Download all statistics
+#'
+#' @param path path to raw data folde
+#' @param watchdog watchdog file
+#' @param access_date access date
+#' @return downloads log
+#' @export
+#' @examples
+#' path = "../raw/"
+#' # download_log_new = download_statistics(path, watchdog)
 download_statistics = function(path, watchdog, access_date = Sys.Date()) {
   download_log = watchdog %>% mutate(access_date = access_date, access_status = NA, hash_raw = NA, hash_main = NA)
   
@@ -193,5 +188,5 @@ download_statistics = function(path, watchdog, access_date = Sys.Date()) {
   return(download_log)
 }
 
-download_statistics(path, watchdog)
+
 
