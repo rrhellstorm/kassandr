@@ -27,6 +27,6 @@ Imports:
     xml2 (>= 1.1.0),
     rvest (>= 0.3.0),
     docxtractr (>= 0.6.0),
-    cbr
+    cbr (>= 0.2)
 Remotes: bdemeshev/cbr
 RoxygenNote: 6.1.1
