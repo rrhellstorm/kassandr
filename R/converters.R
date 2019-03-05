@@ -241,7 +241,7 @@ convert_1_nn_doc <- function(path_to_source, access_date = Sys.Date()) {
 #' @export
 #' @examples
 #' # no yet
-convert_m2_m2_sa <- function(path_to_source, access_date = Sys.Date()) {
+convert_m2_m2_sa_xlsx <- function(path_to_source, access_date = Sys.Date()) {
   data <- rio::import(path_to_source)
   data <- data.frame(data)
   colnames(data)[3] <- "m2sa"
