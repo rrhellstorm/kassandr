@@ -18,6 +18,7 @@ Convert russian numbers with comma into numeric
 \details{
 Converts russian numbers with comma into numeric. 
 Comma is replaced by dot and than `as.numeric` is applied.
+Spaces are removed!
 }
 \examples{
 as_numeric_cyrillic(c("56,23", "-23,12"))

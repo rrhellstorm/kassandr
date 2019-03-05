@@ -50,6 +50,7 @@ write_csv2_cp1251 = function(x, path) {
 #'
 #' Converts russian numbers with comma into numeric. 
 #' Comma is replaced by dot and than `as.numeric` is applied.
+#' Spaces are removed!
 #'
 #' @param x vector of russian numbers, i.e. "45,34"
 #' 
@@ -58,7 +59,9 @@ write_csv2_cp1251 = function(x, path) {
 #' @examples
 #' as_numeric_cyrillic(c("56,23", "-23,12"))
 as_numeric_cyrillic = function(x) {
-  return(as.numeric(stringr::str_replace(x, ",", ".")))
+  x <- stringr::str_replace(x, ",", ".")
+  x <- stringr::str_replace(x, " ", "")
+  return(as.numeric(x))
 }
 
 

@@ -146,23 +146,15 @@ convert_urov_12kv_doc <- function(path_to_source, access_date = Sys.Date()) {
   table <- docxtractr::docx_extract_tbl(real_world, 2)
   table <- as.data.frame(table)
   table <- table[-c(1, 2, 74, 75), ] # две строки в начале и две пустые строки
-  colnames(table) <- c('date', 'percent_to_period_last_year', 'percent_to_last_period')
-  table <- table[!grepl("квартал", table$date),]
-  table <- table[!grepl("Год", table$date),]
-  table <- table[!grepl("год", table$date),]
-  rownames(table) <- 1:nrow(table)
+  colnames(table) <- c("date", "percent_to_period_last_year", "percent_to_last_period")
+  table <- dplyr::filter(table, !grepl("квартал", date), !grepl("Год", date), !grepl("год", date))
   
   table$date <- lubridate::ymd("2008-01-01") + months(0:(nrow(table) - 1)) 
   table$access_date <- access_date
   
-  table <- table[,c(1, 4, 2, 3)]
-  colnames(table) <- c('date', 'access_date', 'percent_to_period_last_year', 'percent_to_last_period')
-  
-  table$percent_to_period_last_year <- sub(",", ".", table$percent_to_period_last_year, fixed = TRUE)
-  table$percent_to_last_period <- sub(",", ".", table$percent_to_last_period, fixed = TRUE)
-  
-  table <- table[!find_duplicates(table, index = date), ]
-  ts_frame <- as_tsibble(table, index = date)
+  table <- mutate_at(table, vars(starts_with("percent")), as_numeric_cyrillic)
+
+  ts_frame <- tsibble::as_tsibble(table, index = date)
   return(ts_frame)
 }
 
@@ -223,7 +215,7 @@ convert_1_nn_doc <- function(path_to_source, access_date = Sys.Date()) {
   table <- dplyr::mutate_all(table_1, function(x) as.numeric(as.character(x))) %>% t() %>% as.data.frame()
   table <- tidyr::gather(table)[2]
   table[table == ""] <- NA
-  table <- na.omit(table)
+  table <- stats::na.omit(table)
   
   data_ts <- stats::ts(table, start = c(1999, 1), freq = 12)
   data_tsibble <- tsibble::as_tsibble(data_ts)
@@ -231,4 +223,37 @@ convert_1_nn_doc <- function(path_to_source, access_date = Sys.Date()) {
   
   return(data_tsibble)
 }
+
+
+
+
+#' Converts m2-m2_sa file from rosstat to tibble
+#'
+#' Converts m2-m2_sa file from rosstat to tibble
+#'
+#' Converts m2-m2_sa file from rosstat to tibble.
+#' Written by: Petr Garmider
+#'
+#' @param path_to_source name of the original m2-m2_sa.docx file
+#' @param access_date date of access is appended to every observation
+#' 
+#' @return tibble
+#' @export
+#' @examples
+#' # no yet
+convert_m2_m2_sa <- function(path_to_source, access_date = Sys.Date()) {
+  data <- rio::import(path_to_source)
+  data <- data.frame(data)
+  colnames(data)[3] <- "m2sa"
+  
+  data_vector <- as.numeric(stats::na.omit(t(data$m2sa[2:length(data$m2sa)])))
+  
+  data_ts <- stats::ts(data_vector, start = c(1995, 7), freq = 12)
+  
+  data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index)
+  
+  data_tsibble <- dplyr::mutate(data_tsibble, access_date = access_date)
+  return(data_tsibble)
+}
+
 
