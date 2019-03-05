@@ -22,8 +22,15 @@ tsibble with high frequency lags added
 Get last high frequency observations
 }
 \details{
-Get last high frequency observations
+Get last high frequency observations. The function cuts n_lags
+observations from the table hf_data, that are from the same day or before 
+as the date indicated by lf_date.  
+If one_row is TRUE the result is stacked in a row, otherwise 
+the result is a column.
 }
 \examples{
-# no yet
+hf_data <- tibble::tibble(date = lubridate::ymd("2011-01-01") + 
+           lubridate::days(0:60), observations = rnorm(61))
+get_last_n_obs(hf_data, "2011-02-23", n_lags = 7, 
+           one_row = FALSE)
 }
