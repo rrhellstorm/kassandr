@@ -20,5 +20,5 @@ Parse lending rates from cbr
 Written by Nastya Jarkova
 }
 \examples{
-lend_rate <- parse_lendrate()
+# lend_rate <- parse_lendrate()
 }

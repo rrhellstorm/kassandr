@@ -10,7 +10,7 @@
 #' @return tsibble
 #' @export
 #' @examples
-#' lend_rate <- parse_lendrate()
+#' # lend_rate <- parse_lendrate()
 parse_lendrate <- function(access_date = Sys.Date()) {
   url = "http://www.cbr.ru/hd_base/mkr/mkr_monthes/"
   lendrate <- url %>%
@@ -49,7 +49,7 @@ parse_lendrate <- function(access_date = Sys.Date()) {
 #' @return tsibble
 #' @export
 #' @examples
-#' res_rate <- parse_reserverate()
+#' # res_rate <- parse_reserverate()
 parse_reserverate <- function(access_date = Sys.Date()) {
   url <- "http://www.cbr.ru/hd_base/mrrf/mrrf_m/"
 

@@ -20,5 +20,5 @@ Parse reserve rates from cbr
 Written by Petr Garmider
 }
 \examples{
-res_rate <- parse_reserverate()
+# res_rate <- parse_reserverate()
 }
