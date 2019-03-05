@@ -234,7 +234,7 @@ convert_1_nn_doc <- function(path_to_source, access_date = Sys.Date()) {
 #' Converts m2-m2_sa file from rosstat to tibble.
 #' Written by: Petr Garmider
 #'
-#' @param path_to_source name of the original m2-m2_sa.docx file
+#' @param path_to_source name of the original m2-m2_sa.xlsx file
 #' @param access_date date of access is appended to every observation
 #' 
 #' @return tibble
@@ -255,5 +255,85 @@ convert_m2_m2_sa_xlsx <- function(path_to_source, access_date = Sys.Date()) {
   data_tsibble <- dplyr::mutate(data_tsibble, access_date = access_date)
   return(data_tsibble)
 }
+
+
+
+
+#' Converts ind_okved2 file from rosstat to tibble
+#'
+#' Converts ind_okved2 file from rosstat to tibble
+#'
+#' Converts ind_okved2 file from rosstat to tibble.
+#' Written by: Nastya Jarkova
+#'
+#' @param path_to_source name of the original ind_okved2.xlsx file
+#' @param access_date date of access is appended to every observation
+#' 
+#' @return tibble
+#' @export
+#' @examples
+#' # no yet
+convert_ind_okved2_xlsx <- function(path_to_source, access_date = Sys.Date()) {
+  indprod <- rio::import(path_to_source, skip = 2, sheet = 1)
+  indprod_vector <- t(indprod[2, 3:ncol(indprod)])
+  
+  indprod_ts <- stats::ts(indprod_vector, start = c(2013, 1), frequency = 12)
+  indprod_tsibble <- tsibble::as_tsibble(indprod_ts)
+  indprod_tsibble = dplyr::rename(indprod_tsibble, date = index, ind_prod = value)
+  indprod_tsibble = dplyr::mutate(indprod_tsibble, access_date = access_date)
+  
+  return(indprod_tsibble)
+}
+
+
+#' Converts trade.xls file from cbr to tibble
+#'
+#' Converts trade.xls file from cbr to tibble
+#'
+#' Converts trade.xls file from cbr to tibble.
+#' Written by: Maxim Alekseev
+#'
+#' @param path_to_source name of the original trade.xls file
+#' @param access_date date of access is appended to every observation
+#' 
+#' @return tibble
+#' @export
+#' @examples
+#' # no yet
+convert_trade_xls <- function(path_to_source, access_date = Sys.Date()) {
+  data <- rio::import(path_to_source)
+  colnames(data)[c(1, 2, 8)] <- c('date', 'import', 'export')
+  namelist <- c('январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль',
+                'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь')
+  data <- dplyr::filter(data, date %in% namelist)
+  data_ts <- dplyr::select(data, import, export) %>% stats::ts(start = c(1997, 1), freq = 12)
+  data_tsibble <- tsibble::as_tsibble(data_ts, gather = FALSE)
+  data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
+  return(data_tsibble)
+}
+
+#' Converts tab2.29.xls file from cbr to tibble
+#'
+#' Converts tab2.29.xls file from cbr to tibble
+#'
+#' Converts tab2.29.xls file from cbr to tibble.
+#' Written by: Maxim Alekseev
+#'
+#' @param path_to_source name of the original tab2.29.xls file
+#' @param access_date date of access is appended to every observation
+#' 
+#' @return tibble
+#' @export
+#' @examples
+#' # no yet
+convert_tab229_xls <- function(path_to_source, access_date = Sys.Date()) {
+  data <- rio::import(path_to_source)
+  data_vector <- data[4:24, 5] # WILL WORK IN THE FUTURE????
+  data_ts <- stats::ts(data_vector, start = c(2017, 1), freq = 12)
+  data_tsibble <- tsibble::as_tsibble(data_ts)
+  data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
+  return(data_tsibble)
+}
+
 
 

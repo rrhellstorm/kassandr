@@ -7,7 +7,7 @@
 convert_m2_m2_sa_xlsx(path_to_source, access_date = Sys.Date())
 }
 \arguments{
-\item{path_to_source}{name of the original m2-m2_sa.docx file}
+\item{path_to_source}{name of the original m2-m2_sa.xlsx file}
 
 \item{access_date}{date of access is appended to every observation}
 }
