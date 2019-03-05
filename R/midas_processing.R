@@ -49,7 +49,9 @@ get_last_n_obs = function(hf_data, lf_date, n_lags = 1, one_row = TRUE) {
 #'
 #' Transform ts to tibble
 #'
-#' Transform ts to tibble.
+#' Transform ts to tibble. The function takes univariate or multivariate
+#' time series and transforms them to a tibble with a separate column indicating 
+#' a period of time. 
 #' Column with dates is called "date".
 #' @param ts_data ts object
 #' @return tsibble 
@@ -66,12 +68,18 @@ ts_2_tibble = function(ts_data) {
 }
 
 
-
 #' Add high frequency lags to low frequency tsibble
 #'
 #' Add high frequency lags to low frequency tsibble
 #'
-#' Add high frequency lags to low frequency tsibble.
+#' Adds high frequency lags to low frequency tsibble. The function 
+#' concatenates n_lags of hf_data to lf_data. The concatenated observations 
+#' from hf_data are from the same day or earlier than the date indicated 
+#' by lf_date. If one_row is TRUE the high frequency observations
+#' are put in a row so as the number of rows in the new table is equal 
+#' to those of lf_data.  Otherwise the lags of high-frequency data 
+#' increase the number of rows and the number of rows in 
+#' new table is (number of rows in lf_data)*n_lags. 
 #' @param lf_data low frequency data
 #' @param hf_data high frequency data
 #' @param hf_variable names of high frequency time series, all by default
@@ -80,8 +88,15 @@ ts_2_tibble = function(ts_data) {
 #' @return tsibble with high frequency lags added
 #' @export
 #' @examples
-#' # no yet
+#' 
+#' hf_data <- tibble::tibble(date = lubridate::ymd("2011-01-01") + 
+#'                             lubridate::days(0:90), observations = rnorm(91))
+#' lf_data <- stats::ts(rnorm(4), start = c(2011, 01), frequency = 12)
+#' add_hf_lags(lf_data, hf_data, n_lags = 5)
 add_hf_lags = function(lf_data, hf_data, hf_variable = NULL, n_lags = 1, one_row = TRUE) {
+  
+  #lf_data_ts <- ts_2_tibble(lf_data)
+  #lf_data_ts <- mutate(lf_data_ts, date = as.Date(date) + months(1) - days(1))
   
   # go from ts class to tsibble (dataframe)
   lf_data = ts_2_tibble(lf_data)
