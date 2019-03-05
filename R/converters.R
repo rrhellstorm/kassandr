@@ -167,4 +167,68 @@ convert_urov_12kv_doc <- function(path_to_source, access_date = Sys.Date()) {
 }
 
 
+#' Converts 1-nn file from rosstat to tibble
+#'
+#' Converts 1-nn file from rosstat to tibble
+#'
+#' Converts 1-nn file from rosstat to tibble.
+#' Written by: Rifat Enileev
+#'
+#' @param path_to_source name of the original 1-nn.doc file
+#' @param access_date date of access is appended to every observation
+#' 
+#' @return tibble
+#' @export
+#' @examples
+#' # no yet
+convert_1_nn_doc <- function(path_to_source, access_date = Sys.Date()) {
+  tbl <- docxtractr::read_docx(path_to_source)
+  table_1 <- docxtractr::docx_extract_tbl(tbl, tbl_number = 1, header = TRUE,
+                                          preserve = FALSE, trim = FALSE)
+  
+  ncols <- ncol(table_1)
+  if (ncols == 18) {
+    colnames(table_1) <- c(
+      "year", "yearly", "i", "ii", "iii", "iv", "jan", "feb", "mar", "apr",
+      "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"
+    )
+  } else if (ncols == 13) {
+    colnames(table_1) <- c(
+      "year", "dec", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug",
+      "sep", "oct", "nov"
+    )
+    table_1 <- table_1[c(1, 3:13, 2)]
+  } else {
+    stop("Wrong number of columns in parsed doc: ", path_to_source)
+  }
+  
+  table_1 <- subset(table_1, year >= 1999, select = c(
+    "jan", "feb", "mar", "apr", "may", "jun",
+    "jul", "aug", "sep", "oct", "nov", "dec"
+  ))
+  
+  table_1$jan <- sub(",", ".", table_1$jan, fixed = TRUE)
+  table_1$feb <- sub(",", ".", table_1$feb, fixed = TRUE)
+  table_1$mar <- sub(",", ".", table_1$mar, fixed = TRUE)
+  table_1$apr <- sub(",", ".", table_1$apr, fixed = TRUE)
+  table_1$may <- sub(",", ".", table_1$may, fixed = TRUE)
+  table_1$jun <- sub(",", ".", table_1$jun, fixed = TRUE)
+  table_1$jul <- sub(",", ".", table_1$jul, fixed = TRUE)
+  table_1$aug <- sub(",", ".", table_1$aug, fixed = TRUE)
+  table_1$sep <- sub(",", ".", table_1$sep, fixed = TRUE)
+  table_1$oct <- sub(",", ".", table_1$oct, fixed = TRUE)
+  table_1$nov <- sub(",", ".", table_1$nov, fixed = TRUE)
+  table_1$dec <- sub(",", ".", table_1$dec, fixed = TRUE)
+  
+  table <- dplyr::mutate_all(table_1, function(x) as.numeric(as.character(x))) %>% t() %>% as.data.frame()
+  table <- tidyr::gather(table)[2]
+  table[table == ""] <- NA
+  table <- na.omit(table)
+  
+  data_ts <- stats::ts(table, start = c(1999, 1), freq = 12)
+  data_tsibble <- tsibble::as_tsibble(data_ts)
+  data_tsibble <- dplyr::mutate(data_tsibble, access_date = access_date)
+  
+  return(data_tsibble)
+}
 
