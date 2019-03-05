@@ -127,4 +127,44 @@ convert_tab9a_xls = function(path_to_source, access_date = Sys.Date()) {
 
 
 
+#' Converts urov_12kv file from rosstat to tibble
+#'
+#' Converts urov_12kv file from rosstat to tibble
+#'
+#' Converts urov_12kv file from rosstat to tibble.
+#' Written by: Vladimir Omelyusik
+#'
+#' @param path_to_source name of the original urov_12kv.doc file
+#' @param access_date date of access is appended to every observation
+#' 
+#' @return tibble
+#' @export
+#' @examples
+#' # no yet
+convert_urov_12kv_doc <- function(path_to_source, access_date = Sys.Date()) {
+  real_world <- docxtractr::read_docx(path_to_source)
+  table <- docxtractr::docx_extract_tbl(real_world, 2)
+  table <- as.data.frame(table)
+  table <- table[-c(1, 2, 74, 75), ] # две строки в начале и две пустые строки
+  colnames(table) <- c('date', 'percent_to_period_last_year', 'percent_to_last_period')
+  table <- table[!grepl("квартал", table$date),]
+  table <- table[!grepl("Год", table$date),]
+  table <- table[!grepl("год", table$date),]
+  rownames(table) <- 1:nrow(table)
+  
+  table$date <- lubridate::ymd("2008-01-01") + months(0:(nrow(table) - 1)) 
+  table$access_date <- access_date
+  
+  table <- table[,c(1, 4, 2, 3)]
+  colnames(table) <- c('date', 'access_date', 'percent_to_period_last_year', 'percent_to_last_period')
+  
+  table$percent_to_period_last_year <- sub(",", ".", table$percent_to_period_last_year, fixed = TRUE)
+  table$percent_to_last_period <- sub(",", ".", table$percent_to_last_period, fixed = TRUE)
+  
+  table <- table[!find_duplicates(table, index = date), ]
+  ts_frame <- as_tsibble(table, index = date)
+  return(ts_frame)
+}
+
+
 

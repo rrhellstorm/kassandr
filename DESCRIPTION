@@ -1,6 +1,6 @@
 Package: kassandr
 Title: Functions to Forecast Russian Macro Data in Kassandra Project
-Version: 0.0.0.95
+Version: 0.0.0.96
 Authors@R: c(person("Boris", "Demeshev", email = "boris.demeshev@gmail.com", role = c("aut", "cre")), 
              person("Oxana", "Malakhovskaya", email = "oxana.malakhovskaya@gmail.com", role = "aut"))
 Description: Automatically load data. The goal is to make consice and easy to replicate forecasts.
@@ -25,5 +25,6 @@ Imports:
     lubridate (>= 1.7.1),
     magrittr (>= 1.3),
     xml2 (>= 1.1.0),
-    rvest (>= 0.3.0)
+    rvest (>= 0.3.0),
+    docxtractr (>= 0.6.0)
 RoxygenNote: 6.1.1
