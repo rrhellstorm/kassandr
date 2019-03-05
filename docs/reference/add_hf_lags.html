@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">kassandr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.95</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.96</span>
       </span>
     </div>
 
@@ -139,12 +139,29 @@
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Add high frequency lags to low frequency tsibble.</p>
+    <p>Adds high frequency lags to low frequency tsibble. The function 
+concatenates n_lags of hf_data to lf_data. The concatenated observations 
+from hf_data are from the same day or earlier than the date indicated 
+by lf_date. If one_row is TRUE the high frequency observations
+are put in a row so as the number of rows in the new table is equal 
+to those of lf_data.  Otherwise the lags of high-frequency data 
+increase the number of rows and the number of rows in 
+new table is (number of rows in lf_data)*n_lags.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'># no yet
-</div></pre>
+    <pre class="examples"><div class='input'>
+<span class='no'>hf_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tibble</span><span class='kw ns'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span>(<span class='kw'>date</span> <span class='kw'>=</span> <span class='kw pkg'>lubridate</span><span class='kw ns'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/ymd.html'>ymd</a></span>(<span class='st'>"2011-01-01"</span>) +
+                            <span class='kw pkg'>lubridate</span><span class='kw ns'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/period.html'>days</a></span>(<span class='fl'>0</span>:<span class='fl'>90</span>), <span class='kw'>observations</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>91</span>))
+<span class='no'>lf_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/ts'>ts</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>4</span>), <span class='kw'>start</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2011</span>, <span class='fl'>01</span>), <span class='kw'>frequency</span> <span class='kw'>=</span> <span class='fl'>12</span>)
+<span class='fu'>add_hf_lags</span>(<span class='no'>lf_data</span>, <span class='no'>hf_data</span>, <span class='kw'>n_lags</span> <span class='kw'>=</span> <span class='fl'>5</span>)</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 4 x 7</span><span>
+#&gt;         date  value observations_1 observations_2 observations_3 observations_4
+#&gt;        </span><span style='color: #949494;font-style: italic;'>&lt;mth&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>   2011 янв -</span><span style='color: #BB0000;'>0.397</span><span>         -</span><span style='color: #BB0000;'>0.387</span><span>         </span><span style='color: #BB0000;'>NA</span><span>             </span><span style='color: #BB0000;'>NA</span><span>            </span><span style='color: #BB0000;'>NA</span><span>     
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span>   2011 фев -</span><span style='color: #BB0000;'>0.823</span><span>          0.846         -</span><span style='color: #BB0000;'>1.15</span><span>           0.192        -</span><span style='color: #BB0000;'>0.528</span><span> 
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span>   2011 мар -</span><span style='color: #BB0000;'>0.579</span><span>          0.804          0.783         -</span><span style='color: #BB0000;'>0.356</span><span>         0.038</span><span style='text-decoration: underline;'>5</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span>   2011 апр  1.76           1.12           1.14           1.06          2.56  
+#&gt; </span><span style='color: #949494;'># … with 1 more variable: observations_5 </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Gets last version date from watchdog file — get_last_version_download_date • kassandr</title>
+<title>Converts trade.xls file from cbr to tibble — convert_trade_xls • kassandr</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Gets last version date from watchdog file — get_last_version_download_date" />
+<meta property="og:title" content="Converts trade.xls file from cbr to tibble — convert_trade_xls" />
 
-<meta property="og:description" content="Gets last version date from watchdog file" />
+<meta property="og:description" content="Converts trade.xls file from cbr to tibble" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -94,49 +94,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Gets last version date from watchdog file</h1>
+    <h1>Converts trade.xls file from cbr to tibble</h1>
     
-    <div class="hidden name"><code>get_last_version_download_date.Rd</code></div>
+    <div class="hidden name"><code>convert_trade_xls.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Gets last version date from watchdog file</p>
+    <p>Converts trade.xls file from cbr to tibble</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>get_last_version_download_date</span>(<span class='no'>source_url</span>, <span class='no'>watchdog</span>)</pre>
+    <pre class="usage"><span class='fu'>convert_trade_xls</span>(<span class='no'>path_to_source</span>, <span class='kw'>access_date</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>source_url</th>
-      <td><p>url of guarded file</p></td>
+      <th>path_to_source</th>
+      <td><p>name of the original trade.xls file</p></td>
     </tr>
     <tr>
-      <th>watchdog</th>
-      <td><p>data frame with url and last_download columns at least</p></td>
+      <th>access_date</th>
+      <td><p>date of access is appended to every observation</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>date of last downloaded version</p>
+    <p>tibble</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Gets last version date from watchdog file</p>
+    <p>Converts trade.xls file from cbr to tibble.
+Written by: Maxim Alekseev</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>watchdog_demo</span> <span class='kw'>=</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>tibble</a></span>(<span class='kw'>url</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"a"</span>, <span class='st'>"b"</span>), <span class='kw'>file</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"xxx.xls"</span>, <span class='st'>"yyy.xlsx"</span>),
-  <span class='kw'>last_download</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"2011-11-11"</span>, <span class='st'>"2010-10-10"</span>))
-<span class='fu'>get_last_version_download_date</span>(<span class='st'>"a"</span>, <span class='no'>watchdog_demo</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'get_last_version_download_date' is deprecated.</span>
-#&gt; <span class='warning'>Use 'download_statistics' instead.</span>
-#&gt; <span class='warning'>See help("Deprecated")</span></div><div class='output co'>#&gt; <span class='warning'>Warning: 'get_watchdog_line' is deprecated.</span>
-#&gt; <span class='warning'>Use 'download_statistics' instead.</span>
-#&gt; <span class='warning'>See help("Deprecated")</span></div><div class='output co'>#&gt; [1] "2011-11-11"</div></pre>
+    <pre class="examples"><div class='input'># no yet
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

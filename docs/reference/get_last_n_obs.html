@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">kassandr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.95</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.96</span>
       </span>
     </div>
 
@@ -134,12 +134,27 @@
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Get last high frequency observations</p>
+    <p>Get last high frequency observations. The function cuts n_lags
+observations from the table hf_data, that are from the same day or before 
+as the date indicated by lf_date.  
+If one_row is TRUE the result is stacked in a row, otherwise 
+the result is a column.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'># no yet
-</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>hf_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tibble</span><span class='kw ns'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span>(<span class='kw'>date</span> <span class='kw'>=</span> <span class='kw pkg'>lubridate</span><span class='kw ns'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/ymd.html'>ymd</a></span>(<span class='st'>"2011-01-01"</span>) +
+           <span class='kw pkg'>lubridate</span><span class='kw ns'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/period.html'>days</a></span>(<span class='fl'>0</span>:<span class='fl'>60</span>), <span class='kw'>observations</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>61</span>))
+<span class='fu'>get_last_n_obs</span>(<span class='no'>hf_data</span>, <span class='st'>"2011-02-23"</span>, <span class='kw'>n_lags</span> <span class='kw'>=</span> <span class='fl'>7</span>,
+           <span class='kw'>one_row</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 7 x 2</span><span>
+#&gt;   hf_date    observations
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;date&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> 2011-02-17        0.682
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span> 2011-02-18       -</span><span style='color: #BB0000;'>0.230</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span> 2011-02-19       -</span><span style='color: #BB0000;'>1.51</span><span> 
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span> 2011-02-20       -</span><span style='color: #BB0000;'>0.584</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>5</span><span> 2011-02-21       -</span><span style='color: #BB0000;'>2.02</span><span> 
+#&gt; </span><span style='color: #BCBCBC;'>6</span><span> 2011-02-22        0.404
+#&gt; </span><span style='color: #BCBCBC;'>7</span><span> 2011-02-23        0.550</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

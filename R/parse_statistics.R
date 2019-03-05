@@ -23,13 +23,12 @@ parse_lendrate <- function(access_date = Sys.Date()) {
   
   colnames(lendrate) = c("date", "dur_1_day", "dur_2_7_days", "dur_8_30_days", "dur_31_90_days", "dur_91_180_days", "dur_181_plus_days")
   
-  first_date = lubridate::dmy(paste0("1 ", utils::head(lendrate$date, 1)))
-  
+
   lendrate = dplyr::mutate_at(lendrate, dplyr::vars(dplyr::starts_with("dur")), ~ as_numeric_cyrillic(.))
   
   # we convert "сентябрь 2001" to "2001-09-01"
   # but dmy wants "мая" and not "май"
-  lendrate = dplyr::mutate(lendrate, date = tsibble::yearmonth(lubridate::dmy(paste0("1 ", stringr::str_replace(date, "май", "мая")))))
+  lendrate = dplyr::mutate(lendrate, date = tsibble::yearmonth(lubridate::ymd("2000-08-01") + months(0:(nrow(lendrate) - 1))))
   
   lendrate_tsibble <- tsibble::as_tsibble(lendrate, index = "date") 
   return(lendrate_tsibble)
@@ -92,7 +91,7 @@ parse_exchangerate <- function(access_date = Sys.Date()) {
   colnames(df)[4] <- 'currency'
   df <- dplyr::mutate(df, exch_rate = R01235 * units)
   df <- dplyr::select(df, date, exch_rate)
-  data_tsibble <- tsibble::as_tsibble(df, index = date) # ?????? FAILSSSSSSS !!!!!!!
+  data_tsibble <- tsibble::as_tsibble(df, index = date) 
   data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
   return(data_tsibble)
 }
