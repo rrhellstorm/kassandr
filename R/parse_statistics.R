@@ -36,11 +36,11 @@ parse_lendrate <- function(access_date = Sys.Date()) {
 
 
 
-#' Parse reserve rates from cbr
+#' Parse reserves data from cbr
 #'
-#' Parse reserve rates from cbr
+#' Parse reserves data from cbr
 #'
-#' Parse reserve rates from cbr
+#' Parse reserves data from cbr
 #' Written by Petr Garmider
 #'
 #' @param access_date date of access is appended to every observation
@@ -49,7 +49,7 @@ parse_lendrate <- function(access_date = Sys.Date()) {
 #' @export
 #' @examples
 #' # res_rate <- parse_reserverate()
-parse_reserverate <- function(access_date = Sys.Date()) {
+parse_reserves <- function(access_date = Sys.Date()) {
   url <- "http://www.cbr.ru/hd_base/mrrf/mrrf_m/"
 
   nfa_cb <- url %>%
