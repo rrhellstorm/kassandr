@@ -698,3 +698,23 @@ calculate_mae_table = function(model_list_fitted) {
   return(mae_table)
 }
 
+
+#' Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)
+#'
+#' Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)
+#'
+#' Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)
+#'
+#' @param model_sample preferably tsibble with "value" column
+#' @param h forecasting horizon, is ignored
+#' @return ARIMA(1,1,1)-SARIMA[12](1,0,1) model 
+#' @export
+#' @examples
+#' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
+#' arima111_fun(test, 1)
+arima111_fun = function(model_sample, h) {
+  # h is ignored!
+  y = extract_value(model_sample)
+  model = forecast::Arima(y, order = c(1, 1, 1), seasonal = c(1, 0, 1), method = "ML")
+  return(model)
+}
