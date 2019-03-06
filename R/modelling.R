@@ -55,7 +55,7 @@ ets_fun = function(model_sample, h) {
 arima_fun = function(model_sample, h) {
   # h is ignored!
   y = extract_value(model_sample)
-  model = forecast::auto.arima(y)
+  model = forecast::auto.arima(y, method = "ML")
   return(model)
 }
 
