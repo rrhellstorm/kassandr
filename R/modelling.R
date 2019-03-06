@@ -55,7 +55,7 @@ ets_fun = function(model_sample, h) {
 arima_fun = function(model_sample, h) {
   # h is ignored!
   y = extract_value(model_sample)
-  model = forecast::auto.arima(y, method = "ML")
+  model = forecast::auto.arima(y)
   return(model)
 }
 
@@ -75,7 +75,7 @@ arima_fun = function(model_sample, h) {
 arima11_fun = function(model_sample, h) {
   # h is ignored!
   y = extract_value(model_sample)
-  model = forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1), method = "ML")
+  model = forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1))
   return(model)
 }
 
@@ -715,6 +715,6 @@ calculate_mae_table = function(model_list_fitted) {
 arima111_fun = function(model_sample, h) {
   # h is ignored!
   y = extract_value(model_sample)
-  model = forecast::Arima(y, order = c(1, 1, 1), seasonal = c(1, 0, 1), method = "ML")
+  model = forecast::Arima(y, order = c(1, 1, 1), seasonal = c(1, 0, 1))
   return(model)
 }
