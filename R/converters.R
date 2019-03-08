@@ -498,6 +498,7 @@ convert_reserves <- function(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mr
 #' @details Checks some basic requirements for converted data from raw formats.
 #' @param data_tsibble converted time series
 #' @return TRUE or will stop with error message
+#' @export
 #' @examples 
 #' \donttest{
 #' cpi = convert_i_ipc_xlsx()
