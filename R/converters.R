@@ -10,17 +10,22 @@
 #' @return tibble
 #' @export
 #' @examples
-#' # no yet
-convert_i_ipc_xlsx = function(path_to_source, access_date = Sys.Date()) {
+#' \donttest{
+#' cpi = convert_i_ipc_xlsx()
+#' }
+convert_i_ipc_xlsx = function(path_to_source = "http://www.gks.ru/free_doc/new_site/prices/potr/I_ipc.xlsx", 
+                              access_date = Sys.Date()) {
   data = rio::import(path_to_source)
   
   data <- data[5:16,-1]
   data <- tidyr::gather(data, year, value)
   data <- dplyr::select(data, -year)
   cpi_ts <- stats::ts(data, start = c(1991, 1), freq = 12)
-  cpi_infl <- tsibble::as_tsibble(cpi_ts) %>% stats::na.omit() %>% dplyr::rename(date = index)
+  cpi_infl <- tsibble::as_tsibble(cpi_ts) %>% stats::na.omit() %>% dplyr::rename(date = index, cpi = value)
   
   data_tsibble = dplyr::mutate(cpi_infl, access_date = access_date)
+  check_conversion(data_tsibble)
+  
   return(data_tsibble)
 }
 
@@ -39,8 +44,11 @@ convert_i_ipc_xlsx = function(path_to_source, access_date = Sys.Date()) {
 #' @return tibble
 #' @export
 #' @examples
-#' # no yet
-convert_tab5a_xls = function(path_to_source, access_date = Sys.Date()) {
+#' \donttest{
+#' tab5a = convert_tab5a_xls()
+#' }
+convert_tab5a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab5a.xls", 
+                             access_date = Sys.Date()) {
   data = rio::import(path_to_source)
   
   data_vector <- t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
@@ -49,6 +57,8 @@ convert_tab5a_xls = function(path_to_source, access_date = Sys.Date()) {
   data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index)
   
   data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
+  check_conversion(data_tsibble)
+  
   return(data_tsibble)
 }
 
@@ -66,8 +76,11 @@ convert_tab5a_xls = function(path_to_source, access_date = Sys.Date()) {
 #' @return tibble
 #' @export
 #' @examples
-#' # no yet
-convert_tab6b_xls = function(path_to_source, access_date = Sys.Date()) {
+#' \donttest{
+#' tab6b = conveert_tab6b_xls()
+#' }
+convert_tab6b_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab6b.xls", 
+                             access_date = Sys.Date()) {
   data_tsibble = convert_tab5a_xls(path_to_source, access_date)
   return(data_tsibble)
 }
@@ -85,8 +98,11 @@ convert_tab6b_xls = function(path_to_source, access_date = Sys.Date()) {
 #' @return tibble
 #' @export
 #' @examples
-#' # no yet
-convert_tab9_xls = function(path_to_source, access_date = Sys.Date()) {
+#' \donttest{
+#' tab9 = convert_tab9_xls()
+#' }
+convert_tab9_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab9.xls", 
+                            access_date = Sys.Date()) {
   data = rio::import(path_to_source)
   
   data_vector <- t(data[4, ]) %>% stats::na.omit() %>% as.numeric()
@@ -95,6 +111,7 @@ convert_tab9_xls = function(path_to_source, access_date = Sys.Date()) {
   gdp_deflator <- tsibble::as_tsibble(gdp_deflator) %>% dplyr::rename(date = index)
   
   data_tsibble = dplyr::mutate(gdp_deflator, access_date = access_date)
+  check_conversion(data_tsibble)
   return(data_tsibble)
 }
 
@@ -112,8 +129,11 @@ convert_tab9_xls = function(path_to_source, access_date = Sys.Date()) {
 #' @return tibble
 #' @export
 #' @examples
-#' # no yet
-convert_tab9a_xls = function(path_to_source, access_date = Sys.Date()) {
+#' \donttest{
+#' tab9a = convert_tab9a_xls()
+#' }
+convert_tab9a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab9a.xls", 
+                             access_date = Sys.Date()) {
   data = rio::import(path_to_source)
   
   data <- t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
@@ -122,6 +142,7 @@ convert_tab9a_xls = function(path_to_source, access_date = Sys.Date()) {
   gdp_deflator <- tsibble::as_tsibble(gdp_deflator) %>% dplyr::rename(date = index)
   
   data_tsibble = dplyr::mutate(gdp_deflator, access_date = access_date)
+  check_conversion(data_tsibble)
   return(data_tsibble)
 }
 
@@ -140,8 +161,12 @@ convert_tab9a_xls = function(path_to_source, access_date = Sys.Date()) {
 #' @return tibble
 #' @export
 #' @examples
-#' # no yet
-convert_urov_12kv_doc <- function(path_to_source, access_date = Sys.Date()) {
+#' \donttest{
+#' urok_12kv = convert_urok_12kv_doc()
+#' }
+convert_urov_12kv_doc <- function(path_to_source = 
+                                    "http://www.gks.ru/free_doc/new_site/population/urov/urov_12kv.doc", 
+                                  access_date = Sys.Date()) {
   real_world <- docxtractr::read_docx(path_to_source)
   table <- docxtractr::docx_extract_tbl(real_world, 2)
   table <- as.data.frame(table)
@@ -154,8 +179,10 @@ convert_urov_12kv_doc <- function(path_to_source, access_date = Sys.Date()) {
   
   table <- mutate_at(table, vars(starts_with("percent")), as_numeric_cyrillic)
 
-  ts_frame <- tsibble::as_tsibble(table, index = date)
-  return(ts_frame)
+  data_tsibble <- tsibble::as_tsibble(table, index = date)
+  check_conversion(data_tsibble)
+  
+  return(data_tsibble)
 }
 
 
@@ -172,11 +199,20 @@ convert_urov_12kv_doc <- function(path_to_source, access_date = Sys.Date()) {
 #' @return tibble
 #' @export
 #' @examples
-#' # no yet
-convert_1_nn_doc <- function(path_to_source, access_date = Sys.Date()) {
+#' \donttest{
+#' one = convert_1_nn_doc()
+#' one = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc")
+#' two = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-03.doc")
+#' three = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-11.doc")
+#' }
+convert_1_nn_doc <- function(path_to_source = 
+                               "http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc", 
+                             access_date = Sys.Date()) {
   tbl <- docxtractr::read_docx(path_to_source)
   table_1 <- docxtractr::docx_extract_tbl(tbl, tbl_number = 1, header = TRUE,
                                           preserve = FALSE, trim = FALSE)
+  
+
   
   ncols <- ncol(table_1)
   if (ncols == 18) {
@@ -193,7 +229,18 @@ convert_1_nn_doc <- function(path_to_source, access_date = Sys.Date()) {
   } else {
     stop("Wrong number of columns in parsed doc: ", path_to_source)
   }
+
+  # try to guess table id :)
+  id_column = dplyr::select(table_1, year) %>% filter(stringr::str_count(year) > 10)
+  id_guess = dplyr::pull(id_column, year)[1]
+  variable_name = dplyr::case_when(
+    stringr::str_detect(id_guess, "Dwelling put in place") ~ "construction",
+    stringr::str_detect(id_guess, "Agriculture production index") ~ "agriculture",
+    stringr::str_detect(id_guess, "consolidated budget") ~ "budget",
+    TRUE ~ "value"    
+  )
   
+    
   table_1 <- subset(table_1, year >= 1999, select = c(
     "jan", "feb", "mar", "apr", "may", "jun",
     "jul", "aug", "sep", "oct", "nov", "dec"
@@ -218,8 +265,9 @@ convert_1_nn_doc <- function(path_to_source, access_date = Sys.Date()) {
   table <- stats::na.omit(table)
   
   data_ts <- stats::ts(table, start = c(1999, 1), freq = 12)
-  data_tsibble <- tsibble::as_tsibble(data_ts)
+  data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, !!variable_name := value)
   data_tsibble <- dplyr::mutate(data_tsibble, access_date = access_date)
+  check_conversion(data_tsibble)
   
   return(data_tsibble)
 }
@@ -240,19 +288,22 @@ convert_1_nn_doc <- function(path_to_source, access_date = Sys.Date()) {
 #' @return tibble
 #' @export
 #' @examples
-#' # no yet
-convert_m2_m2_sa_xlsx <- function(path_to_source, access_date = Sys.Date()) {
+#' \donttest{
+#' m2sa = convert_m2_m2_sa_xlsx()
+#' }
+convert_m2_m2_sa_xlsx <- function(path_to_source = 
+                                    "http://www.cbr.ru/vfs/statistics/credit_statistics/M2-M2_SA.xlsx", 
+                                  access_date = Sys.Date()) {
   data <- rio::import(path_to_source)
   data <- data.frame(data)
   colnames(data)[3] <- "m2sa"
   
   data_vector <- as.numeric(stats::na.omit(t(data$m2sa[2:length(data$m2sa)])))
-  
   data_ts <- stats::ts(data_vector, start = c(1995, 7), freq = 12)
-  
-  data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index)
-  
+  data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, m2sa = value)
   data_tsibble <- dplyr::mutate(data_tsibble, access_date = access_date)
+  check_conversion(data_tsibble)
+  
   return(data_tsibble)
 }
 
@@ -272,8 +323,12 @@ convert_m2_m2_sa_xlsx <- function(path_to_source, access_date = Sys.Date()) {
 #' @return tibble
 #' @export
 #' @examples
-#' # no yet
-convert_ind_okved2_xlsx <- function(path_to_source, access_date = Sys.Date()) {
+#' \donttest{
+#' ind = convert_ind_okved2_xlsx()
+#' }
+convert_ind_okved2_xlsx <- function(path_to_source = 
+                                      "http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx", 
+                                    access_date = Sys.Date()) {
   indprod <- rio::import(path_to_source, skip = 2, sheet = 1)
   indprod_vector <- t(indprod[2, 3:ncol(indprod)])
   
@@ -281,7 +336,7 @@ convert_ind_okved2_xlsx <- function(path_to_source, access_date = Sys.Date()) {
   indprod_tsibble <- tsibble::as_tsibble(indprod_ts)
   indprod_tsibble = dplyr::rename(indprod_tsibble, date = index, ind_prod = value)
   indprod_tsibble = dplyr::mutate(indprod_tsibble, access_date = access_date)
-  
+  check_conversion(indprod_tsibble)
   return(indprod_tsibble)
 }
 
@@ -299,16 +354,21 @@ convert_ind_okved2_xlsx <- function(path_to_source, access_date = Sys.Date()) {
 #' @return tibble
 #' @export
 #' @examples
-#' # no yet
-convert_trade_xls <- function(path_to_source, access_date = Sys.Date()) {
+#' \donttest{
+#' trade = convert_trade_xls()
+#' }
+convert_trade_xls <- function(path_to_source = 
+                                "https://www.cbr.ru/vfs/statistics/credit_statistics/trade/trade.xls", 
+                              access_date = Sys.Date()) {
   data <- rio::import(path_to_source)
   colnames(data)[c(1, 2, 8)] <- c('date', 'import', 'export')
   namelist <- c('январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль',
                 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь')
   data <- dplyr::filter(data, date %in% namelist)
   data_ts <- dplyr::select(data, import, export) %>% stats::ts(start = c(1997, 1), freq = 12)
-  data_tsibble <- tsibble::as_tsibble(data_ts, gather = FALSE)
+  data_tsibble <- tsibble::as_tsibble(data_ts, index = date, gather = FALSE)
   data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
+  check_conversion(data_tsibble)
   return(data_tsibble)
 }
 
@@ -325,15 +385,139 @@ convert_trade_xls <- function(path_to_source, access_date = Sys.Date()) {
 #' @return tibble
 #' @export
 #' @examples
-#' # no yet
-convert_tab229_xls <- function(path_to_source, access_date = Sys.Date()) {
+#' # no yet - needs rar extraction!
+convert_tab229_xls <- function(path_to_source = 
+                                 "http://www.gks.ru/free_doc/doc_2018/bul_dr/trud/ors-2018-3kv.rar", 
+                               access_date = Sys.Date()) {
+  # here we need rar extraction !!!!
+  
   data <- rio::import(path_to_source)
   data_vector <- data[4:24, 5] # WILL WORK IN THE FUTURE????
   data_ts <- stats::ts(data_vector, start = c(2017, 1), freq = 12)
   data_tsibble <- tsibble::as_tsibble(data_ts)
   data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
+  check_conversion(data_tsibble)
   return(data_tsibble)
 }
 
 
+
+
+#' Parse lending rates from cbr
+#'
+#' Parse lending rates from cbr
+#'
+#' Parse lending rates from cbr
+#' Written by Nastya Jarkova
+#'
+#' @param access_date date of access is appended to every observation
+#' @param path_to_source name of the original html
+#' @return tsibble
+#' @export
+#' @examples
+#' \donttest{
+#' lend_rate <- convert_lendrate()
+#' }
+convert_lendrate <- function(path_to_source = "http://www.cbr.ru/hd_base/mkr/mkr_monthes/",
+                             access_date = Sys.Date()) {
+  
+  lendrate <- path_to_source %>%
+    xml2::read_html() %>%
+    rvest::html_nodes(xpath = '//*[@id="content"]/table[1]') %>%
+    rvest::html_table()
+  
+  # observations are stored in reverse chronological order :)
+  lendrate <- lendrate[[1]] %>% dplyr::as_tibble() %>% dplyr::arrange(-dplyr::row_number())
+  
+  colnames(lendrate) = c("date", "dur_1_day", "dur_2_7_days", "dur_8_30_days", "dur_31_90_days", "dur_91_180_days", "dur_181_plus_days")
+  
+  
+  lendrate = dplyr::mutate_at(lendrate, dplyr::vars(dplyr::starts_with("dur")), ~ as_numeric_cyrillic(.))
+  
+  # we convert "сентябрь 2001" to "2001-09-01"
+  # but dmy wants "мая" and not "май"
+  lendrate = dplyr::mutate(lendrate, date = tsibble::yearmonth(lubridate::ymd("2000-08-01") + months(0:(nrow(lendrate) - 1))))
+  
+  lendrate_tsibble <- tsibble::as_tsibble(lendrate, index = "date") 
+  check_conversion(lendrate_tsibble)
+  return(lendrate_tsibble)
+}
+
+
+
+#' Parse reserves data from cbr
+#'
+#' Parse reserves data from cbr
+#'
+#' Parse reserves data from cbr
+#' Written by Petr Garmider
+#'
+#' @param access_date date of access is appended to every observation
+#' @param path_to_source name of the original html
+#' @return tsibble
+#' @export
+#' @examples
+#' \donttest{
+#' reserves <- convert_reserves()
+#' }
+convert_reserves <- function(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mrrf_m/", 
+                             access_date = Sys.Date()) {
+  
+  nfa_cb <- path_to_source %>%
+    xml2::read_html() %>%
+    rvest::html_nodes(xpath = '//*[@id="content"]/table') %>%
+    rvest::html_table(fill = TRUE, head = NA)
+  
+  nfa_cb <- nfa_cb[[1]]
+  
+  colnames(nfa_cb) <- c("date", "in_res", "nfa_cb", "for_cur", "sdr", "mvf_pos", "mon_gold")
+  
+  nfa_cb <- nfa_cb[-(1:2), ]
+  nfa_cb <- dplyr::mutate(nfa_cb, date = tsibble::yearmonth(lubridate::dmy(date)))
+  nfa_cb <- dplyr::mutate_at(nfa_cb, 2:7, as_numeric_cyrillic)
+  
+  data_tsibble <- tsibble::as_tsibble(nfa_cb, index = date)
+  data_tsibble <- dplyr::mutate(data_tsibble, access_date = access_date)
+  check_conversion(data_tsibble)
+  return(data_tsibble)
+}
+
+
+
+
+
+
+
+
+
+
+#' @title Checks conversion results
+#' @description Checks some basic requirements for converted data from raw formats.
+#' @details Checks some basic requirements for converted data from raw formats.
+#' @param data_tsibble converted time series
+#' @return TRUE or will stop with error message
+#' @examples 
+#' \donttest{
+#' cpi = convert_i_ipc_xlsx()
+#' check_conversion(cpi)
+#' }
+check_conversion <- function(data_tsibble) {
+  if (!"tbl_df" %in% class(data_tsibble)) {
+    stop("Class of the converted data does not include 'tbl_df'. Please use 'tibble' or 'tsibble' class.")
+  }
+  var_names = colnames(data_tsibble) 
+  if (!"date" %in% var_names) {
+    stop("Column names of converted data frame do not contain 'date' field. Please add it or check naming!")
+  }
+  if (!"access_date" %in% var_names) {
+    stop("Column names of converted data frame do not contain 'access_date' field. Please add it or check naming!")
+  }
+  if ("value" %in% var_names) {
+    stop("Column names of converted data frame contain meaningless 'value' field. Please rename it!")
+  }
+  if (length(var_names) < 3) {
+    stop("Less than 3 columns in converted data frame. Should have at least: 'date', 'access_date' and something meaningful :)")
+  }
+  return(invisible(TRUE))
+}
 

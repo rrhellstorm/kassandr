@@ -4,7 +4,9 @@
 \alias{convert_urov_12kv_doc}
 \title{Converts urov_12kv file from rosstat to tibble}
 \usage{
-convert_urov_12kv_doc(path_to_source, access_date = Sys.Date())
+
+  convert_urov_12kv_doc(path_to_source = "http://www.gks.ru/free_doc/new_site/population/urov/urov_12kv.doc",
+  access_date = Sys.Date())
 }
 \arguments{
 \item{path_to_source}{name of the original urov_12kv.doc file}
@@ -22,5 +24,7 @@ Converts urov_12kv file from rosstat to tibble.
 Written by: Vladimir Omelyusik
 }
 \examples{
-# no yet
+\donttest{
+urok_12kv = convert_urok_12kv_doc()
+}
 }

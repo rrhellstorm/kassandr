@@ -4,7 +4,9 @@
 \alias{convert_m2_m2_sa_xlsx}
 \title{Converts m2-m2_sa file from rosstat to tibble}
 \usage{
-convert_m2_m2_sa_xlsx(path_to_source, access_date = Sys.Date())
+
+  convert_m2_m2_sa_xlsx(path_to_source = "http://www.cbr.ru/vfs/statistics/credit_statistics/M2-M2_SA.xlsx",
+  access_date = Sys.Date())
 }
 \arguments{
 \item{path_to_source}{name of the original m2-m2_sa.xlsx file}
@@ -22,5 +24,7 @@ Converts m2-m2_sa file from rosstat to tibble.
 Written by: Petr Garmider
 }
 \examples{
-# no yet
+\donttest{
+m2sa = convert_m2_m2_sa_xlsx()
+}
 }

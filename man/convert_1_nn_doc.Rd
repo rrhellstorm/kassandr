@@ -4,7 +4,9 @@
 \alias{convert_1_nn_doc}
 \title{Converts 1-nn file from rosstat to tibble}
 \usage{
-convert_1_nn_doc(path_to_source, access_date = Sys.Date())
+
+  convert_1_nn_doc(path_to_source = "http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc",
+  access_date = Sys.Date())
 }
 \arguments{
 \item{path_to_source}{name of the original 1-nn.doc file}
@@ -22,5 +24,10 @@ Converts 1-nn file from rosstat to tibble.
 Written by: Rifat Enileev
 }
 \examples{
-# no yet
+\donttest{
+one = convert_1_nn_doc()
+one = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc")
+two = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-03.doc")
+three = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-11.doc")
+}
 }

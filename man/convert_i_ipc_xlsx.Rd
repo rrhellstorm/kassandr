@@ -4,7 +4,9 @@
 \alias{convert_i_ipc_xlsx}
 \title{Converts I_ipc file from rosstat to tibble}
 \usage{
-convert_i_ipc_xlsx(path_to_source, access_date = Sys.Date())
+
+  convert_i_ipc_xlsx(path_to_source = "http://www.gks.ru/free_doc/new_site/prices/potr/I_ipc.xlsx",
+  access_date = Sys.Date())
 }
 \arguments{
 \item{path_to_source}{name of the original I_ipc.xls file}
@@ -21,5 +23,7 @@ Converts I_ipc file from rosstat to tibble
 Converts I_ipc file from rosstat to tibble
 }
 \examples{
-# no yet
+\donttest{
+cpi = convert_i_ipc_xlsx()
+}
 }

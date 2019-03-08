@@ -4,7 +4,9 @@
 \alias{convert_trade_xls}
 \title{Converts trade.xls file from cbr to tibble}
 \usage{
-convert_trade_xls(path_to_source, access_date = Sys.Date())
+
+  convert_trade_xls(path_to_source = "https://www.cbr.ru/vfs/statistics/credit_statistics/trade/trade.xls",
+  access_date = Sys.Date())
 }
 \arguments{
 \item{path_to_source}{name of the original trade.xls file}
@@ -22,5 +24,7 @@ Converts trade.xls file from cbr to tibble.
 Written by: Maxim Alekseev
 }
 \examples{
-# no yet
+\donttest{
+trade = convert_trade_xls()
+}
 }
