@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Converts tab2.29.xls file from cbr to tibble — convert_tab229_xls • kassandr</title>
+<title>Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1) — arima111_fun • kassandr</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Converts tab2.29.xls file from cbr to tibble — convert_tab229_xls" />
+<meta property="og:title" content="Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1) — arima111_fun" />
 
-<meta property="og:description" content="Converts tab2.29.xls file from cbr to tibble" />
+<meta property="og:description" content="Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -94,46 +94,53 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Converts tab2.29.xls file from cbr to tibble</h1>
+    <h1>Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)</h1>
     
-    <div class="hidden name"><code>convert_tab229_xls.Rd</code></div>
+    <div class="hidden name"><code>arima111_fun.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Converts tab2.29.xls file from cbr to tibble</p>
+    <p>Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>convert_tab229_xls</span>(<span class='kw'>path_to_source</span> <span class='kw'>=</span> <span class='st'>"http://www.gks.ru/free_doc/doc_2018/bul_dr/trud/ors-2018-3kv.rar"</span>,
-  <span class='kw'>access_date</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>())</pre>
+    <pre class="usage"><span class='fu'>arima111_fun</span>(<span class='no'>model_sample</span>, <span class='no'>h</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path_to_source</th>
-      <td><p>name of the original tab2.29.xls file</p></td>
+      <th>model_sample</th>
+      <td><p>preferably tsibble with "value" column</p></td>
     </tr>
     <tr>
-      <th>access_date</th>
-      <td><p>date of access is appended to every observation</p></td>
+      <th>h</th>
+      <td><p>forecasting horizon, is ignored</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>tibble</p>
+    <p>ARIMA(1,0,1)-SARIMA[12](0,1,0) model</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Converts tab2.29.xls file from cbr to tibble.
-Written by: Maxim Alekseev</p>
+    <p>Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'># no yet - needs rar extraction!
-</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>test</span> <span class='kw'>=</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>tibble</a></span>(<span class='kw'>date</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.Date'>as.Date</a></span>(<span class='st'>"2017-01-01"</span>) + <span class='fl'>0</span>:<span class='fl'>9</span>, <span class='kw'>value</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>10</span>))
+<span class='fu'>arima111_fun</span>(<span class='no'>test</span>, <span class='fl'>1</span>)</div><div class='output co'>#&gt; Series: y 
+#&gt; ARIMA(1,0,1) with non-zero mean 
+#&gt; 
+#&gt; Coefficients:
+#&gt;           ar1     ma1    mean
+#&gt;       -0.5363  0.8415  0.1717
+#&gt; s.e.   0.8333  0.8246  0.4053
+#&gt; 
+#&gt; sigma^2 estimated as 1.661:  log likelihood=-15.12
+#&gt; AIC=38.25   AICc=46.25   BIC=39.46</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

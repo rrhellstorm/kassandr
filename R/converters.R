@@ -54,7 +54,7 @@ convert_tab5a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
   data_vector <- t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
   
   data_ts <- stats::ts(data_vector, start = c(2011, 1), freq = 4)
-  data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index)
+  data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, gdp_current_price = value)
   
   data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
   check_conversion(data_tsibble)
@@ -81,7 +81,7 @@ convert_tab5a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
 #' }
 convert_tab6b_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab6b.xls", 
                              access_date = Sys.Date()) {
-  data_tsibble = convert_tab5a_xls(path_to_source, access_date)
+  data_tsibble = convert_tab5a_xls(path_to_source, access_date) %>% dplyr::rename(gdp_2016_price = gdp_current_price)
   return(data_tsibble)
 }
 
@@ -108,7 +108,7 @@ convert_tab9_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_sit
   data_vector <- t(data[4, ]) %>% stats::na.omit() %>% as.numeric()
   
   gdp_deflator <- stats::ts(data_vector, start = c(1996, 1), freq = 4)
-  gdp_deflator <- tsibble::as_tsibble(gdp_deflator) %>% dplyr::rename(date = index)
+  gdp_deflator <- tsibble::as_tsibble(gdp_deflator) %>% dplyr::rename(date = index, deflator_gdp_early = value)
   
   data_tsibble = dplyr::mutate(gdp_deflator, access_date = access_date)
   check_conversion(data_tsibble)
@@ -139,7 +139,7 @@ convert_tab9a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
   data <- t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
   
   gdp_deflator <- stats::ts(data, start = c(2012, 1), freq = 4)
-  gdp_deflator <- tsibble::as_tsibble(gdp_deflator) %>% dplyr::rename(date = index)
+  gdp_deflator <- tsibble::as_tsibble(gdp_deflator) %>% dplyr::rename(date = index, deflator_gdp = value)
   
   data_tsibble = dplyr::mutate(gdp_deflator, access_date = access_date)
   check_conversion(data_tsibble)
@@ -366,7 +366,7 @@ convert_trade_xls <- function(path_to_source =
                 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь')
   data <- dplyr::filter(data, date %in% namelist)
   data_ts <- dplyr::select(data, import, export) %>% stats::ts(start = c(1997, 1), freq = 12)
-  data_tsibble <- tsibble::as_tsibble(data_ts, index = date, gather = FALSE)
+  data_tsibble <- tsibble::as_tsibble(data_ts, gather = FALSE) %>% dplyr::rename(date = index)
   data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
   check_conversion(data_tsibble)
   return(data_tsibble)
@@ -436,7 +436,9 @@ convert_lendrate <- function(path_to_source = "http://www.cbr.ru/hd_base/mkr/mkr
   
   # we convert "сентябрь 2001" to "2001-09-01"
   # but dmy wants "мая" and not "май"
-  lendrate = dplyr::mutate(lendrate, date = tsibble::yearmonth(lubridate::ymd("2000-08-01") + months(0:(nrow(lendrate) - 1))))
+  lendrate = dplyr::mutate(lendrate, 
+                           date = tsibble::yearmonth(lubridate::ymd("2000-08-01") + months(0:(nrow(lendrate) - 1))),
+                           access_date = access_date)
   
   lendrate_tsibble <- tsibble::as_tsibble(lendrate, index = "date") 
   check_conversion(lendrate_tsibble)

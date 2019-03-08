@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Converts tab2.29.xls file from cbr to tibble — convert_tab229_xls • kassandr</title>
+<title>Parse reserves data from cbr — convert_reserves • kassandr</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Converts tab2.29.xls file from cbr to tibble — convert_tab229_xls" />
+<meta property="og:title" content="Parse reserves data from cbr — convert_reserves" />
 
-<meta property="og:description" content="Converts tab2.29.xls file from cbr to tibble" />
+<meta property="og:description" content="Parse reserves data from cbr" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -94,18 +94,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Converts tab2.29.xls file from cbr to tibble</h1>
+    <h1>Parse reserves data from cbr</h1>
     
-    <div class="hidden name"><code>convert_tab229_xls.Rd</code></div>
+    <div class="hidden name"><code>convert_reserves.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Converts tab2.29.xls file from cbr to tibble</p>
+    <p>Parse reserves data from cbr</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>convert_tab229_xls</span>(<span class='kw'>path_to_source</span> <span class='kw'>=</span> <span class='st'>"http://www.gks.ru/free_doc/doc_2018/bul_dr/trud/ors-2018-3kv.rar"</span>,
+    <pre class="usage"><span class='fu'>convert_reserves</span>(<span class='kw'>path_to_source</span> <span class='kw'>=</span> <span class='st'>"http://www.cbr.ru/hd_base/mrrf/mrrf_m/"</span>,
   <span class='kw'>access_date</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -113,7 +113,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>path_to_source</th>
-      <td><p>name of the original tab2.29.xls file</p></td>
+      <td><p>name of the original html</p></td>
     </tr>
     <tr>
       <th>access_date</th>
@@ -123,17 +123,16 @@
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>tibble</p>
+    <p>tsibble</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Converts tab2.29.xls file from cbr to tibble.
-Written by: Maxim Alekseev</p>
+    <p>Parse reserves data from cbr
+Written by Petr Garmider</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'># no yet - needs rar extraction!
-</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>reserves</span> <span class='kw'>&lt;-</span> <span class='fu'>convert_reserves</span>()</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

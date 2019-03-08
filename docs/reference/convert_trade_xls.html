@@ -105,7 +105,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>convert_trade_xls</span>(<span class='no'>path_to_source</span>, <span class='kw'>access_date</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>())</pre>
+    <pre class="usage"><span class='fu'>convert_trade_xls</span>(<span class='kw'>path_to_source</span> <span class='kw'>=</span> <span class='st'>"https://www.cbr.ru/vfs/statistics/credit_statistics/trade/trade.xls"</span>,
+  <span class='kw'>access_date</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -131,8 +132,13 @@ Written by: Maxim Alekseev</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'># no yet
-</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>trade</span> <span class='kw'>=</span> <span class='fu'>convert_trade_xls</span>()</div><div class='output co'>#&gt; <span class='message'>New names:</span>
+#&gt; <span class='message'>* `` -&gt; `..2`</span>
+#&gt; <span class='message'>* `` -&gt; `..3`</span>
+#&gt; <span class='message'>* `` -&gt; `..4`</span>
+#&gt; <span class='message'>* `` -&gt; `..5`</span>
+#&gt; <span class='message'>* `` -&gt; `..6`</span>
+#&gt; <span class='message'>* … and 10 more</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
