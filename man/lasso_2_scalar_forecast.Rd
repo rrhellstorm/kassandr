@@ -4,15 +4,15 @@
 \alias{lasso_2_scalar_forecast}
 \title{Obtain scalar forecast from lasso model}
 \usage{
-lasso_2_scalar_forecast(model, h = 1, dependent = "value",
-  model_sample, s = c("lambda.min", "lambda.1se"))
+lasso_2_scalar_forecast(model, h = 1, target = "value", model_sample,
+  s = c("lambda.min", "lambda.1se"))
 }
 \arguments{
 \item{model}{estimated lasso model}
 
 \item{h}{forecasting horizon}
 
-\item{dependent}{name of the dependent variable}
+\item{target}{name of the target variable}
 
 \item{model_sample}{non-augmented data set for model estimation}
 

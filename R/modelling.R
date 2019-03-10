@@ -26,14 +26,15 @@ extract_value = function(model_sample, target = "value") {
 #'
 #' @param model_sample preferably tsibble with "value" column
 #' @param h forecasting horizon, is ignored
+#' @param target name of the target variable, "value" by default
 #' @return auto ETS model 
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
 #' ets_fun(test, 1)
-ets_fun = function(model_sample, h) {
+ets_fun = function(model_sample, h, target = "value") {
   # h is ignored!
-  y = extract_value(model_sample)
+  y = extract_value(model_sample, target = target)
   model = forecast::ets(y)
   return(model)
 }
@@ -47,14 +48,15 @@ ets_fun = function(model_sample, h) {
 #'
 #' @param model_sample preferably tsibble with "value" column
 #' @param h forecasting horizon, is ignored
+#' @param target name of the target variable, "value" by default
 #' @return auto ARIMA model 
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
 #' arima_fun(test, 1)
-arima_fun = function(model_sample, h) {
+arima_fun = function(model_sample, h, target = "value") {
   # h is ignored!
-  y = extract_value(model_sample)
+  y = extract_value(model_sample, target = target)
   model = forecast::auto.arima(y)
   return(model)
 }
@@ -67,14 +69,15 @@ arima_fun = function(model_sample, h) {
 #'
 #' @param model_sample preferably tsibble with "value" column
 #' @param h forecasting horizon, is ignored
+#' @param target name of the target variable, "value" by default
 #' @return ARIMA(1,0,1)-SARIMA[12](1,0,1) model 
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
 #' arima11_fun(test, 1)
-arima11_fun = function(model_sample, h) {
+arima11_fun = function(model_sample, h, target = "value") {
   # h is ignored!
-  y = extract_value(model_sample)
+  y = extract_value(model_sample, target = target)
   model = forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1))
   return(model)
 }
@@ -88,14 +91,15 @@ arima11_fun = function(model_sample, h) {
 #'
 #' @param model_sample preferably tsibble with "value" column
 #' @param h forecasting horizon, is ignored
+#' @param target name of the target variable, "value" by default
 #' @return auto TBATS model 
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
 #' tbats_fun(test, 1)
-tbats_fun = function(model_sample, h) {
+tbats_fun = function(model_sample, h, target = "value") {
   # h is ignored!
-  y = extract_value(model_sample)
+  y = extract_value(model_sample, target = target)
   model = forecast::tbats(y)
   return(model)
 }
@@ -276,21 +280,21 @@ get_first_date = function(original) {
 #' @param original original tsibble
 #' @param h forecasting horizon
 #' h rows to append in the future, corresponding lags will be added to tsibble
-#' @param dependent name of the dependent variable
+#' @param target name of the target variable
 #' @return augmented tibble
 #' @export
 #' @examples
 #' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
 #' test_tsibble = tsibble::as_tsibble(test_ts)
 #' augment_tsibble_4_regression(test_tsibble, h = 4)
-augment_tsibble_4_regression = function(original, dependent = "value", h = 1) {
+augment_tsibble_4_regression = function(original, target = "value", h = 1) {
   frequency = stats::frequency(original)
   augmented = original %>% tsibble::append_row(n = h) %>% 
     add_trend() %>% add_fourier() %>% 
-    add_lags(dependent, lags = c(h, h + 1, frequency, frequency + 1))
+    add_lags(target, lags = c(h, h + 1, frequency, frequency + 1))
 
   date_variable = tsibble::index(original) %>% as.character()
-  regressor_names = dplyr::setdiff(colnames(original), c(dependent, date_variable))
+  regressor_names = dplyr::setdiff(colnames(original), c(target, date_variable))
   augmented = augmented %>% add_lags(regressor_names, lags = c(h, h + 1, frequency, frequency + 1))
   augmented = dplyr::select(augmented, -!!regressor_names)
   return(augmented)
@@ -308,7 +312,7 @@ augment_tsibble_4_regression = function(original, dependent = "value", h = 1) {
 #' @param augmented tsibble with all predictors with lags.
 #' May be obtained using `augment_tsibble_4_regression`.
 #' @param seed random seed
-#' @param dependent name of the dependent variable
+#' @param target name of the target variable
 #' @return lasso model
 #' @export
 #' @examples
@@ -316,12 +320,12 @@ augment_tsibble_4_regression = function(original, dependent = "value", h = 1) {
 #' test_tsibble = tsibble::as_tsibble(test_ts) %>% dplyr::rename(date = index)
 #' augmented = augment_tsibble_4_regression(test_tsibble, h = 4)
 #' model = lasso_augmented_estimate(augmented)
-lasso_augmented_estimate = function(augmented, dependent = "value", seed = 777) {
+lasso_augmented_estimate = function(augmented, target = "value", seed = 777) {
   yX_tsibble = stats::na.omit(augmented)
-  y = yX_tsibble %>% dplyr::pull(dependent)
+  y = yX_tsibble %>% dplyr::pull(target)
   
   date_variable = tsibble::index(augmented)
-  X = tibble::as_tibble(yX_tsibble) %>% dplyr::select(-!!dependent, -!!date_variable) %>% as.matrix()
+  X = tibble::as_tibble(yX_tsibble) %>% dplyr::select(-!!target, -!!date_variable) %>% as.matrix()
   
   set.seed(seed)
   lasso_model = glmnet::cv.glmnet(X, y)
@@ -338,7 +342,7 @@ lasso_augmented_estimate = function(augmented, dependent = "value", seed = 777) 
 #' @param augmented tsibble with all predictors with lags.
 #' May be obtained using `augment_tsibble_4_regression`.
 #' @param seed random seed
-#' @param dependent name of the dependent variable
+#' @param target name of the target variable
 #' @return lasso model
 #' @export
 #' @examples
@@ -346,12 +350,12 @@ lasso_augmented_estimate = function(augmented, dependent = "value", seed = 777) 
 #' test_tsibble = tsibble::as_tsibble(test_ts)
 #' augmented = augment_tsibble_4_regression(test_tsibble, h = 4)
 #' model = ranger_augmented_estimate(augmented)
-ranger_augmented_estimate = function(augmented, dependent = "value", seed = 777) {
+ranger_augmented_estimate = function(augmented, target = "value", seed = 777) {
   yX_tsibble = stats::na.omit(augmented)
   
   set.seed(seed)
   date_variable = tsibble::index(augmented)
-  formula = paste0(dependent, " ~ . - ", date_variable)
+  formula = paste0(target, " ~ . - ", date_variable)
 
   ranger_model = ranger::ranger(data = yX_tsibble, formula = formula)
   return(ranger_model)  
@@ -366,7 +370,7 @@ ranger_augmented_estimate = function(augmented, dependent = "value", seed = 777)
 #' Trend, fourier terms, lags are added before estimation of lasso model.
 #' @param model_sample tsibble that will be augmented with trend etc
 #' @param seed random seed
-#' @param dependent name of the dependent variable
+#' @param target name of the target variable
 #' @param h forecasting horizon
 #' @return lasso model
 #' @export
@@ -374,9 +378,9 @@ ranger_augmented_estimate = function(augmented, dependent = "value", seed = 777)
 #' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
 #' test_tsibble = tsibble::as_tsibble(test_ts)
 #' model = lasso_fun(test_tsibble)
-lasso_fun = function(model_sample, seed = 777, dependent = "value", h = 1) {
-  augmented_sample = augment_tsibble_4_regression(model_sample, dependent = "value", h = h)
-  model = lasso_augmented_estimate(augmented_sample, seed = 777, dependent = "value")
+lasso_fun = function(model_sample, seed = 777, target = "value", h = 1) {
+  augmented_sample = augment_tsibble_4_regression(model_sample, target = "value", h = h)
+  model = lasso_augmented_estimate(augmented_sample, seed = 777, target = "value")
   
   return(model)
 }
@@ -389,7 +393,7 @@ lasso_fun = function(model_sample, seed = 777, dependent = "value", h = 1) {
 #' Trend, fourier terms, lags are added before estimation of lasso model.
 #' @param model_sample tsibble that will be augmented with trend etc
 #' @param seed random seed
-#' @param dependent name of the dependent variable
+#' @param target name of the target variable
 #' @param h forecasting horizon
 #' @return ranger model
 #' @export
@@ -397,9 +401,9 @@ lasso_fun = function(model_sample, seed = 777, dependent = "value", h = 1) {
 #' test_ts = stats::ts(rnorm(100), start = c(2000, 1), freq = 12)
 #' test_tsibble = tsibble::as_tsibble(test_ts)
 #' model = ranger_fun(test_tsibble)
-ranger_fun = function(model_sample, seed = 777, dependent = "value", h = 1) {
-  augmented_sample = augment_tsibble_4_regression(model_sample, dependent = "value", h = h)
-  model = ranger_augmented_estimate(augmented_sample, seed = 777, dependent = "value")
+ranger_fun = function(model_sample, seed = 777, target = "value", h = 1) {
+  augmented_sample = augment_tsibble_4_regression(model_sample, target = "value", h = h)
+  model = ranger_augmented_estimate(augmented_sample, seed = 777, target = "value")
   
   return(model)
 }
@@ -416,7 +420,7 @@ ranger_fun = function(model_sample, seed = 777, dependent = "value", h = 1) {
 #' @param model estimated lasso model
 #' @param model_sample non-augmented data set for model estimation
 #' @param s criterion to select best regularization lambda in lasso
-#' @param dependent name of the dependent variable
+#' @param target name of the target variable
 #' @param h forecasting horizon
 #' @return scalar forecast for given h
 #' @export
@@ -425,14 +429,14 @@ ranger_fun = function(model_sample, seed = 777, dependent = "value", h = 1) {
 #' test_tsibble = tsibble::as_tsibble(test_ts)
 #' model = lasso_fun(test_tsibble, h = 1)
 #' lasso_2_scalar_forecast(model, h = 1, model_sample = test_tsibble)
-lasso_2_scalar_forecast = function(model, h = 1, dependent = "value", model_sample, s = c("lambda.min", "lambda.1se")) {
+lasso_2_scalar_forecast = function(model, h = 1, target = "value", model_sample, s = c("lambda.min", "lambda.1se")) {
   s = match.arg(s)
   
-  augmented_sample = augment_tsibble_4_regression(model_sample, h = h, dependent = dependent)
+  augmented_sample = augment_tsibble_4_regression(model_sample, h = h, target = target)
   yX_future_tsibble = utils::tail(augmented_sample, 1)
   
   date_variable = tsibble::index(augmented_sample)
-  X_future = tibble::as_tibble(yX_future_tsibble) %>% dplyr::select(-!!dependent, -!!date_variable) %>% as.matrix()
+  X_future = tibble::as_tibble(yX_future_tsibble) %>% dplyr::select(-!!target, -!!date_variable) %>% as.matrix()
   
   point_forecast = stats::predict(model, X_future, s = s)
   
@@ -448,7 +452,7 @@ lasso_2_scalar_forecast = function(model, h = 1, dependent = "value", model_samp
 #' The function automatically augments data with lags, fourier terms, trend etc.
 #' @param model estimated ranger model
 #' @param model_sample non-augmented data set for model estimation
-#' @param dependent name of the dependent variable
+#' @param target name of the target variable
 #' @param h forecasting horizon
 #' @return scalar forecast for given h
 #' @export
@@ -457,9 +461,9 @@ lasso_2_scalar_forecast = function(model, h = 1, dependent = "value", model_samp
 #' test_tsibble = tsibble::as_tsibble(test_ts)
 #' model = ranger_fun(test_tsibble, h = 1)
 #' ranger_2_scalar_forecast(model, h = 1, model_sample = test_tsibble)
-ranger_2_scalar_forecast = function(model, h = 1, dependent = "value", model_sample) {
+ranger_2_scalar_forecast = function(model, h = 1, target = "value", model_sample) {
   
-  augmented_sample = augment_tsibble_4_regression(model_sample, h = h, dependent = dependent)
+  augmented_sample = augment_tsibble_4_regression(model_sample, h = h, target = target)
   yX_future_tsibble = utils::tail(augmented_sample, 1)
   
   ranger_pred = stats::predict(model, data = yX_future_tsibble)
@@ -477,7 +481,7 @@ ranger_2_scalar_forecast = function(model, h = 1, dependent = "value", model_sam
 #' Prepare model tibble for cross-validation
 #' @param h_all vector of forecasting horizons
 #' @param window_type sliding or stretching
-#' @param dependent name of the dependent variable
+#' @param target name of the target variable
 #' @param model_fun_tibble tibble with names of estimator functions and scalar forecast extractors
 #' @param series_data tsibble with full data sample
 #' @param dates_test test dates
@@ -486,7 +490,7 @@ ranger_2_scalar_forecast = function(model, h = 1, dependent = "value", model_sam
 #' @examples
 #' # no yet
 prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_test, 
-                              window_type = c("sliding", "stretching"), dependent = "value") {
+                              window_type = c("sliding", "stretching"), target = "value") {
   model_list = tidyr::crossing(date = dates_test, h = h_all, model_fun = model_fun_tibble$model_fun)
   message("You may see the warning: `.named` can no longer be a width")
   message("Don't worry :) :) Origin: crossing function")
@@ -495,7 +499,7 @@ prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_te
   date_variable = tsibble::index(series_data) %>% as.character()
   data_frequency = stats::frequency(series_data)
   
-  model_list = dplyr::left_join(model_list, dplyr::select(series_data, !!dependent), by = date_variable)
+  model_list = dplyr::left_join(model_list, dplyr::select(series_data, !!target), by = date_variable)
   
   model_list = dplyr::mutate(model_list, train_end_date = date - months(h * 12 / data_frequency))
   
@@ -536,14 +540,14 @@ prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_te
 #'
 #' Prepare model tibble for forecasts
 #' @param h_all vector of forecasting horizons
-#' @param dependent name of the dependent variable
+#' @param target name of the target variable
 #' @param model_fun_tibble tibble with names of estimator functions and scalar forecast extractors
 #' @param series_data tsibble with full data sample
 #' @return tibble with one row per model
 #' @export
 #' @examples
 #' # no yet
-prepare_model_list2 = function(h_all = 1, model_fun_tibble, series_data, dependent = "value") {
+prepare_model_list2 = function(h_all = 1, model_fun_tibble, series_data, target = "value") {
   
   full_sample_last_date = as.Date(max(series_data$date))
   full_sample_start_date = as.Date(min(series_data$date))
@@ -651,7 +655,7 @@ add_point_forecasts = function(model_list_fitted) {
 #' Estimate and forecast all models from model tibble
 #'
 #' Estimate and forecast all models from model tibble
-#' In this tibble dependent variable is always named value.
+#' In this tibble target variable is always named value.
 #' @param model_list tibble with one model per row
 #' @return tibble with estimated models and point forecasts
 #' @export
@@ -681,7 +685,7 @@ estimate_and_forecast = function(model_list) {
 #' Calculate mae table from estimated models tibble
 #'
 #' Calculate mae table from estimated models tibble.
-#' In this tibble dependent variable is always named value.
+#' In this tibble target variable is always named value.
 #' @param model_list_fitted tibble with one model per row
 #' @return tibble with mae
 #' @export

@@ -4,12 +4,12 @@
 \alias{augment_tsibble_4_regression}
 \title{Augment tsibble with usual regressors}
 \usage{
-augment_tsibble_4_regression(original, dependent = "value", h = 1)
+augment_tsibble_4_regression(original, target = "value", h = 1)
 }
 \arguments{
 \item{original}{original tsibble}
 
-\item{dependent}{name of the dependent variable}
+\item{target}{name of the target variable}
 
 \item{h}{forecasting horizon
 h rows to append in the future, corresponding lags will be added to tsibble}

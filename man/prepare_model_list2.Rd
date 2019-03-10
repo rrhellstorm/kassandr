@@ -5,7 +5,7 @@
 \title{Prepare model tibble for forecasts}
 \usage{
 prepare_model_list2(h_all = 1, model_fun_tibble, series_data,
-  dependent = "value")
+  target = "value")
 }
 \arguments{
 \item{h_all}{vector of forecasting horizons}
@@ -14,7 +14,7 @@ prepare_model_list2(h_all = 1, model_fun_tibble, series_data,
 
 \item{series_data}{tsibble with full data sample}
 
-\item{dependent}{name of the dependent variable}
+\item{target}{name of the target variable}
 }
 \value{
 tibble with one row per model

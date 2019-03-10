@@ -17,7 +17,7 @@ Estimate and forecast all models from model tibble
 }
 \details{
 Estimate and forecast all models from model tibble
-In this tibble dependent variable is always named value.
+In this tibble target variable is always named value.
 }
 \examples{
 # no yet

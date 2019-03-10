@@ -4,15 +4,14 @@
 \alias{ranger_2_scalar_forecast}
 \title{Obtain scalar forecast from random forest (ranger) model}
 \usage{
-ranger_2_scalar_forecast(model, h = 1, dependent = "value",
-  model_sample)
+ranger_2_scalar_forecast(model, h = 1, target = "value", model_sample)
 }
 \arguments{
 \item{model}{estimated ranger model}
 
 \item{h}{forecasting horizon}
 
-\item{dependent}{name of the dependent variable}
+\item{target}{name of the target variable}
 
 \item{model_sample}{non-augmented data set for model estimation}
 }

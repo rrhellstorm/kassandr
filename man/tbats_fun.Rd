@@ -4,12 +4,14 @@
 \alias{tbats_fun}
 \title{Do forecast using auto TBATS}
 \usage{
-tbats_fun(model_sample, h)
+tbats_fun(model_sample, h, target = "value")
 }
 \arguments{
 \item{model_sample}{preferably tsibble with "value" column}
 
 \item{h}{forecasting horizon, is ignored}
+
+\item{target}{name of the target variable, "value" by default}
 }
 \value{
 auto TBATS model

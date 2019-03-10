@@ -4,14 +4,14 @@
 \alias{ranger_fun}
 \title{Augment data and estimate ranger model}
 \usage{
-ranger_fun(model_sample, seed = 777, dependent = "value", h = 1)
+ranger_fun(model_sample, seed = 777, target = "value", h = 1)
 }
 \arguments{
 \item{model_sample}{tsibble that will be augmented with trend etc}
 
 \item{seed}{random seed}
 
-\item{dependent}{name of the dependent variable}
+\item{target}{name of the target variable}
 
 \item{h}{forecasting horizon}
 }

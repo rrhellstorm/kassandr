@@ -4,12 +4,14 @@
 \alias{arima_fun}
 \title{Do forecast using auto ARIMA}
 \usage{
-arima_fun(model_sample, h)
+arima_fun(model_sample, h, target = "value")
 }
 \arguments{
 \item{model_sample}{preferably tsibble with "value" column}
 
 \item{h}{forecasting horizon, is ignored}
+
+\item{target}{name of the target variable, "value" by default}
 }
 \value{
 auto ARIMA model

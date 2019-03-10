@@ -4,13 +4,13 @@
 \alias{lasso_augmented_estimate}
 \title{Estimate lasso model using tsibble with regressors}
 \usage{
-lasso_augmented_estimate(augmented, dependent = "value", seed = 777)
+lasso_augmented_estimate(augmented, target = "value", seed = 777)
 }
 \arguments{
 \item{augmented}{tsibble with all predictors with lags.
 May be obtained using `augment_tsibble_4_regression`.}
 
-\item{dependent}{name of the dependent variable}
+\item{target}{name of the target variable}
 
 \item{seed}{random seed}
 }

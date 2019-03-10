@@ -17,7 +17,7 @@ Calculate mae table from estimated models tibble
 }
 \details{
 Calculate mae table from estimated models tibble.
-In this tibble dependent variable is always named value.
+In this tibble target variable is always named value.
 }
 \examples{
 # no yet

@@ -5,7 +5,7 @@
 \title{Prepare model tibble for cross-validation}
 \usage{
 prepare_model_list(h_all = 1, model_fun_tibble, series_data, dates_test,
-  window_type = c("sliding", "stretching"), dependent = "value")
+  window_type = c("sliding", "stretching"), target = "value")
 }
 \arguments{
 \item{h_all}{vector of forecasting horizons}
@@ -18,7 +18,7 @@ prepare_model_list(h_all = 1, model_fun_tibble, series_data, dates_test,
 
 \item{window_type}{sliding or stretching}
 
-\item{dependent}{name of the dependent variable}
+\item{target}{name of the target variable}
 }
 \value{
 tibble with one row per model
