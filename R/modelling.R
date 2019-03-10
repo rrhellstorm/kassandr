@@ -379,8 +379,8 @@ ranger_augmented_estimate = function(augmented, target = "value", seed = 777) {
 #' test_tsibble = tsibble::as_tsibble(test_ts)
 #' model = lasso_fun(test_tsibble)
 lasso_fun = function(model_sample, seed = 777, target = "value", h = 1) {
-  augmented_sample = augment_tsibble_4_regression(model_sample, target = "value", h = h)
-  model = lasso_augmented_estimate(augmented_sample, seed = 777, target = "value")
+  augmented_sample = augment_tsibble_4_regression(model_sample, target = target, h = h)
+  model = lasso_augmented_estimate(augmented_sample, seed = 777, target = target)
   
   return(model)
 }
@@ -402,8 +402,8 @@ lasso_fun = function(model_sample, seed = 777, target = "value", h = 1) {
 #' test_tsibble = tsibble::as_tsibble(test_ts)
 #' model = ranger_fun(test_tsibble)
 ranger_fun = function(model_sample, seed = 777, target = "value", h = 1) {
-  augmented_sample = augment_tsibble_4_regression(model_sample, target = "value", h = h)
-  model = ranger_augmented_estimate(augmented_sample, seed = 777, target = "value")
+  augmented_sample = augment_tsibble_4_regression(model_sample, target = target, h = h)
+  model = ranger_augmented_estimate(augmented_sample, seed = 777, target = target)
   
   return(model)
 }
@@ -506,7 +506,7 @@ prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_te
   full_sample_start_date = min(series_data$date)
   full_sample_last_date = max(series_data$date)
   test_sample_start_date = min(model_list$date)
-  window_min_length = round(interval(full_sample_start_date, test_sample_start_date) /  months(12 / data_frequency)) - max(h_all) + 1
+  window_min_length = round(lubridate::interval(full_sample_start_date, test_sample_start_date) /  months(12 / data_frequency)) - max(h_all) + 1
   
   
   if (window_type == "stretching") {
@@ -709,16 +709,17 @@ calculate_mae_table = function(model_list_fitted) {
 #'
 #' Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)
 #'
-#' @param model_sample preferably tsibble with "value" column
+#' @param model_sample preferably tsibble 
 #' @param h forecasting horizon, is ignored
+#' @param target name of the target variable, "value" by default
 #' @return ARIMA(1,0,1)-SARIMA[12](0,1,0) model 
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
 #' arima111_fun(test, 1)
-arima111_fun = function(model_sample, h) {
+arima111_fun = function(model_sample, h, target = "value") {
   # h is ignored!
-  y = extract_value(model_sample)
+  y = extract_value(model_sample, target = target)
   model = forecast::Arima(y, order = c(1, 0, 1), seasonal = c(0, 1, 0), method = "ML")
   return(model)
 }
