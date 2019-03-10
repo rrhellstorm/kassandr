@@ -499,7 +499,9 @@ prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_te
   date_variable = tsibble::index(series_data) %>% as.character()
   data_frequency = stats::frequency(series_data)
   
-  model_list = dplyr::left_join(model_list, dplyr::select(series_data, !!target), by = date_variable)
+  model_list = dplyr::left_join(model_list, dplyr::select(series_data, !!target), by = date_variable) 
+  model_list = dplyr::rename(model_list, value = !!target) # in model list dependent value is called "value"
+  
   
   model_list = dplyr::mutate(model_list, train_end_date = date - months(h * 12 / data_frequency))
   
