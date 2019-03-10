@@ -177,7 +177,7 @@ convert_urov_12kv_doc <- function(path_to_source =
   table$date <- lubridate::ymd("2008-01-01") + months(0:(nrow(table) - 1)) 
   table$access_date <- access_date
   
-  table <- mutate_at(table, vars(starts_with("percent")), as_numeric_cyrillic)
+  table <- dplyr::mutate_at(table, dplyr::vars(tidyselect::starts_with("percent")), as_numeric_cyrillic)
 
   data_tsibble <- tsibble::as_tsibble(table, index = date)
   check_conversion(data_tsibble)
@@ -231,7 +231,7 @@ convert_1_nn_doc <- function(path_to_source =
   }
 
   # try to guess table id :)
-  id_column = dplyr::select(table_1, year) %>% filter(stringr::str_count(year) > 10)
+  id_column = dplyr::select(table_1, year) %>% dplyr::filter(stringr::str_count(year) > 10)
   id_guess = dplyr::pull(id_column, year)[1]
   variable_name = dplyr::case_when(
     stringr::str_detect(id_guess, "Dwelling put in place") ~ "construction",

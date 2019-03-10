@@ -510,7 +510,7 @@ prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_te
   
   
   if (window_type == "stretching") {
-    model_list = dplyr::mutate(model_list, train_start_date = min(pull(series_data, date)))
+    model_list = dplyr::mutate(model_list, train_start_date = min(dplyr::pull(series_data, date)))
   } else {
     # sliding window case
     model_list = dplyr::mutate(model_list, train_start_date = train_end_date - months((window_min_length - 1) * 12 / data_frequency ))
@@ -527,6 +527,7 @@ prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_te
   
   model_list = model_list %>% dplyr::group_by(train_end_date, train_start_date, model_fun) %>%
     dplyr::mutate(duplicate_model = h_agnostic & (h < max(h))) %>% dplyr::ungroup()
+  model_list = dplyr::mutate(model_list, target = target)
   
   return(model_list)
 }
@@ -559,7 +560,7 @@ prepare_model_list2 = function(h_all = 1, model_fun_tibble, series_data, target 
   
   
   model_list = dplyr::mutate(model_list, 
-                      train_sample = pmap(list(x = train_start_date, y = train_end_date), 
+                      train_sample = purrr::pmap(list(x = train_start_date, y = train_end_date), 
                                           ~ dplyr::filter(series_data, date >= .x, date <= .y)))
   
   
@@ -569,6 +570,7 @@ prepare_model_list2 = function(h_all = 1, model_fun_tibble, series_data, target 
   
   model_list = model_list %>% dplyr::group_by(train_end_date, train_start_date, model_fun) %>%
     dplyr::mutate(duplicate_model = h_agnostic & (h < max(h))) %>% dplyr::ungroup()
+  model_list = dplyr::mutate(model_list, target = target)
   return(model_list)
 }
 
@@ -598,7 +600,7 @@ estimate_nonduplicate_models = function(model_list, store_models = c("tibble", "
   
   model_list_half_fitted = dplyr::filter(model_list, !duplicate_model)
   model_list_half_fitted = model_list_half_fitted %>% dplyr::mutate(
-    fitted_model = pmap(list(train_sample, h, model_fun), ~ do.call(..3, list(h = ..2, model_sample = ..1)))
+    fitted_model = purrr::pmap(list(train_sample, h, model_fun, target), ~ do.call(..3, list(h = ..2, model_sample = ..1, target = ..4)))
   )
   return(model_list_half_fitted)
 }

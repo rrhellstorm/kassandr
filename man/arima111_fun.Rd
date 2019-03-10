@@ -4,12 +4,14 @@
 \alias{arima111_fun}
 \title{Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)}
 \usage{
-arima111_fun(model_sample, h)
+arima111_fun(model_sample, h, target = "value")
 }
 \arguments{
-\item{model_sample}{preferably tsibble with "value" column}
+\item{model_sample}{preferably tsibble}
 
 \item{h}{forecasting horizon, is ignored}
+
+\item{target}{name of the target variable, "value" by default}
 }
 \value{
 ARIMA(1,0,1)-SARIMA[12](0,1,0) model
