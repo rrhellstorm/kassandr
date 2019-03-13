@@ -105,7 +105,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>download_statistics</span>(<span class='no'>path</span>, <span class='no'>watchdog</span>, <span class='kw'>access_date</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>())</pre>
+    <pre class="usage"><span class='fu'>download_statistics</span>(<span class='no'>path</span>, <span class='no'>watchdog</span>, <span class='kw'>access_date</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>(),
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"curl"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -129,6 +130,10 @@ comment - self explanatory :)</p></td>
     <tr>
       <th>access_date</th>
       <td><p>access date</p></td>
+    </tr>
+    <tr>
+      <th>method</th>
+      <td><p>for downloading files, passed to `download.file()`: "curl", "wget", "libcurl", "auto", "internal", "wininet"</p></td>
     </tr>
     </table>
     

@@ -17,7 +17,7 @@ get_watchdog_line = function(source_url, watchdog) {
     stop("The file ", source_url, " is not guarded by watchdog :)")
   }
   watchdog_line = dplyr::filter(watchdog, url == source_url)
-  return(watchdog_line)  
+  return(watchdog_line)
 }
 
 #' Gets last version full path from watchdog file
@@ -31,7 +31,7 @@ get_watchdog_line = function(source_url, watchdog) {
 #' @return path to last downloaded version
 #' @export
 #' @examples
-#' watchdog_demo = dplyr::tibble(url = c("a", "b"), file = c("xxx.xls", "yyy.xlsx"), 
+#' watchdog_demo = dplyr::tibble(url = c("a", "b"), file = c("xxx.xls", "yyy.xlsx"),
 #'   last_download = c("2011-11-11", "2010-10-10"))
 #' get_last_version_path("a", watchdog_demo)
 get_last_version_path = function(source_url, watchdog) {
@@ -73,14 +73,14 @@ replace_extension = function(filename, new_ext = "_converted.csv") {
 #' @return date of last downloaded version
 #' @export
 #' @examples
-#' watchdog_demo = dplyr::tibble(url = c("a", "b"), file = c("xxx.xls", "yyy.xlsx"), 
+#' watchdog_demo = dplyr::tibble(url = c("a", "b"), file = c("xxx.xls", "yyy.xlsx"),
 #'   last_download = c("2011-11-11", "2010-10-10"))
 #' get_last_version_download_date("a", watchdog_demo)
 get_last_version_download_date = function(source_url, watchdog) {
   .Deprecated("download_statistics")
   watchdog_line = get_watchdog_line(source_url, watchdog)
   download_date = watchdog_line$last_download
-  return(download_date)  
+  return(download_date)
 }
 
 #' Download files guarded by watchdog
@@ -101,18 +101,18 @@ download_watchdog_files = function(raw_data_folder, watchdog_file = "watchdog.cs
   watchdog = rio::import(paste0(raw_data_folder, "/", watchdog_file))
   today = as.character(lubridate::today())
   today_folder = paste0(raw_data_folder, "/", today)
-                         
-  new_watchdog = watchdog 
-                         
+
+  new_watchdog = watchdog
+
   for (file_no in 1:nrow(watchdog)) {
     url = watchdog$url[file_no]
     md5 = watchdog$hash[file_no]
     filename = watchdog$file[file_no]
-                           
+
     tempfile = tempfile()
     attempt = try(utils::download.file(url = url, destfile = tempfile, method = "curl"))
     new_watchdog$last_access[file_no] = today
-                           
+
     if ("try-error" %in% class(attempt)) {
       # ошибка при скачивании: запомним её
       new_watchdog$last_status[file_no] = as.character(attempt)
@@ -152,28 +152,29 @@ download_watchdog_files = function(raw_data_folder, watchdog_file = "watchdog.cs
 #' frequency - 4/12/etc
 #' comment - self explanatory :)
 #' @param access_date access date
+#' @param method for downloading files, passed to `download.file()`: "curl", "wget", "libcurl", "auto", "internal", "wininet"
 #' @return downloads log
 #' @export
 #' @examples
 #' path = tempdir()
-#' mini_watchdog = tibble::tibble(url = "http://www.gks.ru/free_doc/new_site/prices/potr/I_ipc.xlsx", 
+#' mini_watchdog = tibble::tibble(url = "http://www.gks.ru/free_doc/new_site/prices/potr/I_ipc.xlsx",
 #'     file_raw = "i_ipc.xlsx", file_main = "i_ipc.csv", processing = "convert_i_ipc_xlsx")
 #' download_log_new = download_statistics(path, mini_watchdog)
-download_statistics = function(path, watchdog, access_date = Sys.Date()) {
+download_statistics = function(path, watchdog, access_date = Sys.Date(), method = "curl") {
   download_log = watchdog %>% dplyr::mutate(access_date = access_date, download_status = NA, processing_status = NA, hash_raw = NA, hash_main = NA)
-  
+
   today_folder = paste0(path, access_date, "/")
   if (!dir.exists(today_folder)) {
     dir.create(today_folder)
   }
-  
+
   # download stage
   for (file_no in 1:nrow(download_log)) {
     url = download_log$url[file_no]
     if (!is.na(url)) {
       file_raw = paste0(today_folder, download_log$file_raw[file_no])
       message("Downloading ", url, ".")
-      attempt = try(utils::download.file(url = url, destfile = file_raw, method = "curl"))
+      attempt = try(utils::download.file(url = url, destfile = file_raw, method = method))
       if ("try-error" %in% class(attempt)) {
         # ошибка при скачивании: запомним её
         download_log$access_status[file_no] = as.character(attempt)

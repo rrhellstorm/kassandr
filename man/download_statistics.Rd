@@ -4,7 +4,8 @@
 \alias{download_statistics}
 \title{Download all statistics}
 \usage{
-download_statistics(path, watchdog, access_date = Sys.Date())
+download_statistics(path, watchdog, access_date = Sys.Date(),
+  method = "curl")
 }
 \arguments{
 \item{path}{path to raw data folde}
@@ -20,6 +21,8 @@ frequency - 4/12/etc
 comment - self explanatory :)}
 
 \item{access_date}{access date}
+
+\item{method}{for downloading files, passed to `download.file()`: "curl", "wget", "libcurl", "auto", "internal", "wininet"}
 }
 \value{
 downloads log
@@ -32,7 +35,7 @@ Download all statistics
 }
 \examples{
 path = tempdir()
-mini_watchdog = tibble::tibble(url = "http://www.gks.ru/free_doc/new_site/prices/potr/I_ipc.xlsx", 
+mini_watchdog = tibble::tibble(url = "http://www.gks.ru/free_doc/new_site/prices/potr/I_ipc.xlsx",
     file_raw = "i_ipc.xlsx", file_main = "i_ipc.csv", processing = "convert_i_ipc_xlsx")
 download_log_new = download_statistics(path, mini_watchdog)
 }

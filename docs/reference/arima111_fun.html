@@ -105,18 +105,22 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>arima111_fun</span>(<span class='no'>model_sample</span>, <span class='no'>h</span>)</pre>
+    <pre class="usage"><span class='fu'>arima111_fun</span>(<span class='no'>model_sample</span>, <span class='no'>h</span>, <span class='kw'>target</span> <span class='kw'>=</span> <span class='st'>"value"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>model_sample</th>
-      <td><p>preferably tsibble with "value" column</p></td>
+      <td><p>preferably tsibble</p></td>
     </tr>
     <tr>
       <th>h</th>
       <td><p>forecasting horizon, is ignored</p></td>
+    </tr>
+    <tr>
+      <th>target</th>
+      <td><p>name of the target variable, "value" by default</p></td>
     </tr>
     </table>
     

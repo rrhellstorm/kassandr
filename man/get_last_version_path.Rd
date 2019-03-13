@@ -21,7 +21,7 @@ Gets last version full path from watchdog file
 Gets last version full path from watchdog file
 }
 \examples{
-watchdog_demo = dplyr::tibble(url = c("a", "b"), file = c("xxx.xls", "yyy.xlsx"), 
+watchdog_demo = dplyr::tibble(url = c("a", "b"), file = c("xxx.xls", "yyy.xlsx"),
   last_download = c("2011-11-11", "2010-10-10"))
 get_last_version_path("a", watchdog_demo)
 }
