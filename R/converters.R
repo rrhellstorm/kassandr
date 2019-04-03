@@ -500,9 +500,8 @@ convert_reserves <- function(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mr
 #' \donttest{
 #' invest = convert_invest_xlsx()
 #' }
-
 convert_invest_xlsx <- function(path_to_source = "http://www.gks.ru/bgd/regl/b19_02/IssWWW.exe/Stg/d010/1-06-0.xlsx", access_date = Sys.Date()) {  
-  data <- rio::import(path)
+  data <- rio::import(path_to_source)
   data_vector <- data[4:23, 3:6]  %>% t() %>% as.vector()
   colnames(data_vector) <- NULL
   data_ts <- stats::ts(data_vector, start = c(1999, 1), freq = 4)
