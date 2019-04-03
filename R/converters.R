@@ -490,7 +490,7 @@ convert_reserves <- function(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mr
 #' Converts Investment file from rosstat to tibble
 #'
 #' Converts Investment file from rosstat to tibble
-#'
+#' Written by Rifat Eniliev
 #' @param path_to_source name of the original 1-06-0.xls file
 #' @param access_date date of access is appended to every observation
 #' 
