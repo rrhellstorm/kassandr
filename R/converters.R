@@ -506,7 +506,7 @@ convert_invest_xlsx <- function(path_to_source = "http://www.gks.ru/bgd/regl/b19
   colnames(data_vector) <- NULL
   data_ts <- stats::ts(data_vector, start = c(1999, 1), freq = 4)
   data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, invest = value)
-  data_tsibble = dplyr::mutate(data_tsibble, access_date=access_date, date = as.Date(date))
+  data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date, date = as.Date(date))
   check_conversion(data_tsibble)
   return(data_tsibble)
 }
