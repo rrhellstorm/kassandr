@@ -61,21 +61,21 @@ arima_fun = function(model_sample, h, target = "value") {
   return(model)
 }
 
-#' Do forecast using ARIMA(1,0,1)-SARIMA[12](1,0,1)
+#' Do forecast using ARIMA(1,0,1)-SARIMA(1,0,1)
 #'
-#' Do forecast using ARIMA(1,0,1)-SARIMA[12](1,0,1)
+#' Do forecast using ARIMA(1,0,1)-SARIMA(1,0,1)
 #'
-#' Do forecast using ARIMA(1,0,1)-SARIMA[12](1,0,1)
+#' Do forecast using ARIMA(1,0,1)-SARIMA(1,0,1)
 #'
 #' @param model_sample preferably tsibble with "value" column
 #' @param h forecasting horizon, is ignored
 #' @param target name of the target variable, "value" by default
-#' @return ARIMA(1,0,1)-SARIMA[12](1,0,1) model 
+#' @return ARIMA(1,0,1)-SARIMA(1,0,1) model 
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
-#' arima11_fun(test, 1)
-arima11_fun = function(model_sample, h, target = "value") {
+#' arima101_101_fun(test, 1)
+arima101_101_fun = function(model_sample, h, target = "value") {
   # h is ignored!
   y = extract_value(model_sample, target = target)
   model = forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1))
@@ -707,21 +707,21 @@ calculate_mae_table = function(model_list_fitted) {
 }
 
 
-#' Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)
+#' Do forecast using ARIMA(1,0,1)-SARIMA(0,1,0)
 #'
-#' Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)
+#' Do forecast using ARIMA(1,0,1)-SARIMA(0,1,0)
 #'
-#' Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)
+#' Do forecast using ARIMA(1,0,1)-SARIMA(0,1,0)
 #'
 #' @param model_sample preferably tsibble 
 #' @param h forecasting horizon, is ignored
 #' @param target name of the target variable, "value" by default
-#' @return ARIMA(1,0,1)-SARIMA[12](0,1,0) model 
+#' @return ARIMA(1,0,1)-SARIMA(0,1,0) model 
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
-#' arima111_fun(test, 1)
-arima111_fun = function(model_sample, h, target = "value") {
+#' arima101_010_fun(test, 1)
+arima101_010_fun = function(model_sample, h, target = "value") {
   # h is ignored!
   y = extract_value(model_sample, target = target)
   model = forecast::Arima(y, order = c(1, 0, 1), seasonal = c(0, 1, 0), method = "ML")
