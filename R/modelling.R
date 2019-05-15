@@ -727,3 +727,31 @@ arima101_010_fun = function(model_sample, h, target = "value") {
   model = forecast::Arima(y, order = c(1, 0, 1), seasonal = c(0, 1, 0), method = "ML")
   return(model)
 }
+
+
+#' @title unabbreviate vector
+#' @description replaces acronyms in vector using dictionary of acronyms
+#' @details replaces acronyms in character vector using dictionary of acronyms
+#' @param original_vector character vector with acronyms
+#' @param acronyms tibble with two character columns: acronym, meaning
+#' @return character vector with acronyms replaced by their meaning
+#' @export
+#' @examples
+#' acronyms = tibble::tribble(~acronym, ~meaning,
+#'   "FOURIER_M", "s1_12+s2_12+s3_12+s4_12+s5_12+c1_12+c2_12+c3_12+c4_12+c5_12+c6_12",
+#'   "FOURIER_Q", "s1_4+c1_4+c2_4",
+#'   "TRENDS", "trend_lin+trend_root")
+#' unabbreviate_vector(c("aaa", "bbb + FOURIER_M"), acronyms)
+unabbreviate_vector = function(original_vector, acronyms) {
+  full_vector = original_vector
+  for (acro_no in 1:nrow(acronyms)) {
+    full_vector = stringr::str_replace_all(full_vector, acronyms$acronym[acro_no], acronyms$meaning[acro_no])
+  }
+  return(full_vector)
+}
+
+
+
+
+
+
