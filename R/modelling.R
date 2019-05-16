@@ -757,6 +757,23 @@ forecast_2_scalar = function(fcst_object, h = 1) {
 }
 
 
+#' @title forecasts univariate model fit
+#' @description forecasts univariate model fit
+#' @details forecasts univariate model fit
+#' @param fit univariate model fit
+#' @param h forecasting horizon
+#' @param test_sample future regressors
+#' @return forecast object
+#' @export
+#' @examples
+#' model = forecast::ets(rnorm(100))
+#' uni_forecastor(model, h = 3)
+uni_forecastor = function(fit, h = 1, test_sample = NULL) {
+  fcst = forecast::forecast(fit, h = h, xreg = test_sample)
+  return(fcst)
+}
+
+
 
 
 
