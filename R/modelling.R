@@ -104,25 +104,6 @@ tbats_fun = function(model_sample, h, target = "value") {
   return(model)
 }
 
-#' Extract one scalar forecast from forecast object
-#'
-#' Extract one scalar forecast from forecast object
-#'
-#' Extract one scalar forecast from forecast object
-#'
-#' @param forecast_object forecast object
-#' @param h forecasting horizon
-#' @return mean scalar forecast
-#' @export
-#' @examples
-#' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
-#' tbats = tbats_fun(test, 1)
-#' fcst = forecast::forecast(tbats, h = 2)
-#' forecast_2_scalar(fcst, h = 2)
-forecast_2_scalar = function(forecast_object, h = 1) {
-  y_hat = forecast_object$mean[h]
-  return(y_hat)
-}
 
 #' Extract one scalar forecast from univariate model
 #'
@@ -750,6 +731,30 @@ unabbreviate_vector = function(original_vector, acronyms) {
   return(full_vector)
 }
 
+
+#' @title transforms forecast object into point forecast
+#' @description transforms forecast object into point forecast
+#' @details transforms forecast object into point forecast for common model types.
+#' @param fcst_object complex forecast from model
+#' @param h forecasting horizon
+#' @return point forecast, single number
+#' @export
+#' @examples
+#' fcst_object = forecast::forecast(rnorm(100), h = 6)
+#' forecast_2_scalar(fcst_object, h = 3)
+forecast_2_scalar = function(fcst_object, h = 1) {
+  point_forecast = NA_real_
+  if ((class(fcst_object) == "numeric") & (length(fcst_object) == 1)) {
+    point_forecast = fcst_object
+  }
+  if (class(fcst_object) == "forecast") {
+    point_forecast = fcst_object$mean[h]
+  }
+  if (class(fcst_object) == "ranger.prediction") {
+    point_forecast = tai(fcst_object$predictions, 1)
+  }
+  return(point_forecast)
+}
 
 
 

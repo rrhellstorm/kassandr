@@ -2,27 +2,25 @@
 % Please edit documentation in R/modelling.R
 \name{forecast_2_scalar}
 \alias{forecast_2_scalar}
-\title{Extract one scalar forecast from forecast object}
+\title{transforms forecast object into point forecast}
 \usage{
-forecast_2_scalar(forecast_object, h = 1)
+forecast_2_scalar(fcst_object, h = 1)
 }
 \arguments{
-\item{forecast_object}{forecast object}
+\item{fcst_object}{complex forecast from model}
 
 \item{h}{forecasting horizon}
 }
 \value{
-mean scalar forecast
+point forecast, single number
 }
 \description{
-Extract one scalar forecast from forecast object
+transforms forecast object into point forecast
 }
 \details{
-Extract one scalar forecast from forecast object
+transforms forecast object into point forecast for common model types.
 }
 \examples{
-test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
-tbats = tbats_fun(test, 1)
-fcst = forecast::forecast(tbats, h = 2)
-forecast_2_scalar(fcst, h = 2)
+fcst_object = forecast::forecast(rnorm(100), h = 6)
+forecast_2_scalar(fcst_object, h = 3)
 }
