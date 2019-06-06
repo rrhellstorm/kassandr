@@ -710,26 +710,6 @@ arima101_010_fun = function(model_sample, h, target = "value") {
 }
 
 
-#' @title unabbreviate vector
-#' @description replaces acronyms in vector using dictionary of acronyms
-#' @details replaces acronyms in character vector using dictionary of acronyms
-#' @param original_vector character vector with acronyms
-#' @param acronyms tibble with two character columns: acronym, meaning
-#' @return character vector with acronyms replaced by their meaning
-#' @export
-#' @examples
-#' acronyms = tibble::tribble(~acronym, ~meaning,
-#'   "FOURIER_M", "s1_12+s2_12+s3_12+s4_12+s5_12+c1_12+c2_12+c3_12+c4_12+c5_12+c6_12",
-#'   "FOURIER_Q", "s1_4+c1_4+c2_4",
-#'   "TRENDS", "trend_lin+trend_root")
-#' unabbreviate_vector(c("aaa", "bbb + FOURIER_M"), acronyms)
-unabbreviate_vector = function(original_vector, acronyms) {
-  full_vector = original_vector
-  for (acro_no in 1:nrow(acronyms)) {
-    full_vector = stringr::str_replace_all(full_vector, acronyms$acronym[acro_no], acronyms$meaning[acro_no])
-  }
-  return(full_vector)
-}
 
 
 #' @title transforms forecast object into point forecast
@@ -744,33 +724,27 @@ unabbreviate_vector = function(original_vector, acronyms) {
 #' forecast_2_scalar(fcst_object, h = 3)
 forecast_2_scalar = function(fcst_object, h = 1) {
   point_forecast = NA_real_
-  if ((class(fcst_object) == "numeric") & (length(fcst_object) == 1)) {
-    point_forecast = fcst_object
+  if (class(fcst_object) == "numeric") {
+    if (length(fcst_object) == 1) {
+      point_forecast = fcst_object
+    }
+    if (length(fcst_object) >= h) {
+      point_forecast = fcst_object[h]
+    }
   }
   if (class(fcst_object) == "forecast") {
     point_forecast = fcst_object$mean[h]
   }
   if (class(fcst_object) == "ranger.prediction") {
-    point_forecast = tai(fcst_object$predictions, 1)
+    rngr_predictions = fcst_object$predictions
+    if (length(rngr_predictions) == 1) {
+      point_forecast = rngr_predictions
+    }
+    if (length(rngr_predictions) >= h) {
+      point_forecast = rngr_predictions[h]
+    }
   }
   return(point_forecast)
-}
-
-
-#' @title forecasts univariate model fit
-#' @description forecasts univariate model fit
-#' @details forecasts univariate model fit
-#' @param fit univariate model fit
-#' @param h forecasting horizon
-#' @param test_sample future regressors
-#' @return forecast object
-#' @export
-#' @examples
-#' model = forecast::ets(rnorm(100))
-#' uni_forecastor(model, h = 3)
-uni_forecastor = function(fit, h = 1, test_sample = NULL) {
-  fcst = forecast::forecast(fit, h = h, xreg = test_sample)
-  return(fcst)
 }
 
 
