@@ -5,7 +5,7 @@
 \title{Download all statistics}
 \usage{
 download_statistics(path, watchdog, access_date = Sys.Date(),
-  method = "curl")
+  method = "curl", extra = "-L")
 }
 \arguments{
 \item{path}{path to raw data folde}
@@ -23,6 +23,8 @@ comment - self explanatory :)}
 \item{access_date}{access date}
 
 \item{method}{for downloading files, passed to `download.file()`: "curl", "wget", "libcurl", "auto", "internal", "wininet"}
+
+\item{extra}{options for downloading files, passed to `download.file()`: used for "wget" and "curl" methods}
 }
 \value{
 downloads log

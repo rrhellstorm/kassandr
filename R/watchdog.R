@@ -36,6 +36,7 @@ replace_extension = function(filename, new_ext = "_converted.csv") {
 #' comment - self explanatory :)
 #' @param access_date access date
 #' @param method for downloading files, passed to `download.file()`: "curl", "wget", "libcurl", "auto", "internal", "wininet"
+#' @param extra options for downloading files, passed to `download.file()`: used for "wget" and "curl" methods
 #' @return downloads log
 #' @export
 #' @examples
@@ -43,7 +44,7 @@ replace_extension = function(filename, new_ext = "_converted.csv") {
 #' mini_watchdog = tibble::tibble(url = "http://www.gks.ru/free_doc/new_site/prices/potr/I_ipc.xlsx",
 #'     file_raw = "i_ipc.xlsx", file_main = "i_ipc.csv", processing = "convert_i_ipc_xlsx")
 #' download_log_new = download_statistics(path, mini_watchdog)
-download_statistics = function(path, watchdog, access_date = Sys.Date(), method = "curl") {
+download_statistics = function(path, watchdog, access_date = Sys.Date(), method = "curl", extra = "-L") {
   download_log = watchdog %>% dplyr::mutate(access_date = access_date, download_status = NA, processing_status = NA, hash_raw = NA, hash_main = NA)
 
   today_folder = paste0(path, access_date, "/")
@@ -57,7 +58,7 @@ download_statistics = function(path, watchdog, access_date = Sys.Date(), method 
     if (!is.na(url)) {
       file_raw = paste0(today_folder, download_log$file_raw[file_no])
       message("Downloading ", url, ".")
-      attempt = try(utils::download.file(url = url, destfile = file_raw, method = method))
+      attempt = try(utils::download.file(url = url, destfile = file_raw, method = method, extra = extra))
       if ("try-error" %in% class(attempt)) {
         # ошибка при скачивании: запомним её
         download_log$access_status[file_no] = as.character(attempt)

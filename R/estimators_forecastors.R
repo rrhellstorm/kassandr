@@ -14,7 +14,7 @@
 #' arima_estimator(train_sample, "y", "p=2,d=0,q=0", "x")
 arima_estimator = function(train_sample, predicted, options, predictors = "") {
   selected_vars = c(predicted, "date")
-  y = dplyr::select(train_sample, selected_vars) %>% as.ts()
+  y = dplyr::select(train_sample, selected_vars) %>% stats::as.ts()
   
   if (predictors == "") {
     regressors = NULL
@@ -22,7 +22,7 @@ arima_estimator = function(train_sample, predicted, options, predictors = "") {
     predictors = split_variable_names(predictors)
     # important: we always use regressors as matrix (even for one predictor!)
     # this allows to store column names!
-    regressors = tsibble::as_tibble(train_sample) %>% dplyr::select(predictors) %>% as.ts()
+    regressors = tsibble::as_tibble(train_sample) %>% dplyr::select(predictors) %>% stats::as.ts()
   }
   
   options = param_string_2_tibble(options)
@@ -98,7 +98,7 @@ arima_forecastor = function(fit, test_sample = NA, predicted = "", predicted_ = 
     # and automatic conversion to ts type is not possible
     # so we have automatic conversion to tibble and then to ts
     regressors = tibble::as_tibble(test_sample) %>% 
-      dplyr::select(predictors) %>% as.ts(frequency = frequency)
+      dplyr::select(predictors) %>% stats::as.ts(frequency = frequency)
   }
   if ("try-error" %in% class(fit)) {
     fcst = NA
@@ -129,7 +129,7 @@ arima_forecastor = function(fit, test_sample = NA, predicted = "", predicted_ = 
 #' tbats_estimator(train_sample, "y", "")
 tbats_estimator = function(train_sample, predicted, options, predictors = "") {
   options = param_string_2_tibble(options)
-  y = dplyr::select(train_sample, !!predicted) %>% as.ts()
+  y = dplyr::select(train_sample, !!predicted) %>% stats::as.ts()
   fit = forecast::tbats(y) 
   return(fit)
 }
@@ -180,7 +180,7 @@ tbats_forecastor = function(fit, test_sample = NA, predicted = "", predicted_ = 
 #' ets_estimator(train_sample, "y", "")
 ets_estimator = function(train_sample, predicted, options, predictors) {
   options = param_string_2_tibble(options)
-  y = dplyr::select(train_sample, !!predicted) %>% as.ts()
+  y = dplyr::select(train_sample, !!predicted) %>% stats::as.ts()
   fit = forecast::ets(y) 
   return(fit)
 }
