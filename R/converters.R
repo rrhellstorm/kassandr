@@ -327,7 +327,7 @@ convert_m2_m2_sa_xlsx <- function(path_to_source =
 #' ind = convert_ind_okved2_xlsx()
 #' }
 convert_ind_okved2_xlsx <- function(path_to_source = 
-                                      "http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx", 
+                                      "http://www.gks.ru/storage/mediabank/ind_okved2(1).xlsx", 
                                     access_date = Sys.Date()) {
   indprod <- rio::import(path_to_source, skip = 2, sheet = 1)
   indprod_vector <- t(indprod[2, 3:ncol(indprod)])
