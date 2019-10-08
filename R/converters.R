@@ -500,16 +500,50 @@ convert_reserves <- function(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mr
 #' \donttest{
 #' invest = convert_invest_xlsx()
 #' }
-convert_invest_xlsx <- function(path_to_source = "http://www.gks.ru/bgd/regl/b19_02/IssWWW.exe/Stg/d010/1-06-0.xlsx", access_date = Sys.Date()) {  
-  data <- rio::import(path_to_source)
-  data_vector <- data[4:23, 3:6]  %>% t() %>% as.vector()
+# convert_invest_xlsx <- function(path_to_source = "http://www.gks.ru/bgd/regl/b19_02/IssWWW.exe/Stg/d010/1-06-0.xlsx", access_date = Sys.Date()) {  
+#   data <- rio::import(path_to_source)
+#   data_vector <- data[4:23, 3:6]  %>% t() %>% as.vector()
+#   colnames(data_vector) <- NULL
+#   data_ts <- stats::ts(data_vector, start = c(1999, 1), freq = 4)
+#   data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, invest = value)
+#   data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date, date = as.Date(date))
+#   check_conversion(data_tsibble)
+#   return(data_tsibble)
+# }
+
+tab_convert <- function(path, access_date) {
+  data <- rio::import(path)
+  names(data)[1]<-'year_col'
+  #ниже для уровней
+  #ind_lvl_start<-which(
+  # data$year_col[c(1:length(data$year_col))]=='1.6. Инвестиции в основной капитал1), млрд рублей')
+  #ind_lvl_finish<-which(
+  #data$year_col[c(1:length(data$year_col))]=='в % к соответствующему периоду предыдущего года')
+  #idx_start=ind_lvl_start+2
+  #idx_finish=ind_lvl_finish-1
+  
+  idx_not_year_start<-which(
+    data$year_col[c(1:length(data$year_col))]=='/ percent of corresponding period of previous year')
+  idx_not_year_finish<-which(
+    data$year_col[c(1:length(data$year_col))]=='/ percent of previous period')
+  idx_start=idx_not_year_start+1
+  idx_finish=idx_not_year_finish-2
+  
+  data_vector <- data[idx_start:idx_finish, 3:6]  %>% t() %>% as.vector()
   colnames(data_vector) <- NULL
+  data_vector <-na.omit(data_vector)
   data_ts <- stats::ts(data_vector, start = c(1999, 1), freq = 4)
-  data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, invest = value)
-  data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date, date = as.Date(date))
-  check_conversion(data_tsibble)
+  data_tsibble <- tsibble::as_tsibble(data_ts)
+  data_tsibble = dplyr::mutate(data_tsibble, access_date=access_date)
   return(data_tsibble)
 }
+inv <- tab_convert(path,Sys.Date())
+
+
+
+
+
+
 
 
 
