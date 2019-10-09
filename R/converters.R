@@ -510,6 +510,7 @@ convert_reserves <- function(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mr
 #   check_conversion(data_tsibble)
 #   return(data_tsibble)
 # }
+path <- ('http://www.gks.ru/bgd/regl/b19_02/IssWWW.exe/Stg/d010/1-06-0.xlsx')
 
 tab_convert <- function(path, access_date) {
   data <- rio::import(path)
