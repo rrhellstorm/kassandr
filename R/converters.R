@@ -533,7 +533,7 @@ convert_1_06_0_xlsx <-  function(path_to_source = "http://www.gks.ru/bgd/regl/b1
   data_ts <- stats::ts(data_vector, start = c(1999, 1), freq = 4)
   data_tsibble <- tsibble::as_tsibble(data_ts)
   data_tsibble <- dplyr::mutate(data_tsibble, access_date = access_date)
-  data_tsibble <- dplyr::rename(data_tsibble, date = index, invest = value)
+  data_tsibble <- dplyr::rename(data_tsibble, date = index, investment = value)
   check_conversion(data_tsibble)
   return(data_tsibble)
 }
