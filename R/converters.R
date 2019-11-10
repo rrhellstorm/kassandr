@@ -17,7 +17,7 @@ convert_i_ipc_xlsx = function(path_to_source = "http://www.gks.ru/free_doc/new_s
                               access_date = Sys.Date()) {
   data = rio::import(path_to_source)
   
-  data <- data[5:16,-1]
+  data <- data[6:17,-1]
   data <- tidyr::gather(data, year, value)
   data <- dplyr::select(data, -year)
   cpi_ts <- stats::ts(data, start = c(1991, 1), freq = 12)
