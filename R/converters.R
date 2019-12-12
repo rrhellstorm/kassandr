@@ -52,6 +52,7 @@ convert_tab5a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
   data = rio::import(path_to_source)
   
   data_vector <- t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
+  data_vector<-data_vector[-17:-20]
   
   data_ts <- stats::ts(data_vector, start = c(2011, 1), freq = 4)
   data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, gdp_current_price = value)
