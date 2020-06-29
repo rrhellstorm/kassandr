@@ -15,7 +15,7 @@ devtools::install_github("kassandra-ru/kassandr")
 
 # Скачивание актуальных данных
 
-```{r, results='hide', warning=FALSE}
+```{r, results='hide', warning=FALSE, message=FALSE}
 library(docxtractr) # для конвертации doc
 library(kassandr) 
 library(tidyverse)
@@ -48,7 +48,7 @@ if (info[1] == "Windows") {
 
 
 Далее всё просто:
-```{r}
+```{r, results='hide', warning=FALSE, message=FALSE}
 path = "~/Downloads" # прописываем путь
 download_log_new = download_statistics(path, watchdog)
 ```
