@@ -7,13 +7,101 @@ output: html_document
 
 Прогнозирование российских макро-экономических показателей.
 
-Установка
+# Установка пакета
+
 ```{r, eval=FALSE}
 devtools::install_github("kassandra-ru/kassandr")
 ```
 
+# Скачивание актуальных данных
 
-Веб-странички документации подготовлены с помощью пакета `pkgdown`
+```{r, include=FALSE}
+library(docxtractr) # для конвертации doc
+library(kassandr) 
+library(tidyverse)
+library(rio)
+```
+
+Смотрим, что скачивает `kassandr`:
+```{r}
+watchdog
+```
+
+При скачивании некоторых показателей используется конвертация .doc файлов. 
+Чтобы она работала должен быть установлен libre office. 
+И R должен знать как его найти. 
+
+
+```{r, include=FALSE}
+info = Sys.info() # получаем информацию о системе
+
+if (info[1] == "Linux") {
+  set_libreoffice_path("/usr/bin/libreoffice")  # ubuntu or macos
+  Sys.setenv(LD_LIBRARY_PATH = "/usr/lib/libreoffice/program/") # ubuntu protection against libreglo.so not found
+}
+
+if (info[1] == "Windows") {
+  Sys.setenv("TAR" = "internal") # if install_github() fails on Windows OS
+  set_libreoffice_path("C:/Program Files/LibreOffice/program/soffice.exe")  # windows
+}
+```
+
+
+Далее всё просто:
+```{r}
+path = "~/Downloads" # прописываем путь
+download_log_new = download_statistics(path, watchdog)
+```
+
+Смотрим, что корректно скачалось и конвертировалось:
+```{r}
+download_log_new
+```
+
+
+# Добавление нового парсера
+
+```{r, include=FALSE}
+library(devtools)
+library(usethis)
+```
+
+1. Затягиваем актуальную версию пакета с гитхаба на жёсткий диск.
+
+2. Встаём в локальную папку пакета.
+
 ```{r, eval=FALSE}
+setwd("путь к пакету")
+```
+
+3. В папке `R` в файле `converters.R` пишем новый конвертор. 
+Лучше не править старые, а дописывать новые!
+
+4. Проверяем его работоспособность.
+
+```{r, eval=FALSE}
+check()
+load_all()
+```
+
+4. Подключаем пакет
+
+```{r, eval=FALSE}
+load_all()
+```
+
+4. Добавляем в табличку `watchdog` нужные данные.
+
+5. Записываем обновленный `watchdog` в пакет.
+
+```{r, eval=FALSE}
+use_data(watchdog)
+```
+
+6. Ещё проверочка и красивый сайтик:
+
+```{r, eval=FALSE}
+check()
 pkgdown::build_site()
 ```
+

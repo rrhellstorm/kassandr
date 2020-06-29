@@ -8,21 +8,29 @@
 
 <title>Function reference • kassandr</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,7 +38,9 @@
 
 
 
+
 <meta property="og:title" content="Function reference" />
+
 
 
 
@@ -44,9 +54,10 @@
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-index">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -68,7 +79,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -76,7 +87,6 @@
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
@@ -86,6 +96,7 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -109,7 +120,18 @@
           <p class="section-desc"></p>
         </th>
       </tr>
+      
+      
+    </tbody><tbody>
+      
+      
       <tr>
+        
+        <td>
+          <p><code><a href="Almon_lag.html">Almon_lag()</a></code> </p>
+        </td>
+        <td><p>Constructs Almon lag polynomial</p></td>
+      </tr><tr>
         
         <td>
           <p><code><a href="add_fourier.html">add_fourier()</a></code> </p>
@@ -142,15 +164,27 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="arima111_fun.html">arima111_fun()</a></code> </p>
+          <p><code><a href="arima101_010_fun.html">arima101_010_fun()</a></code> </p>
         </td>
-        <td><p>Do forecast using ARIMA(1,1,1)-SARIMA[12](1,0,1)</p></td>
+        <td><p>Do forecast using ARIMA(1,0,1)-SARIMA(0,1,0)</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="arima11_fun.html">arima11_fun()</a></code> </p>
+          <p><code><a href="arima101_101_fun.html">arima101_101_fun()</a></code> </p>
         </td>
-        <td><p>Do forecast using ARIMA(1,0,1)-SARIMA[12](1,0,1)</p></td>
+        <td><p>Do forecast using ARIMA(1,0,1)-SARIMA(1,0,1)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="arima_estimator.html">arima_estimator()</a></code> </p>
+        </td>
+        <td><p>arima estimator</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="arima_forecastor.html">arima_forecastor()</a></code> </p>
+        </td>
+        <td><p>arima forecastor</p></td>
       </tr><tr>
         
         <td>
@@ -184,6 +218,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="convert_1_06_0_xlsx.html">convert_1_06_0_xlsx()</a></code> </p>
+        </td>
+        <td><p>Converts Investment file from rosstat to tibble</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="convert_1_nn_doc.html">convert_1_nn_doc()</a></code> </p>
         </td>
         <td><p>Converts 1-nn file from rosstat to tibble</p></td>
@@ -193,6 +233,12 @@
           <p><code><a href="convert_i_ipc_xlsx.html">convert_i_ipc_xlsx()</a></code> </p>
         </td>
         <td><p>Converts I_ipc file from rosstat to tibble</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="convert_ind_baza_2018_xlsx.html">convert_ind_baza_2018_xlsx()</a></code> </p>
+        </td>
+        <td><p>Converts ind_baza_2018 file from rosstat to tibble</p></td>
       </tr><tr>
         
         <td>
@@ -274,12 +320,6 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="download_watchdog_files.html">download_watchdog_files()</a></code> </p>
-        </td>
-        <td><p>Download files guarded by watchdog</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="estimate_and_forecast.html">estimate_and_forecast()</a></code> </p>
         </td>
         <td><p>Estimate and forecast all models from model tibble</p></td>
@@ -292,9 +332,27 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="ets_estimator.html">ets_estimator()</a></code> </p>
+        </td>
+        <td><p>ets estimator</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ets_forecastor.html">ets_forecastor()</a></code> </p>
+        </td>
+        <td><p>ets forecastor</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="ets_fun.html">ets_fun()</a></code> </p>
         </td>
         <td><p>Do forecast using auto ETS</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="export_with_safe_date.html">export_with_safe_date()</a></code> </p>
+        </td>
+        <td><p>Exports tsibble to csv correctly</p></td>
       </tr><tr>
         
         <td>
@@ -312,7 +370,13 @@
         <td>
           <p><code><a href="forecast_2_scalar.html">forecast_2_scalar()</a></code> </p>
         </td>
-        <td><p>Extract one scalar forecast from forecast object</p></td>
+        <td><p>transforms forecast object into point forecast</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="gentle_as_numeric.html">gentle_as_numeric()</a></code> </p>
+        </td>
+        <td><p>transforms all numeric strings to numbers keeping non-numeric</p></td>
       </tr><tr>
         
         <td>
@@ -334,24 +398,6 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="get_last_version_download_date.html">get_last_version_download_date()</a></code> </p>
-        </td>
-        <td><p>Gets last version date from watchdog file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_last_version_path.html">get_last_version_path()</a></code> </p>
-        </td>
-        <td><p>Gets last version full path from watchdog file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_watchdog_line.html">get_watchdog_line()</a></code> </p>
-        </td>
-        <td><p>Extracts one line from watchdog file given url</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="lasso_2_scalar_forecast.html">lasso_2_scalar_forecast()</a></code> </p>
         </td>
         <td><p>Obtain scalar forecast from lasso model</p></td>
@@ -367,6 +413,18 @@
           <p><code><a href="lasso_fun.html">lasso_fun()</a></code> </p>
         </td>
         <td><p>Augment data and estimate lasso model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="numbers_string_2_vector.html">numbers_string_2_vector()</a></code> </p>
+        </td>
+        <td><p>converts string with comma separated numbers to numeric vector</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="param_string_2_tibble.html">param_string_2_tibble()</a></code> </p>
+        </td>
+        <td><p>converts string with parameter values to tibble</p></td>
       </tr><tr>
         
         <td>
@@ -412,9 +470,33 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="remove_quotes.html">remove_quotes()</a></code> </p>
+        </td>
+        <td><p>removes quotes around character vectors</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="replace_extension.html">replace_extension()</a></code> </p>
         </td>
         <td><p>Replace file extension by specified ending</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="split_variable_names.html">split_variable_names()</a></code> </p>
+        </td>
+        <td><p>splits comma or plus separated variable names into a character vector</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="tbats_estimator.html">tbats_estimator()</a></code> </p>
+        </td>
+        <td><p>tbats estimator</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="tbats_forecastor.html">tbats_forecastor()</a></code> </p>
+        </td>
+        <td><p>tbats forecastor</p></td>
       </tr><tr>
         
         <td>
@@ -430,9 +512,21 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="unabbreviate_vector.html">unabbreviate_vector()</a></code> </p>
+        </td>
+        <td><p>unabbreviate vector</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="uni_model_2_scalar_forecast.html">uni_model_2_scalar_forecast()</a></code> </p>
         </td>
         <td><p>Extract one scalar forecast from univariate model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="watchdog.html">watchdog</a></code> </p>
+        </td>
+        <td><p>Tibble of converters and parsers to download data</p></td>
       </tr><tr>
         
         <td>
@@ -444,13 +538,13 @@
     </table>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
-    </ul>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -458,13 +552,16 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
