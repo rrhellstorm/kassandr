@@ -15,7 +15,7 @@ devtools::install_github("kassandra-ru/kassandr")
 
 # Скачивание актуальных данных
 
-```{r, include=FALSE}
+```{r, results='hide', warning=FALSE}
 library(docxtractr) # для конвертации doc
 library(kassandr) 
 library(tidyverse)
@@ -32,7 +32,7 @@ watchdog
 И R должен знать как его найти. 
 
 
-```{r, include=FALSE}
+```{r, results='hide', warning=FALSE}
 info = Sys.info() # получаем информацию о системе
 
 if (info[1] == "Linux") {
@@ -61,7 +61,7 @@ download_log_new
 
 # Добавление нового парсера
 
-```{r, include=FALSE}
+```{r, eval=FALSE}
 library(devtools)
 library(usethis)
 ```
