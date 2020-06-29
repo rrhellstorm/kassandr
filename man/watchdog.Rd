@@ -20,6 +20,18 @@ A data frame with 7 columns
 watchdog
 }
 \description{
-Tibble of converters and parsers to download data
+Tibble of converters and parsers to download data.
+To update watchdog your may proceed in the following steps:
+}
+\details{
+1. Set the working directory to the package folder.
+
+2. Update the watchdog dataset in memory.
+
+3. usethis::use_data(watchdog)
+
+4. devtools::check()
+
+5. upload package on github
 }
 \keyword{datasets}
