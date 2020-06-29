@@ -4,8 +4,7 @@
 \alias{add_hf_lags}
 \title{Add high frequency lags to low frequency tsibble}
 \usage{
-add_hf_lags(lf_data, hf_data, hf_variable = NULL, n_lags = 1,
-  one_row = TRUE)
+add_hf_lags(lf_data, hf_data, hf_variable = NULL, n_lags = 1, one_row = TRUE)
 }
 \arguments{
 \item{lf_data}{low frequency data}

@@ -4,9 +4,16 @@
 \alias{arima_forecastor}
 \title{arima forecastor}
 \usage{
-arima_forecastor(fit, test_sample = NA, predicted = "",
-  predicted_ = "", options = "", predictors = "", h = 1,
-  frequency = 1)
+arima_forecastor(
+  fit,
+  test_sample = NA,
+  predicted = "",
+  predicted_ = "",
+  options = "",
+  predictors = "",
+  h = 1,
+  frequency = 1
+)
 }
 \arguments{
 \item{fit}{fitted arima model}

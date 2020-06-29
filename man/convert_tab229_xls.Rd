@@ -4,9 +4,10 @@
 \alias{convert_tab229_xls}
 \title{Converts tab2.29.xls file from cbr to tibble}
 \usage{
-
-  convert_tab229_xls(path_to_source = "http://www.gks.ru/free_doc/doc_2018/bul_dr/trud/ors-2018-3kv.rar",
-  access_date = Sys.Date())
+convert_tab229_xls(
+  path_to_source = "http://www.gks.ru/free_doc/doc_2018/bul_dr/trud/ors-2018-3kv.rar",
+  access_date = Sys.Date()
+)
 }
 \arguments{
 \item{path_to_source}{name of the original tab2.29.xls file}

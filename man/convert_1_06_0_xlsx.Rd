@@ -4,9 +4,10 @@
 \alias{convert_1_06_0_xlsx}
 \title{Converts Investment file from rosstat to tibble}
 \usage{
-
-  convert_1_06_0_xlsx(path_to_source = "http://www.gks.ru/bgd/regl/b19_02/IssWWW.exe/Stg/d010/1-06-0.xlsx",
-  access_date = Sys.Date())
+convert_1_06_0_xlsx(
+  path_to_source = "http://www.gks.ru/bgd/regl/b19_02/IssWWW.exe/Stg/d010/1-06-0.xlsx",
+  access_date = Sys.Date()
+)
 }
 \arguments{
 \item{path_to_source}{name of the original 1-06-0.xls file}

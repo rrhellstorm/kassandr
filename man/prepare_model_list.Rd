@@ -4,8 +4,14 @@
 \alias{prepare_model_list}
 \title{Prepare model tibble for cross-validation}
 \usage{
-prepare_model_list(h_all = 1, model_fun_tibble, series_data, dates_test,
-  window_type = c("sliding", "stretching"), target = "value")
+prepare_model_list(
+  h_all = 1,
+  model_fun_tibble,
+  series_data,
+  dates_test,
+  window_type = c("sliding", "stretching"),
+  target = "value"
+)
 }
 \arguments{
 \item{h_all}{vector of forecasting horizons}

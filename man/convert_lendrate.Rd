@@ -4,9 +4,10 @@
 \alias{convert_lendrate}
 \title{Parse lending rates from cbr}
 \usage{
-
-  convert_lendrate(path_to_source = "http://www.cbr.ru/hd_base/mkr/mkr_monthes/",
-  access_date = Sys.Date())
+convert_lendrate(
+  path_to_source = "http://www.cbr.ru/hd_base/mkr/mkr_monthes/",
+  access_date = Sys.Date()
+)
 }
 \arguments{
 \item{path_to_source}{name of the original html}

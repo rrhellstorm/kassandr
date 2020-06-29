@@ -4,11 +4,16 @@
 \alias{download_statistics}
 \title{Download all statistics}
 \usage{
-download_statistics(path, watchdog, access_date = Sys.Date(),
-  method = "curl", extra = "-L")
+download_statistics(
+  path,
+  watchdog,
+  access_date = Sys.Date(),
+  method = "curl",
+  extra = "-L"
+)
 }
 \arguments{
-\item{path}{path to raw data folder}
+\item{path}{path to raw data folde}
 
 \item{watchdog}{watchdog file
 Structure of watchdog:

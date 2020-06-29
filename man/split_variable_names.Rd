@@ -4,8 +4,7 @@
 \alias{split_variable_names}
 \title{splits comma or plus separated variable names into a character vector}
 \usage{
-split_variable_names(predictors_vector, acronyms = NULL,
-  split_by = "[\\\\+,]")
+split_variable_names(predictors_vector, acronyms = NULL, split_by = "[\\\\+,]")
 }
 \arguments{
 \item{predictors_vector}{character vector of comma or plus separated variable lists}

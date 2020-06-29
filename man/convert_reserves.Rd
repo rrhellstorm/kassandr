@@ -4,9 +4,10 @@
 \alias{convert_reserves}
 \title{Parse reserves data from cbr}
 \usage{
-
-  convert_reserves(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mrrf_m/",
-  access_date = Sys.Date())
+convert_reserves(
+  path_to_source = "http://www.cbr.ru/hd_base/mrrf/mrrf_m/",
+  access_date = Sys.Date()
+)
 }
 \arguments{
 \item{path_to_source}{name of the original html}

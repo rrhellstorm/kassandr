@@ -4,9 +4,16 @@
 \alias{ets_forecastor}
 \title{ets forecastor}
 \usage{
-ets_forecastor(fit, test_sample = NA, predicted = "",
-  predicted_ = "", options = "", predictors = "", h = 1,
-  frequency = 1)
+ets_forecastor(
+  fit,
+  test_sample = NA,
+  predicted = "",
+  predicted_ = "",
+  options = "",
+  predictors = "",
+  h = 1,
+  frequency = 1
+)
 }
 \arguments{
 \item{fit}{fitted ets model}

@@ -4,8 +4,7 @@
 \alias{estimate_nonduplicate_models}
 \title{Estimate non-duplicate models from model tibble}
 \usage{
-estimate_nonduplicate_models(model_list, store_models = c("tibble",
-  "file"))
+estimate_nonduplicate_models(model_list, store_models = c("tibble", "file"))
 }
 \arguments{
 \item{model_list}{tibble with one model per row}

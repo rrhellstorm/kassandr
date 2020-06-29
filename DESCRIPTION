@@ -30,4 +30,4 @@ Imports:
     tidyselect (>= 0.2.4),
     cbr (>= 0.2)
 Remotes: bdemeshev/cbr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0

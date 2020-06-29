@@ -4,9 +4,10 @@
 \alias{convert_tab5a_xls}
 \title{Converts tab5a file from rosstat to tibble}
 \usage{
-
-  convert_tab5a_xls(path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab5a.xls",
-  access_date = Sys.Date())
+convert_tab5a_xls(
+  path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab5a.xls",
+  access_date = Sys.Date()
+)
 }
 \arguments{
 \item{path_to_source}{name of the original tab5a.xls file}

@@ -4,9 +4,16 @@
 \alias{tbats_forecastor}
 \title{tbats forecastor}
 \usage{
-tbats_forecastor(fit, test_sample = NA, predicted = "",
-  predicted_ = "", options = "", predictors = "", h = 1,
-  frequency = 1)
+tbats_forecastor(
+  fit,
+  test_sample = NA,
+  predicted = "",
+  predicted_ = "",
+  options = "",
+  predictors = "",
+  h = 1,
+  frequency = 1
+)
 }
 \arguments{
 \item{fit}{fitted tbats model}

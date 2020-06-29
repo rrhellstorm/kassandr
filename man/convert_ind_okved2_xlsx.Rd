@@ -4,9 +4,10 @@
 \alias{convert_ind_okved2_xlsx}
 \title{Converts ind_okved2 file from rosstat to tibble}
 \usage{
-
-  convert_ind_okved2_xlsx(path_to_source = "http://www.gks.ru/storage/mediabank/ind_okved2(1).xlsx",
-  access_date = Sys.Date())
+convert_ind_okved2_xlsx(
+  path_to_source = "http://www.gks.ru/storage/mediabank/ind_okved2(1).xlsx",
+  access_date = Sys.Date()
+)
 }
 \arguments{
 \item{path_to_source}{name of the original ind_okved2.xlsx file}

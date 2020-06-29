@@ -4,8 +4,7 @@
 \alias{prepare_model_list2}
 \title{Prepare model tibble for forecasts}
 \usage{
-prepare_model_list2(h_all = 1, model_fun_tibble, series_data,
-  target = "value")
+prepare_model_list2(h_all = 1, model_fun_tibble, series_data, target = "value")
 }
 \arguments{
 \item{h_all}{vector of forecasting horizons}

@@ -4,9 +4,10 @@
 \alias{convert_1_nn_doc}
 \title{Converts 1-nn file from rosstat to tibble}
 \usage{
-
-  convert_1_nn_doc(path_to_source = "http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc",
-  access_date = Sys.Date())
+convert_1_nn_doc(
+  path_to_source = "http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc",
+  access_date = Sys.Date()
+)
 }
 \arguments{
 \item{path_to_source}{name of the original 1-nn.doc file}
