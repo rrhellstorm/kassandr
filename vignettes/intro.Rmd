@@ -7,7 +7,34 @@ output: html_document
 
 Прогнозирование российских макро-экономических показателей.
 
-# Установка пакета
+# Организация работы
+
+Есть три кита, для которых заведено три отдельных репозитория в рамках проекта.
+
+## Кит "Данные"
+
+[Репозиторий данных](https://github.com/kassandra-ru/data). 
+В папке `raw` по дням скачивания содержатся отконвертированные из ужаса `.csv` файлы.
+
+## Кит "Модели"
+
+[Репозиторий моделей](https://github.com/kassandra-ru/model). 
+
+Модели по дням разработки.
+
+## Кит "Пакет"
+
+[Репозиторий пакета](https://github.com/kassandra-ru/kassandr). 
+
+## Черепаха Публикаций
+
+* [Официальная страничка](https://economics.hse.ru/cmf/)
+
+* [Неофициальный блог](https://kassandra-ru.github.io/)
+
+В неофициальном блоге хорошо бы больше инструкций и примеров и дашбордик с прогнозами :)
+
+# Установка пакета kassandr
 
 ```{r, eval=FALSE}
 devtools::install_github("kassandra-ru/kassandr")
@@ -21,6 +48,8 @@ library(kassandr)
 library(tidyverse)
 library(rio)
 ```
+
+Сначала затягиваем репозиторий с данными на жёсткий диск.
 
 Смотрим, что скачивает `kassandr`:
 ```{r}
@@ -49,7 +78,7 @@ if (info[1] == "Windows") {
 
 Далее всё просто:
 ```{r, results='hide', warning=FALSE, message=FALSE}
-path = "~/Downloads" # прописываем путь
+path = "~/Downloads" # прописываем путь к папке, где хранятся данные
 download_log_new = download_statistics(path, watchdog)
 ```
 
@@ -57,6 +86,14 @@ download_log_new = download_statistics(path, watchdog)
 ```{r}
 download_log_new
 ```
+
+Исходные файлы добавляем в `.gitignore`
+```{r, eval=FALSE}
+write_lines(na.omit(watchdog$file_raw), path = paste0(path_day, ".gitignore"))
+```
+
+Забрасываем обновлённые данные в репозиторий на гитхабе.
+
 
 
 # Добавление нового парсера
