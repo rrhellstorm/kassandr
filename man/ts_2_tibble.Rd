@@ -17,8 +17,8 @@ Transform ts to tibble
 }
 \details{
 Transform ts to tibble. The function takes univariate or multivariate
-time series and transforms them to a tibble with a separate column indicating 
-a period of time. 
+time series and transforms them to a tibble with a separate column indicating
+a period of time.
 Column with dates is called "date".
 }
 \examples{

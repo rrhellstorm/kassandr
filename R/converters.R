@@ -401,7 +401,7 @@ convert_trade_xls <- function(path_to_source =
                 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь')
   data <- dplyr::filter(data, date %in% namelist)
   data_ts <- dplyr::select(data, import, export) %>% stats::ts(start = c(1997, 1), freq = 12)
-  data_tsibble <- tsibble::as_tsibble(data_ts, gather = FALSE) %>% dplyr::rename(date = index)
+  data_tsibble <- tsibble::as_tsibble(data_ts, pivot_longer = FALSE) %>% dplyr::rename(date = index)
   data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
   check_conversion(data_tsibble)
   return(data_tsibble)
@@ -458,8 +458,8 @@ convert_lendrate <- function(path_to_source = "http://www.cbr.ru/hd_base/mkr/mkr
 
   lendrate <- path_to_source %>%
     xml2::read_html() %>%
-    rvest::html_nodes(xpath = '//*[@id="content"]/table[1]') %>%
     rvest::html_table()
+
 
   # observations are stored in reverse chronological order :)
   lendrate <- lendrate[[1]] %>% dplyr::as_tibble() %>% dplyr::arrange(-dplyr::row_number())
@@ -502,7 +502,7 @@ convert_reserves <- function(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mr
 
   nfa_cb <- path_to_source %>%
     xml2::read_html() %>%
-    rvest::html_nodes(xpath = '//*[@id="content"]/table') %>%
+    # rvest::html_nodes(xpath = '//*[@id="content"]/table') %>%
     rvest::html_table(fill = TRUE, head = NA)
 
   nfa_cb <- nfa_cb[[1]]
@@ -531,7 +531,7 @@ convert_reserves <- function(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mr
 #' @export
 #' @examples
 #' \donttest{
-#' invest = convert_invest_xlsx()
+#' invest = convert_1_06_0_xlsx()
 #' }
 # convert_1_06_0_xlsx <- function(path_to_source = "http://www.gks.ru/bgd/regl/b19_02/IssWWW.exe/Stg/d010/1-06-0.xlsx", access_date = Sys.Date()) {
 #   data <- rio::import(path_to_source)

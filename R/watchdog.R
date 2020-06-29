@@ -55,7 +55,7 @@ download_statistics = function(path, watchdog, access_date = Sys.Date(), method 
   # download stage
   for (file_no in 1:nrow(download_log)) {
     url = download_log$url[file_no]
-    if (!is.na(url)) {
+    if (!(is.na(url) | url == "")) {
       file_raw = paste0(today_folder, download_log$file_raw[file_no])
       message("Downloading ", url, ".")
       attempt = try(utils::download.file(url = url, destfile = file_raw, method = method, extra = extra))

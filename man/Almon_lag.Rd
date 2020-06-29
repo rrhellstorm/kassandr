@@ -26,3 +26,6 @@ Estimation, Selection, and Prediction 2 Jan 2020
 Enables to put endpoint restrictions on the value and on slope of the lag polynomial default R=c(1,1)
 Meaning that restrictions jointly constrain the weighting structure to tail off slowly to zero
 }
+\examples{
+Almon_lag(2, 5, c(1, 0))
+}

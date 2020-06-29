@@ -24,18 +24,18 @@ tsibble with high frequency lags added
 Add high frequency lags to low frequency tsibble
 }
 \details{
-Adds high frequency lags to low frequency tsibble. The function 
-concatenates n_lags of hf_data to lf_data. The concatenated observations 
-from hf_data are from the same day or earlier than the date indicated 
+Adds high frequency lags to low frequency tsibble. The function
+concatenates n_lags of hf_data to lf_data. The concatenated observations
+from hf_data are from the same day or earlier than the date indicated
 by lf_date. If one_row is TRUE the high frequency observations
-are put in a row so as the number of rows in the new table is equal 
-to those of lf_data.  Otherwise the lags of high-frequency data 
-increase the number of rows and the number of rows in 
+are put in a row so as the number of rows in the new table is equal
+to those of lf_data.  Otherwise the lags of high-frequency data
+increase the number of rows and the number of rows in
 new table is (number of rows in lf_data)*n_lags.
 }
 \examples{
 
-hf_data <- tibble::tibble(date = lubridate::ymd("2011-01-01") + 
+hf_data <- tibble::tibble(date = lubridate::ymd("2011-01-01") +
                             lubridate::days(0:90), observations = rnorm(91))
 lf_data <- stats::ts(rnorm(4), start = c(2011, 01), frequency = 12)
 add_hf_lags(lf_data, hf_data, n_lags = 5)

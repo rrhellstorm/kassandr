@@ -14,7 +14,7 @@
 #' @return Q matrix
 #' @export
 #' @examples
-
+#' Almon_lag(2, 5, c(1, 0))
 Almon_lag = function(polydegree, C, R) {
 
   names(R) = c('fC', 'dfC')

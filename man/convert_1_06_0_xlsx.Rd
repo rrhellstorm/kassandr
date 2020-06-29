@@ -26,6 +26,6 @@ Written by Rifat Eniliev
 }
 \examples{
 \donttest{
-invest = convert_invest_xlsx()
+invest = convert_1_06_0_xlsx()
 }
 }
