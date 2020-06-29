@@ -26,6 +26,6 @@ The structure is similar to tab5a.
 }
 \examples{
 \donttest{
-tab6b = conveert_tab6b_xls()
+tab6b = convert_tab6b_xls()
 }
 }

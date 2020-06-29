@@ -22,13 +22,18 @@ Converts 1-nn file from rosstat to tibble
 }
 \details{
 Converts 1-nn file from rosstat to tibble.
+The function uses libre office to convert .doc files.
+So libre office should be installed. And path to libre office should be known by the package.
 Written by: Rifat Enileev
 }
 \examples{
 \donttest{
-one = convert_1_nn_doc()
-one = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc")
-two = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-03.doc")
-three = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-11.doc")
+# docxtractr::set_libreoffice_path("/usr/bin/libreoffice")  # ubuntu or macos
+# Sys.setenv(LD_LIBRARY_PATH = "/usr/lib/libreoffice/program/") # ubuntu protection against libreglo.so not found
+# docxtractr::set_libreoffice_path("C:/Program Files/LibreOffice/program/soffice.exe")  # windows
+# one = convert_1_nn_doc()
+# one = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc")
+# two = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-03.doc")
+# three = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-11.doc")
 }
 }

@@ -78,7 +78,7 @@ convert_tab5a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
 #' @export
 #' @examples
 #' \donttest{
-#' tab6b = conveert_tab6b_xls()
+#' tab6b = convert_tab6b_xls()
 #' }
 convert_tab6b_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab6b.xls",
                              access_date = Sys.Date()) {
@@ -154,6 +154,8 @@ convert_tab9a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
 #' Converts urov_12kv file from rosstat to tibble
 #'
 #' Converts urov_12kv file from rosstat to tibble.
+#' The function uses libre office to convert .doc files.
+#' So libre office should be installed. And path to libre office should be known by the package.
 #' Written by: Vladimir Omelyusik
 #'
 #' @param path_to_source name of the original urov_12kv.doc file
@@ -163,7 +165,10 @@ convert_tab9a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
 #' @export
 #' @examples
 #' \donttest{
-#' urok_12kv = convert_urok_12kv_doc()
+#' # docxtractr::set_libreoffice_path("/usr/bin/libreoffice")  # ubuntu or macos
+#' # Sys.setenv(LD_LIBRARY_PATH = "/usr/lib/libreoffice/program/") # ubuntu protection against libreglo.so not found
+#' # docxtractr::set_libreoffice_path("C:/Program Files/LibreOffice/program/soffice.exe")  # windows
+#' # urov_12kv = convert_urov_12kv_doc()
 #' }
 convert_urov_12kv_doc <- function(path_to_source =
                                     "http://www.gks.ru/free_doc/new_site/population/urov/urov_12kv.doc",
@@ -192,6 +197,8 @@ convert_urov_12kv_doc <- function(path_to_source =
 #' Converts 1-nn file from rosstat to tibble
 #'
 #' Converts 1-nn file from rosstat to tibble.
+#' The function uses libre office to convert .doc files.
+#' So libre office should be installed. And path to libre office should be known by the package.
 #' Written by: Rifat Enileev
 #'
 #' @param path_to_source name of the original 1-nn.doc file
@@ -201,10 +208,13 @@ convert_urov_12kv_doc <- function(path_to_source =
 #' @export
 #' @examples
 #' \donttest{
-#' one = convert_1_nn_doc()
-#' one = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc")
-#' two = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-03.doc")
-#' three = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-11.doc")
+#' # docxtractr::set_libreoffice_path("/usr/bin/libreoffice")  # ubuntu or macos
+#' # Sys.setenv(LD_LIBRARY_PATH = "/usr/lib/libreoffice/program/") # ubuntu protection against libreglo.so not found
+#' # docxtractr::set_libreoffice_path("C:/Program Files/LibreOffice/program/soffice.exe")  # windows
+#' # one = convert_1_nn_doc()
+#' # one = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc")
+#' # two = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-03.doc")
+#' # three = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-11.doc")
 #' }
 convert_1_nn_doc <- function(path_to_source =
                                "http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc",

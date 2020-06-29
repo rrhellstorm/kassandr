@@ -17,6 +17,31 @@ replace_extension = function(filename, new_ext = "_converted.csv") {
 }
 
 
+#' Exports tsibble to csv correctly
+#'
+#' Exports tsibble to csv correctly
+#'
+#' Exports tsibble to csv correctly
+#' The problem is that simple rio::export will transform monthly dates into strange integers.
+#'
+#' @param x tibble or tsibble with date column
+#' @param file filename
+#' @return file exporting code
+#' @export
+#' @examples
+#' x = ts(1:10, frequency = 12, start = c(2000, 1))
+#' x_tsi = tsibble::as_tsibble(x)
+#' x_tsi = dplyr::rename(x_tsi, date = index)
+#' export_with_safe_date(x_tsi, paste0(tempdir(), "/data.csv"))
+export_with_safe_date = function(x, file) {
+  x = dplyr::mutate(tsibble::as_tibble(x), date = as.Date(date))
+  res = rio::export(x = x, file = file)
+  return(res)
+}
+
+
+
+
 
 #' Download all statistics
 #'
@@ -73,7 +98,7 @@ download_statistics = function(path, watchdog, access_date = Sys.Date(), method 
   for (file_no in 1:nrow(download_log)) {
     url = download_log$url[file_no]
     processing = download_log$processing[file_no]
-    if (is.na(url)) {
+    if (is.na(url) | url == "") {
       data_processed = try(do.call(processing, list(access_date)))
     } else {
       file_raw = paste0(today_folder, download_log$file_raw[file_no])
@@ -85,7 +110,7 @@ download_statistics = function(path, watchdog, access_date = Sys.Date(), method 
     } else {
       download_log$processing_status[file_no] = "success"
       file_main = paste0(today_folder, download_log$file_main[file_no])
-      rio::export(data_processed, file_main)
+      export_with_safe_date(data_processed, file_main)
       download_log$hash_main[file_no] = digest::digest(file = file_main)
     }
   }

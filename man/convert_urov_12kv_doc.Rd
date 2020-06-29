@@ -22,10 +22,15 @@ Converts urov_12kv file from rosstat to tibble
 }
 \details{
 Converts urov_12kv file from rosstat to tibble.
+The function uses libre office to convert .doc files.
+So libre office should be installed. And path to libre office should be known by the package.
 Written by: Vladimir Omelyusik
 }
 \examples{
 \donttest{
-urok_12kv = convert_urok_12kv_doc()
+# docxtractr::set_libreoffice_path("/usr/bin/libreoffice")  # ubuntu or macos
+# Sys.setenv(LD_LIBRARY_PATH = "/usr/lib/libreoffice/program/") # ubuntu protection against libreglo.so not found
+# docxtractr::set_libreoffice_path("C:/Program Files/LibreOffice/program/soffice.exe")  # windows
+# urov_12kv = convert_urov_12kv_doc()
 }
 }
