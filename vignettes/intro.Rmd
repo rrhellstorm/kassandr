@@ -51,7 +51,7 @@ library(rio)
 
 Сначала затягиваем репозиторий с данными на жёсткий диск.
 
-Типичный пример скрипта, [скачивающего свежее данные](https://github.com/kassandra-ru/model/blob/master/2020-06-29/downloading_data.R).
+Типичный пример скрипта, [скачивающего свежие данные](https://github.com/kassandra-ru/model/blob/master/2020-06-29/downloading_data.R).
 
 Смотрим, что скачивает `kassandr`:
 ```{r}
