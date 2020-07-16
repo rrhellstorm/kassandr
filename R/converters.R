@@ -51,8 +51,7 @@ convert_tab5a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
                              access_date = Sys.Date()) {
   data = rio::import(path_to_source)
 
-  data_vector <- t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
-  data_vector<-data_vector[-17:-20]
+  data_vector <- t(data[6, ]) %>% stats::na.omit() %>% as.numeric()
 
   data_ts <- stats::ts(data_vector, start = c(2011, 1), freq = 4)
   data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, gdp_current_price = value)
@@ -82,7 +81,16 @@ convert_tab5a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
 #' }
 convert_tab6b_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab6b.xls",
                              access_date = Sys.Date()) {
-  data_tsibble = convert_tab5a_xls(path_to_source, access_date) %>% dplyr::rename(gdp_2016_price = gdp_current_price)
+  data = rio::import(path_to_source)
+  
+  data_vector <- t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
+  
+  data_ts <- stats::ts(data_vector, start = c(2011, 1), freq = 4)
+  data_tsibble <- tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, gdp_current_price = value)
+  
+  data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
+  check_conversion(data_tsibble)
+  
   return(data_tsibble)
 }
 
@@ -176,7 +184,7 @@ convert_urov_12kv_doc <- function(path_to_source =
   real_world <- docxtractr::read_docx(path_to_source)
   table <- docxtractr::docx_extract_tbl(real_world, 2)
   table <- as.data.frame(table)
-  table <- table[-c(1, 2, 74, 75), ] # две строки в начале и две пустые строки
+  table <- table[-c(1, 2), ] # две строки в начале и всё
   colnames(table) <- c("date", "percent_to_period_last_year", "percent_to_last_period")
   table <- dplyr::filter(table, !grepl("квартал", date), !grepl("Год", date), !grepl("год", date))
 
