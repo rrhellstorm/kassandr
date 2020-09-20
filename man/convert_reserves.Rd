@@ -26,6 +26,6 @@ Written by Petr Garmider
 }
 \examples{
 \donttest{
-reserves <- convert_reserves()
+reserves = convert_reserves()
 }
 }

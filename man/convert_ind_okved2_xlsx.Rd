@@ -26,6 +26,7 @@ Written by: Nastya Jarkova
 }
 \examples{
 \donttest{
-ind = convert_ind_okved2_xlsx()
+# ind = convert_ind_okved2_xlsx()
+# removed by gks 2020-09-20
 }
 }

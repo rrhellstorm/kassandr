@@ -86,7 +86,7 @@ convert_tab6b_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
   data_vector = t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
 
   data_ts = stats::ts(data_vector, start = c(2011, 1), freq = 4)
-  data_tsibble = tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, gdp_current_price = value)
+  data_tsibble = tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, gdp_2016_price = value)
 
   data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
   check_conversion(data_tsibble)
@@ -345,7 +345,8 @@ convert_m2_m2_sa_xlsx = function(path_to_source =
 #' @export
 #' @examples
 #' \donttest{
-#' ind = convert_ind_okved2_xlsx()
+#' # ind = convert_ind_okved2_xlsx()
+#' # removed by gks 2020-09-20
 #' }
 convert_ind_okved2_xlsx = function(path_to_source =
                                       "http://www.gks.ru/storage/mediabank/ind_okved2(1).xlsx",
@@ -376,7 +377,8 @@ convert_ind_okved2_xlsx = function(path_to_source =
 #' @export
 #' @examples
 #' \donttest{
-#' ind = convert_ind_baza_2018_xlsx()
+#' # ind = convert_ind_baza_2018_xlsx()
+#' # removed by gks 2020-09-20
 #' }
 convert_ind_baza_2018_xlsx = function(path_to_source =
                                          "https://gks.ru/storage/mediabank/ind-baza-2018.xlsx",

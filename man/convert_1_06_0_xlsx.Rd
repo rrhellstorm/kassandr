@@ -28,4 +28,14 @@ Written by Rifat Eniliev
 \donttest{
 invest = convert_1_06_0_xlsx()
 }
+# convert_1_06_0_xlsx = function(path_to_source = "http://www.gks.ru/bgd/regl/b19_02/IssWWW.exe/Stg/d010/1-06-0.xlsx", access_date = Sys.Date()) {
+#   data = rio::import(path_to_source)
+#   data_vector = data[4:23, 3:6]  \%>\% t() \%>\% as.vector()
+#   colnames(data_vector) = NULL
+#   data_ts = stats::ts(data_vector, start = c(1999, 1), freq = 4)
+#   data_tsibble = tsibble::as_tsibble(data_ts) \%>\% dplyr::rename(date = index, invest = value)
+#   data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date, date = as.Date(date))
+#   check_conversion(data_tsibble)
+#   return(data_tsibble)
+# }
 }

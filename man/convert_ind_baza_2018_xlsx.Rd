@@ -26,6 +26,7 @@ Written by: Nastya Jarkova, mod by Rifat Enileev
 }
 \examples{
 \donttest{
-ind = convert_ind_baza_2018_xlsx()
+# ind = convert_ind_baza_2018_xlsx()
+# removed by gks 2020-09-20
 }
 }

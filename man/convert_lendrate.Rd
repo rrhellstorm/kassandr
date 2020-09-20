@@ -26,6 +26,6 @@ Written by Nastya Jarkova
 }
 \examples{
 \donttest{
-lend_rate <- convert_lendrate()
+lend_rate = convert_lendrate()
 }
 }
