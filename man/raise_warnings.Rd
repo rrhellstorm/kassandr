@@ -4,10 +4,12 @@
 \alias{raise_warnings}
 \title{Produces warnings table}
 \usage{
-raise_warnings(report_table)
+raise_warnings(report_table, valid_freqs = c(4, 12, 7, 365))
 }
 \arguments{
 \item{report_table}{downloaded series' metadata}
+
+\item{valid_freqs}{frequencies considered as valid}
 }
 \value{
 data.frame
@@ -20,7 +22,7 @@ Use warnings() to see them.
 }
 \examples{
 \donttest{
-report_table <- make_report(download_log_new, path_day)
-warnings_table <- raise_warnings(report_table)
+report_table = make_report(download_log_new, path_day)
+warnings_table = raise_warnings(report_table)
 }
 }

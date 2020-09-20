@@ -4,12 +4,14 @@
 \alias{make_report}
 \title{Produces report table}
 \usage{
-make_report(download_log, path)
+make_report(download_log, path, SUCCESS = "success")
 }
 \arguments{
 \item{download_log}{metadata about downloaded series}
 
 \item{path}{path to specific day}
+
+\item{SUCCESS}{string marker for success in download_log tibble}
 }
 \value{
 data.frame
@@ -25,6 +27,6 @@ Several metrics to detect potentional download errors.
 path = "C:/CMF/Github repos/data/raw/"
 path_day = paste0(path, "/", Sys.Date(), "/") # add current date to path
 download_log_new = download_statistics(path, watchdog)
-report_table <- make_report(download_log_new, path_day)
+report_table = make_report(download_log_new, path_day)
 }
 }

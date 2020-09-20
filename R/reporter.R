@@ -3,6 +3,7 @@
 #' @details Several metrics to detect potentional download errors.
 #' @param download_log metadata about downloaded series
 #' @param path path to specific day
+#' @param SUCCESS string marker for success in download_log tibble
 #' @return data.frame
 #' @export
 #' @examples
@@ -34,7 +35,7 @@ make_report = function(download_log, path, SUCCESS = "success") {
       next
     }
     message(paste0("Analyzing: ", path, file$file_main))
-    df = read.csv(paste0(path, file$file_main),
+    df = utils::read.csv(paste0(path, file$file_main),
       row.names = "date"
     ) %>% dplyr::select(-access_date)
 
@@ -54,7 +55,7 @@ make_report = function(download_log, path, SUCCESS = "success") {
 
     start_date = as.numeric(strsplit(rownames(df)[1], "-")[[1]])
     end_date = as.numeric(strsplit(rownames(df)[nrow(df)], "-")[[1]])
-    df_ts = ts(df, start = c(start_date[1], start_date[2]), frequency = freq)
+    df_ts = stats::ts(df, start = c(start_date[1], start_date[2]), frequency = freq)
     row.names(df_ts) = rownames(df)
 
     # Working with TSs in file
@@ -87,7 +88,7 @@ make_report = function(download_log, path, SUCCESS = "success") {
       )
       cur_ts_log["NA_cnt"] = sum(is.na(cur_ts))
       cur_ts_log["omitted_dates_cnt"] = 0
-      time_arr = time(cur_ts)
+      time_arr = stats::time(cur_ts)
       delta = 1 / freq
       for (i in 2:length(time_arr)) {
         cur_ts_log["omitted_dates_cnt"] = cur_ts_log["omitted_dates_cnt"]
@@ -99,19 +100,19 @@ make_report = function(download_log, path, SUCCESS = "success") {
 
       if (ts_is_ok) {
         cur_ts_t = cur_ts[2:length(cur_ts)]
-        cur_ts_log["corr_t_t.1"] = cor(cur_ts[1:(length(cur_ts) - 1)], cur_ts_t)
+        cur_ts_log["corr_t_t.1"] = stats::cor(cur_ts[1:(length(cur_ts) - 1)], cur_ts_t)
 
         cur_ts_log["MAPE_naive"] = mean(
-          na.omit(
+          stats::na.omit(
             abs(diff(cur_ts) / cur_ts[1:(length(cur_ts) - 1)]) * 100
           )
         )
 
         cur_ts_t = cur_ts[(freq + 1):length(cur_ts)]
-        cur_ts_log["corr_t_t.freq"] = cor(cur_ts[1:(length(cur_ts) - freq)], cur_ts_t)
+        cur_ts_log["corr_t_t.freq"] = stats::cor(cur_ts[1:(length(cur_ts) - freq)], cur_ts_t)
 
         cur_ts_log["MAPE_Snaive"] = mean(
-          na.omit(
+          stats::na.omit(
             abs(diff(cur_ts, lag = freq) / cur_ts[1:(length(cur_ts) - freq)]) * 100
           )
         )
@@ -131,6 +132,7 @@ make_report = function(download_log, path, SUCCESS = "success") {
 #' @description Raises warnings and produces a table of suspicious metrics' values.
 #' @details Use warnings() to see them.
 #' @param report_table downloaded series' metadata
+#' @param valid_freqs frequencies considered as valid
 #' @return data.frame
 #' @export
 #' @examples

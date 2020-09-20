@@ -1,6 +1,6 @@
 Package: kassandr
 Title: Functions to Forecast Russian Macro Data in Kassandra Project
-Version: 0.0.0.96
+Version: 0.0.1.00
 Authors@R: c(person("Boris", "Demeshev", email = "boris.demeshev@gmail.com", role = c("aut", "cre")), 
              person("Oxana", "Malakhovskaya", email = "oxana.malakhovskaya@gmail.com", role = "aut"))
 Description: Automatically load data. The goal is to make consice and easy to replicate forecasts.
