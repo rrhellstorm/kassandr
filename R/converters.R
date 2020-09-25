@@ -382,7 +382,7 @@ convert_ind_okved2_xlsx = function(path_to_source =
 #' Old link https://gks.ru/storage/mediabank/ind-baza-2018.xlsx
 #' }
 convert_ind_baza_2018_xlsx = function(path_to_source =
-                                         "https://rosstat.gov.ru/enterprise_industrial/ind-baza-2018.xlsx",
+                                         "https://rosstat.gov.ru/storage/mediabank/YMKvl51h/ind_baza-2018.xlsx",
                                        access_date = Sys.Date()) {
   indprod = rio::import(path_to_source, skip = 2, sheet = 1)
   indprod_vector = t(indprod[2, 3:ncol(indprod)])
