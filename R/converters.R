@@ -380,9 +380,10 @@ convert_ind_okved2_xlsx = function(path_to_source =
 #' # ind = convert_ind_baza_2018_xlsx()
 #' # removed by gks 2020-09-20
 #' Old link https://gks.ru/storage/mediabank/ind-baza-2018.xlsx
+#' New working link https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx                            
 #' }
 convert_ind_baza_2018_xlsx = function(path_to_source =
-                                         "https://rosstat.gov.ru/storage/mediabank/YMKvl51h/ind_baza-2018.xlsx",
+                                         "https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx",
                                        access_date = Sys.Date()) {
   indprod = rio::import(path_to_source, skip = 2, sheet = 1)
   indprod_vector = t(indprod[2, 3:ncol(indprod)])
@@ -557,7 +558,7 @@ convert_reserves = function(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mrr
 #' \donttest{
 #' invest = convert_1_06_0_xlsx()
 #' }
-#' # convert_1_06_0_xlsx = function(path_to_source = "http://www.gks.ru/bgd/regl/b19_02/IssWWW.exe/Stg/d010/1-06-0.xlsx", access_date = Sys.Date()) {
+#' # convert_1_06_0_xlsx = function(path_to_source = "http://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-06-0.xlsx", access_date = Sys.Date()) {
 #' #   data = rio::import(path_to_source)
 #' #   data_vector = data[4:23, 3:6]  %>% t() %>% as.vector()
 #' #   colnames(data_vector) = NULL
@@ -567,7 +568,7 @@ convert_reserves = function(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mrr
 #' #   check_conversion(data_tsibble)
 #' #   return(data_tsibble)
 #' # }
-convert_1_06_0_xlsx = function(path_to_source = "http://www.gks.ru/bgd/regl/b19_02/IssWWW.exe/Stg/d010/1-06-0.xlsx",
+convert_1_06_0_xlsx = function(path_to_source = "http://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-06-0.xlsx",
                                 access_date = Sys.Date()) {
   data = rio::import(path_to_source)
   names(data)[1] = "year_col"
