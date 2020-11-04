@@ -11,6 +11,8 @@
 #' @export
 #' @examples
 #' \donttest{
+#' # 2020-11-04: Access denied
+#' # https://rosstat.gov.ru/storage/mediabank/jRjVxbDx/i_ipc.xlsx
 #' cpi = convert_i_ipc_xlsx()
 #' }
 convert_i_ipc_xlsx = function(path_to_source = "https://rosstat.gov.ru/storage/mediabank/jRjVxbDx/i_ipc.xlsx",
@@ -347,18 +349,22 @@ convert_m2_m2_sa_xlsx = function(path_to_source =
 #' \donttest{
 #' # ind = convert_ind_okved2_xlsx()
 #' # removed by gks 2020-09-20
+#' # not working: http://www.gks.ru/storage/mediabank/ind_okved2(1).xlsx
+#' # new: http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx
 #' }
 convert_ind_okved2_xlsx = function(path_to_source =
-                                      "http://www.gks.ru/storage/mediabank/ind_okved2(1).xlsx",
+                                      "http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx",
                                     access_date = Sys.Date()) {
   indprod = rio::import(path_to_source, skip = 2, sheet = 1)
   indprod_vector = t(indprod[2, 3:ncol(indprod)])
+
+  # automatic date detection
   column_names = colnames(indprod)[3:ncol(indprod)]
   month_year = column_names %>% stringr::str_extract("^([а-я]* [0-9]*)")
   dates_text = paste0("01 ", month_year)
+  dates = lubridate::dmy(month_to_genetivus(dates_text))
 
-  # for periods before January, 2020 use old link for the data and start = c(2015, 1)
-  indprod_ts = stats::ts(indprod_vector, start = c(2013, 1), frequency = 12)
+  indprod_ts = stats::ts(indprod_vector, start = c(year(dates[1]), month(dates[1])), frequency = 12)
   indprod_tsibble = tsibble::as_tsibble(indprod_ts)
   indprod_tsibble = dplyr::rename(indprod_tsibble, date = index, ind_prod = value)
   indprod_tsibble = dplyr::mutate(indprod_tsibble, access_date = access_date)
@@ -384,8 +390,8 @@ convert_ind_okved2_xlsx = function(path_to_source =
 #' \donttest{
 #' # ind = convert_ind_baza_2018_xlsx()
 #' # removed by gks 2020-09-20
-#' Old link https://gks.ru/storage/mediabank/ind-baza-2018.xlsx
-#' New working link https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx
+#' # Old link https://gks.ru/storage/mediabank/ind-baza-2018.xlsx
+#' # New working link https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx
 #' }
 convert_ind_baza_2018_xlsx = function(path_to_source =
                                          "https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx",
@@ -640,6 +646,25 @@ check_conversion = function(data_tsibble) {
     stop("Less than 3 columns in converted data frame. Should have at least: 'date', 'access_date' and something meaningful :)")
   }
   return(invisible(TRUE))
+}
+
+#' @title Changes month name from nominativus to genetivus
+#' @description Changes month name from nominativus to genetivus.
+#' @details Functions like dmy needs month names in genetivus.
+#' @param x string with month names in nominativus
+#' @return string with month names in nominativus
+#' @export
+#' @examples
+#' month_to_genetivus("май")
+month_to_genetivus = function(x) {
+  month_from = c("январь", "февраль", "март", "апрель", "май", "июнь", "июль",
+    "август", "сентябрь", "октябрь", "ноябрь", "декабрь")
+  month_to = c("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
+               "августа", "сентября", "октября", "ноября", "декабря")
+  for (i in 1:12) {
+    x = stringr::str_replace(x, month_from[i], month_to[i])
+  }
+  return(x)
 }
 
 

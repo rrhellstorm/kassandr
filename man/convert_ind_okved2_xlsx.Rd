@@ -5,7 +5,7 @@
 \title{Converts ind_okved2 file from rosstat to tibble}
 \usage{
 convert_ind_okved2_xlsx(
-  path_to_source = "http://www.gks.ru/storage/mediabank/ind_okved2(1).xlsx",
+  path_to_source = "http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx",
   access_date = Sys.Date()
 )
 }
@@ -28,5 +28,7 @@ Written by: Nastya Jarkova
 \donttest{
 # ind = convert_ind_okved2_xlsx()
 # removed by gks 2020-09-20
+# not working: http://www.gks.ru/storage/mediabank/ind_okved2(1).xlsx
+# new: http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx
 }
 }

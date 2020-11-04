@@ -5,7 +5,7 @@
 \title{Converts Investment file from rosstat to tibble}
 \usage{
 convert_1_06_0_xlsx(
-  path_to_source = "http://www.gks.ru/bgd/regl/b19_02/IssWWW.exe/Stg/d010/1-06-0.xlsx",
+  path_to_source = "http://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-06-0.xlsx",
   access_date = Sys.Date()
 )
 }
@@ -28,7 +28,7 @@ Written by Rifat Eniliev
 \donttest{
 invest = convert_1_06_0_xlsx()
 }
-# convert_1_06_0_xlsx = function(path_to_source = "http://www.gks.ru/bgd/regl/b19_02/IssWWW.exe/Stg/d010/1-06-0.xlsx", access_date = Sys.Date()) {
+# convert_1_06_0_xlsx = function(path_to_source = "http://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-06-0.xlsx", access_date = Sys.Date()) {
 #   data = rio::import(path_to_source)
 #   data_vector = data[4:23, 3:6]  \%>\% t() \%>\% as.vector()
 #   colnames(data_vector) = NULL

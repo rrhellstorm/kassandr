@@ -5,7 +5,8 @@
 \title{Converts ind_baza_2018 file from rosstat to tibble}
 \usage{
 convert_ind_baza_2018_xlsx(
-  path_to_source = "https://gks.ru/storage/mediabank/ind-baza-2018.xlsx",
+ 
+    path_to_source = "https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx",
   access_date = Sys.Date()
 )
 }
@@ -28,5 +29,7 @@ Written by: Nastya Jarkova, mod by Rifat Enileev
 \donttest{
 # ind = convert_ind_baza_2018_xlsx()
 # removed by gks 2020-09-20
+# Old link https://gks.ru/storage/mediabank/ind-baza-2018.xlsx
+# New working link https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx
 }
 }
