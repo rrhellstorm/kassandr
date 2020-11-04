@@ -353,6 +353,10 @@ convert_ind_okved2_xlsx = function(path_to_source =
                                     access_date = Sys.Date()) {
   indprod = rio::import(path_to_source, skip = 2, sheet = 1)
   indprod_vector = t(indprod[2, 3:ncol(indprod)])
+  column_names = colnames(indprod)[3:ncol(indprod)]
+  month_year = column_names %>% stringr::str_extract("^([а-я]* [0-9]*)")
+  dates_text = paste0("01 ", month_year)
+
   # for periods before January, 2020 use old link for the data and start = c(2015, 1)
   indprod_ts = stats::ts(indprod_vector, start = c(2013, 1), frequency = 12)
   indprod_tsibble = tsibble::as_tsibble(indprod_ts)
@@ -361,6 +365,7 @@ convert_ind_okved2_xlsx = function(path_to_source =
   check_conversion(indprod_tsibble)
   return(indprod_tsibble)
 }
+
 
 
 #' Converts ind_baza_2018 file from rosstat to tibble
@@ -380,7 +385,7 @@ convert_ind_okved2_xlsx = function(path_to_source =
 #' # ind = convert_ind_baza_2018_xlsx()
 #' # removed by gks 2020-09-20
 #' Old link https://gks.ru/storage/mediabank/ind-baza-2018.xlsx
-#' New working link https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx                            
+#' New working link https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx
 #' }
 convert_ind_baza_2018_xlsx = function(path_to_source =
                                          "https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx",
@@ -432,6 +437,10 @@ convert_trade_xls = function(path_to_source =
   check_conversion(data_tsibble)
   return(data_tsibble)
 }
+
+
+
+
 
 #' Converts tab2.29.xls file from cbr to tibble
 #'
@@ -632,3 +641,6 @@ check_conversion = function(data_tsibble) {
   }
   return(invisible(TRUE))
 }
+
+
+
