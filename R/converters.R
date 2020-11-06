@@ -15,7 +15,7 @@
 #' # https://rosstat.gov.ru/storage/mediabank/jRjVxbDx/i_ipc.xlsx
 #' cpi = convert_i_ipc_xlsx()
 #' }
-convert_i_ipc_xlsx = function(path_to_source = "https://rosstat.gov.ru/storage/mediabank/jRjVxbDx/i_ipc.xlsx",
+convert_i_ipc_xlsx = function(path_to_source = "https://rosstat.gov.ru/storage/mediabank/HOKNtZra/i_ipc.xlsx",
                                access_date = Sys.Date()) {
   data = rio::import(path_to_source)
 
