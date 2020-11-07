@@ -22,7 +22,7 @@ Use warnings() to see them.
 }
 \examples{
 \donttest{
-report_table = make_report(download_log_new, path_day)
-warnings_table = raise_warnings(report_table)
+# report_table = make_report(download_log_new, path_day)
+# warnings_table = raise_warnings(report_table)
 }
 }

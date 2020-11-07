@@ -4,9 +4,9 @@
 #'
 #' Extract value column and present it as ts
 #'
-#' @param model_sample preferably tsibble 
+#' @param model_sample preferably tsibble
 #' @param target name of the target variable, "value" by default
-#' @return univariate time series 
+#' @return univariate time series
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
@@ -27,7 +27,7 @@ extract_value = function(model_sample, target = "value") {
 #' @param model_sample preferably tsibble with "value" column
 #' @param h forecasting horizon, is ignored
 #' @param target name of the target variable, "value" by default
-#' @return auto ETS model 
+#' @return auto ETS model
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
@@ -49,7 +49,7 @@ ets_fun = function(model_sample, h, target = "value") {
 #' @param model_sample preferably tsibble with "value" column
 #' @param h forecasting horizon, is ignored
 #' @param target name of the target variable, "value" by default
-#' @return auto ARIMA model 
+#' @return auto ARIMA model
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
@@ -70,7 +70,7 @@ arima_fun = function(model_sample, h, target = "value") {
 #' @param model_sample preferably tsibble with "value" column
 #' @param h forecasting horizon, is ignored
 #' @param target name of the target variable, "value" by default
-#' @return ARIMA(1,0,1)-SARIMA(1,0,1) model 
+#' @return ARIMA(1,0,1)-SARIMA(1,0,1) model
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
@@ -92,7 +92,7 @@ arima101_101_fun = function(model_sample, h, target = "value") {
 #' @param model_sample preferably tsibble with "value" column
 #' @param h forecasting horizon, is ignored
 #' @param target name of the target variable, "value" by default
-#' @return auto TBATS model 
+#' @return auto TBATS model
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
@@ -147,13 +147,13 @@ add_fourier = function(original, K_fourier = Inf) {
   original_ts = stats::as.ts(original)
   freq = stats::frequency(original)
   K_fourier = min(floor(freq/2), K_fourier)
-  
+
   X_fourier = forecast::fourier(original_ts, K = K_fourier)
   fourier_names = colnames(X_fourier)
   fourier_names = stringr::str_replace(fourier_names, "-", "_") %>% stringr::str_to_lower()
   colnames(X_fourier) = fourier_names
   X_fourier_tibble = tibble::as_tibble(X_fourier)
-  
+
   augmented = dplyr::bind_cols(original, X_fourier_tibble)
   return(augmented)
 }
@@ -221,7 +221,7 @@ add_lags = function(original, variable_names, lags = c(1, 2)) {
 #' get_last_date(test_tsibble)
 get_last_date = function(original) {
   date_variable = tsibble::index(original)
-  date = dplyr::pull(original, !!date_variable) 
+  date = dplyr::pull(original, !!date_variable)
   last_date = max(date)
   return(last_date)
 }
@@ -241,7 +241,7 @@ get_last_date = function(original) {
 #' get_first_date(test_tsibble)
 get_first_date = function(original) {
   date_variable = tsibble::index(original)
-  date = dplyr::pull(original, !!date_variable) 
+  date = dplyr::pull(original, !!date_variable)
   last_date = min(date)
   return(last_date)
 }
@@ -270,8 +270,8 @@ get_first_date = function(original) {
 #' augment_tsibble_4_regression(test_tsibble, h = 4)
 augment_tsibble_4_regression = function(original, target = "value", h = 1) {
   frequency = stats::frequency(original)
-  augmented = original %>% tsibble::append_row(n = h) %>% 
-    add_trend() %>% add_fourier() %>% 
+  augmented = original %>% tsibble::append_row(n = h) %>%
+    add_trend() %>% add_fourier() %>%
     add_lags(target, lags = c(h, h + 1, frequency, frequency + 1))
 
   date_variable = tsibble::index(original) %>% as.character()
@@ -304,10 +304,10 @@ augment_tsibble_4_regression = function(original, target = "value", h = 1) {
 lasso_augmented_estimate = function(augmented, target = "value", seed = 777) {
   yX_tsibble = stats::na.omit(augmented)
   y = yX_tsibble %>% dplyr::pull(target)
-  
+
   date_variable = tsibble::index(augmented)
   X = tibble::as_tibble(yX_tsibble) %>% dplyr::select(-!!target, -!!date_variable) %>% as.matrix()
-  
+
   set.seed(seed)
   lasso_model = glmnet::cv.glmnet(X, y)
   return(lasso_model)
@@ -333,19 +333,19 @@ lasso_augmented_estimate = function(augmented, target = "value", seed = 777) {
 #' model = ranger_augmented_estimate(augmented)
 ranger_augmented_estimate = function(augmented, target = "value", seed = 777) {
   yX_tsibble = stats::na.omit(augmented)
-  
+
   set.seed(seed)
   date_variable = tsibble::index(augmented)
   formula = paste0(target, " ~ . - ", date_variable)
 
   ranger_model = ranger::ranger(data = yX_tsibble, formula = formula)
-  return(ranger_model)  
+  return(ranger_model)
 }
 
 
-#' Augment data and estimate lasso model 
+#' Augment data and estimate lasso model
 #'
-#' Augment data and estimate lasso model 
+#' Augment data and estimate lasso model
 #'
 #' Augment data and estimate lasso model.
 #' Trend, fourier terms, lags are added before estimation of lasso model.
@@ -362,13 +362,13 @@ ranger_augmented_estimate = function(augmented, target = "value", seed = 777) {
 lasso_fun = function(model_sample, seed = 777, target = "value", h = 1) {
   augmented_sample = augment_tsibble_4_regression(model_sample, target = target, h = h)
   model = lasso_augmented_estimate(augmented_sample, seed = 777, target = target)
-  
+
   return(model)
 }
 
-#' Augment data and estimate ranger model 
+#' Augment data and estimate ranger model
 #'
-#' Augment data and estimate ranger model 
+#' Augment data and estimate ranger model
 #'
 #' Augment data and estimate random forest (ranger) model.
 #' Trend, fourier terms, lags are added before estimation of lasso model.
@@ -385,7 +385,7 @@ lasso_fun = function(model_sample, seed = 777, target = "value", h = 1) {
 ranger_fun = function(model_sample, seed = 777, target = "value", h = 1) {
   augmented_sample = augment_tsibble_4_regression(model_sample, target = target, h = h)
   model = ranger_augmented_estimate(augmented_sample, seed = 777, target = target)
-  
+
   return(model)
 }
 
@@ -412,15 +412,15 @@ ranger_fun = function(model_sample, seed = 777, target = "value", h = 1) {
 #' lasso_2_scalar_forecast(model, h = 1, model_sample = test_tsibble)
 lasso_2_scalar_forecast = function(model, h = 1, target = "value", model_sample, s = c("lambda.min", "lambda.1se")) {
   s = match.arg(s)
-  
+
   augmented_sample = augment_tsibble_4_regression(model_sample, h = h, target = target)
   yX_future_tsibble = utils::tail(augmented_sample, 1)
-  
+
   date_variable = tsibble::index(augmented_sample)
   X_future = tibble::as_tibble(yX_future_tsibble) %>% dplyr::select(-!!target, -!!date_variable) %>% as.matrix()
-  
+
   point_forecast = stats::predict(model, X_future, s = s)
-  
+
   return(point_forecast)
 }
 
@@ -443,13 +443,13 @@ lasso_2_scalar_forecast = function(model, h = 1, target = "value", model_sample,
 #' model = ranger_fun(test_tsibble, h = 1)
 #' ranger_2_scalar_forecast(model, h = 1, model_sample = test_tsibble)
 ranger_2_scalar_forecast = function(model, h = 1, target = "value", model_sample) {
-  
+
   augmented_sample = augment_tsibble_4_regression(model_sample, h = h, target = target)
   yX_future_tsibble = utils::tail(augmented_sample, 1)
-  
+
   ranger_pred = stats::predict(model, data = yX_future_tsibble)
   point_forecast = ranger_pred$predictions
-  
+
   return(point_forecast)
 }
 
@@ -470,48 +470,48 @@ ranger_2_scalar_forecast = function(model, h = 1, target = "value", model_sample
 #' @export
 #' @examples
 #' # no yet
-prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_test, 
+prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_test,
                               window_type = c("sliding", "stretching"), target = "value") {
   model_list = tidyr::crossing(date = dates_test, h = h_all, model_fun = model_fun_tibble$model_fun)
   message("You may see the warning: `.named` can no longer be a width")
   message("Don't worry :) :) Origin: crossing function")
   window_type = match.arg(window_type)
-  
+
   date_variable = tsibble::index(series_data) %>% as.character()
   data_frequency = stats::frequency(series_data)
-  
-  model_list = dplyr::left_join(model_list, dplyr::select(series_data, !!target), by = date_variable) 
+
+  model_list = dplyr::left_join(model_list, dplyr::select(series_data, !!target), by = date_variable)
   model_list = dplyr::rename(model_list, value = !!target) # in model list dependent value is called "value"
-  
-  
-  model_list = dplyr::mutate(model_list, train_end_date = date - months(h * 12 / data_frequency))
-  
+
+  # as_date(date) is needed because date may be yearmonth
+  model_list = dplyr::mutate(model_list, train_end_date = lubridate::as_date(date) - months(h * 12 / data_frequency))
+
   full_sample_start_date = min(series_data$date)
   full_sample_last_date = max(series_data$date)
   test_sample_start_date = min(model_list$date)
   window_min_length = round(lubridate::interval(full_sample_start_date, test_sample_start_date) /  months(12 / data_frequency)) - max(h_all) + 1
-  
-  
+
+
   if (window_type == "stretching") {
     model_list = dplyr::mutate(model_list, train_start_date = min(dplyr::pull(series_data, date)))
   } else {
     # sliding window case
     model_list = dplyr::mutate(model_list, train_start_date = train_end_date - months((window_min_length - 1) * 12 / data_frequency ))
   }
-  
-  model_list = dplyr::mutate(model_list, 
-                      train_sample = purrr::pmap(list(x = train_start_date, y = train_end_date), 
+
+  model_list = dplyr::mutate(model_list,
+                      train_sample = purrr::pmap(list(x = train_start_date, y = train_end_date),
                                           ~ dplyr::filter(series_data, date >= .x, date <= .y)))
-  
-  
+
+
   # we estimate some models only with maximal h -----------------------------------
-  
+
   model_list = dplyr::left_join(model_list,  model_fun_tibble, by = "model_fun")
-  
+
   model_list = model_list %>% dplyr::group_by(train_end_date, train_start_date, model_fun) %>%
     dplyr::mutate(duplicate_model = h_agnostic & (h < max(h))) %>% dplyr::ungroup()
   model_list = dplyr::mutate(model_list, target = target)
-  
+
   return(model_list)
 }
 
@@ -532,25 +532,25 @@ prepare_model_list = function(h_all = 1, model_fun_tibble, series_data, dates_te
 #' @examples
 #' # no yet
 prepare_model_list2 = function(h_all = 1, model_fun_tibble, series_data, target = "value") {
-  
+
   full_sample_last_date = as.Date(max(series_data$date))
   full_sample_start_date = as.Date(min(series_data$date))
-  
+
   model_list = tidyr::crossing(h = h_all, model_fun = model_fun_tibble$model_fun)
   model_list = dplyr::mutate(model_list, date = full_sample_last_date + months(h * 12 / stats::frequency(series_data)))
   model_list = dplyr::mutate(model_list, train_end_date = full_sample_last_date)
   model_list = dplyr::mutate(model_list, train_start_date = full_sample_start_date)
-  
-  
-  model_list = dplyr::mutate(model_list, 
-                      train_sample = purrr::pmap(list(x = train_start_date, y = train_end_date), 
+
+
+  model_list = dplyr::mutate(model_list,
+                      train_sample = purrr::pmap(list(x = train_start_date, y = train_end_date),
                                           ~ dplyr::filter(series_data, date >= .x, date <= .y)))
-  
-  
+
+
   # we estimate some models only with maximal h -----------------------------------
-  
+
   model_list = dplyr::left_join(model_list,  model_fun_tibble, by = "model_fun")
-  
+
   model_list = model_list %>% dplyr::group_by(train_end_date, train_start_date, model_fun) %>%
     dplyr::mutate(duplicate_model = h_agnostic & (h < max(h))) %>% dplyr::ungroup()
   model_list = dplyr::mutate(model_list, target = target)
@@ -576,11 +576,11 @@ prepare_model_list2 = function(h_all = 1, model_fun_tibble, series_data, target 
 #' # no yet
 estimate_nonduplicate_models = function(model_list, store_models = c("tibble", "file")) {
   store_models = match.arg(store_models)
-  
+
   if (store_models == "file") {
     stop("File storage of models not implemented yet")
   }
-  
+
   model_list_half_fitted = dplyr::filter(model_list, !duplicate_model)
   model_list_half_fitted = model_list_half_fitted %>% dplyr::mutate(
     fitted_model = purrr::pmap(list(train_sample, h, model_fun, target), ~ do.call(..3, list(h = ..2, model_sample = ..1, target = ..4)))
@@ -603,13 +603,13 @@ estimate_nonduplicate_models = function(model_list, store_models = c("tibble", "
 #' # no yet
 fill_duplicate_models = function(model_list_half_fitted, full_model_list) {
   right_tibble = model_list_half_fitted %>% dplyr::filter(h_agnostic) %>%
-    dplyr::select(model_fun, train_start_date, train_end_date, fitted_model) 
-  
+    dplyr::select(model_fun, train_start_date, train_end_date, fitted_model)
+
   duplicate_models = full_model_list %>% dplyr::filter(duplicate_model)
-  
-  duplicate_models_fitted = dplyr::left_join(duplicate_models, right_tibble, 
+
+  duplicate_models_fitted = dplyr::left_join(duplicate_models, right_tibble,
                                       by = c("model_fun", "train_start_date", "train_end_date"))
-  
+
   model_list_fitted = dplyr::bind_rows(model_list_half_fitted, duplicate_models_fitted)
   return(model_list_fitted)
 }
@@ -626,8 +626,8 @@ fill_duplicate_models = function(model_list_half_fitted, full_model_list) {
 #' @examples
 #' # no yet
 add_point_forecasts = function(model_list_fitted) {
-  model_list_fitted = dplyr::mutate(model_list_fitted, 
-                             point_forecast = purrr::pmap_dbl(list(fitted_model, h, train_sample, forecast_extractor), 
+  model_list_fitted = dplyr::mutate(model_list_fitted,
+                             point_forecast = purrr::pmap_dbl(list(fitted_model, h, train_sample, forecast_extractor),
                                                        ~ do.call(..4, list(model = ..1, h = ..2, model_sample = ..3))
                              ))
   return(model_list_fitted)
@@ -649,13 +649,13 @@ add_point_forecasts = function(model_list_fitted) {
 estimate_and_forecast = function(model_list) {
   message("Estimating non-duplicate models.")
   non_duplicate_fitted = estimate_nonduplicate_models(model_list)
-  
+
   message("Filling duplicate models.")
   model_list_fitted = fill_duplicate_models(non_duplicate_fitted, model_list)
-  
+
   message("Extracting point forecasts.")
   model_list_fitted = add_point_forecasts(model_list_fitted)
-  
+
   return(model_list_fitted)
 }
 
@@ -680,10 +680,10 @@ calculate_mae_table = function(model_list_fitted) {
   mae_table = model_list_fitted %>% dplyr::select(h, model_fun, value, point_forecast) %>%
     dplyr::mutate(abs_diff = abs(value - point_forecast))  %>%
     dplyr::group_by(h, model_fun) %>% dplyr::summarise(mae = mean(abs_diff))
-  
+
   # sort by mae for each h:
-  mae_table = dplyr::arrange(mae_table, h, mae) 
-  
+  mae_table = dplyr::arrange(mae_table, h, mae)
+
   return(mae_table)
 }
 
@@ -694,10 +694,10 @@ calculate_mae_table = function(model_list_fitted) {
 #'
 #' Do forecast using ARIMA(1,0,1)-SARIMA(0,1,0)
 #'
-#' @param model_sample preferably tsibble 
+#' @param model_sample preferably tsibble
 #' @param h forecasting horizon, is ignored
 #' @param target name of the target variable, "value" by default
-#' @return ARIMA(1,0,1)-SARIMA(0,1,0) model 
+#' @return ARIMA(1,0,1)-SARIMA(0,1,0) model
 #' @export
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))

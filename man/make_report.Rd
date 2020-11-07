@@ -20,13 +20,25 @@ data.frame
 Produces table with additional information concerning downloaded data.
 }
 \details{
-Several metrics to detect potentional download errors.
+Several metrics to detect potential download errors.
 }
 \examples{
 \donttest{
-path = "C:/CMF/Github repos/data/raw/"
+info = Sys.info() # получаем информацию о системе
+
+if (info[1] == "Linux") {
+  docxtractr::set_libreoffice_path("/usr/bin/libreoffice")  # ubuntu or macos
+  Sys.setenv(LD_LIBRARY_PATH = "/usr/lib/libreoffice/program/") # ubuntu protection against libreglo.so not found
+}
+
+if (info[1] == "Windows") {
+  Sys.setenv("TAR" = "internal") # if install_github() fails on Windows OS
+  docxtractr::set_libreoffice_path("C:/Program Files/LibreOffice/program/soffice.exe")  # windows
+}
+path = tempdir()
 path_day = paste0(path, "/", Sys.Date(), "/") # add current date to path
-download_log_new = download_statistics(path, watchdog)
-report_table = make_report(download_log_new, path_day)
+dir.create(path_day)
+# download_log_new = download_statistics(path_day, watchdog)
+# report_table = make_report(download_log_new, path_day)
 }
 }
