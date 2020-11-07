@@ -5,7 +5,7 @@
 \title{Converts I_ipc file from rosstat to tibble}
 \usage{
 convert_i_ipc_xlsx(
-  path_to_source = "https://rosstat.gov.ru/storage/mediabank/jRjVxbDx/i_ipc.xlsx",
+  path_to_source = "https://rosstat.gov.ru/storage/mediabank/HOKNtZra/i_ipc.xlsx",
   access_date = Sys.Date()
 )
 }
@@ -25,6 +25,8 @@ Converts I_ipc file from rosstat to tibble
 }
 \examples{
 \donttest{
+# 2020-11-04: Access denied
+# https://rosstat.gov.ru/storage/mediabank/jRjVxbDx/i_ipc.xlsx
 cpi = convert_i_ipc_xlsx()
 }
 }

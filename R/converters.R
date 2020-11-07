@@ -333,12 +333,12 @@ convert_m2_m2_sa_xlsx = function(path_to_source =
 
 
 
-#' Converts ind_okved2 file from rosstat to tibble
+#' Converts ind_okved2 or ind_baza_2018 file from rosstat to tibble
 #'
-#' Converts ind_okved2 file from rosstat to tibble
+#' Converts ind_okved2 or ind_baza_2018 file from rosstat to tibble
 #'
-#' Converts ind_okved2 file from rosstat to tibble.
-#' Written by: Nastya Jarkova
+#' Converts ind_okved2 or ind_baza_2018 file from rosstat to tibble.
+#' Written by: Nastya Jarkova, Rifat Enileev, etc
 #'
 #' @param path_to_source name of the original ind_okved2.xlsx file
 #' @param access_date date of access is appended to every observation
@@ -348,10 +348,13 @@ convert_m2_m2_sa_xlsx = function(path_to_source =
 #' @examples
 #' \donttest{
 #' # ind = convert_ind_okved2_xlsx()
-#' # removed by gks 2020-09-20
-#' # not working: http://www.gks.ru/storage/mediabank/ind_okved2(1).xlsx
-#' # new: http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx
+#' # old link http://www.gks.ru/storage/mediabank/ind_okved2(1).xlsx
+#' # old link https://gks.ru/storage/mediabank/ind-baza-2018.xlsx
+#' # old link https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx
+#' # new http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx
+#' # new https://rosstat.gov.ru/storage/mediabank/6CWGi6WR/ind_baza-2018.xlsx
 #' }
+#'
 convert_ind_okved2_xlsx = function(path_to_source =
                                       "http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx",
                                     access_date = Sys.Date()) {
@@ -364,50 +367,13 @@ convert_ind_okved2_xlsx = function(path_to_source =
   dates_text = paste0("01 ", month_year)
   dates = lubridate::dmy(month_to_genetivus(dates_text))
 
-  indprod_ts = stats::ts(indprod_vector, start = c(year(dates[1]), month(dates[1])), frequency = 12)
+  indprod_ts = stats::ts(indprod_vector, start = c(lubridate::year(dates[1]), lubridate::month(dates[1])), frequency = 12)
   indprod_tsibble = tsibble::as_tsibble(indprod_ts)
   indprod_tsibble = dplyr::rename(indprod_tsibble, date = index, ind_prod = value)
   indprod_tsibble = dplyr::mutate(indprod_tsibble, access_date = access_date)
   check_conversion(indprod_tsibble)
   return(indprod_tsibble)
 }
-
-
-
-#' Converts ind_baza_2018 file from rosstat to tibble
-#'
-#' Converts ind_baza_2018 file from rosstat to tibble
-#'
-#' Converts ind_baza_2018 file from rosstat to tibble.
-#' Written by: Nastya Jarkova, mod by Rifat Enileev
-#'
-#' @param path_to_source name of the original ind-baza-2018.xlsx file
-#' @param access_date date of access is appended to every observation
-#'
-#' @return tibble
-#' @export
-#' @examples
-#' \donttest{
-#' # ind = convert_ind_baza_2018_xlsx()
-#' # removed by gks 2020-09-20
-#' # Old link https://gks.ru/storage/mediabank/ind-baza-2018.xlsx
-#' # New working link https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx
-#' # New working link https://rosstat.gov.ru/storage/mediabank/6CWGi6WR/ind_baza-2018.xlsx
-#' }
-convert_ind_baza_2018_xlsx = function(path_to_source =
-                                         "https://rosstat.gov.ru/storage/mediabank/6CWGi6WR/ind_baza-2018.xlsx",
-                                       access_date = Sys.Date()) {
-  indprod = rio::import(path_to_source, skip = 2, sheet = 1)
-  indprod_vector = t(indprod[2, 3:ncol(indprod)])
-  indprod_ts = stats::ts(indprod_vector, start = c(2015, 1), frequency = 12)
-  indprod_tsibble = tsibble::as_tsibble(indprod_ts)
-  indprod_tsibble = dplyr::rename(indprod_tsibble, date = index, ind_prod = value)
-  indprod_tsibble = dplyr::mutate(indprod_tsibble, access_date = access_date)
-  check_conversion(indprod_tsibble)
-  return(indprod_tsibble)
-}
-
-
 
 
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/converters.R
 \name{convert_ind_okved2_xlsx}
 \alias{convert_ind_okved2_xlsx}
-\title{Converts ind_okved2 file from rosstat to tibble}
+\title{Converts ind_okved2 or ind_baza_2018 file from rosstat to tibble}
 \usage{
 convert_ind_okved2_xlsx(
   path_to_source = "http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx",
@@ -18,17 +18,20 @@ convert_ind_okved2_xlsx(
 tibble
 }
 \description{
-Converts ind_okved2 file from rosstat to tibble
+Converts ind_okved2 or ind_baza_2018 file from rosstat to tibble
 }
 \details{
-Converts ind_okved2 file from rosstat to tibble.
-Written by: Nastya Jarkova
+Converts ind_okved2 or ind_baza_2018 file from rosstat to tibble.
+Written by: Nastya Jarkova, Rifat Enileev, etc
 }
 \examples{
 \donttest{
 # ind = convert_ind_okved2_xlsx()
-# removed by gks 2020-09-20
-# not working: http://www.gks.ru/storage/mediabank/ind_okved2(1).xlsx
-# new: http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx
+# old link http://www.gks.ru/storage/mediabank/ind_okved2(1).xlsx
+# old link https://gks.ru/storage/mediabank/ind-baza-2018.xlsx
+# old link https://rosstat.gov.ru/storage/mediabank/YMKvI51h/ind_baza-2018.xlsx
+# new http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx
+# new https://rosstat.gov.ru/storage/mediabank/6CWGi6WR/ind_baza-2018.xlsx
 }
+
 }
