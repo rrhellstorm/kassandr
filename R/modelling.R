@@ -78,7 +78,10 @@ arima_fun = function(model_sample, h, target = "value") {
 arima101_101_fun = function(model_sample, h, target = "value") {
   # h is ignored!
   y = extract_value(model_sample, target = target)
-  model = forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1))
+  model = try(forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1)))
+  if (is(model, "try-error")) {
+    model = forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1), method = "ML")
+  }
   return(model)
 }
 
