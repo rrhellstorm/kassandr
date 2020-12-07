@@ -75,13 +75,20 @@ arima_fun = function(model_sample, h, target = "value") {
 #' @examples
 #' test = dplyr::tibble(date = as.Date("2017-01-01") + 0:9, value = rnorm(10))
 #' arima101_101_fun(test, 1)
-arima101_101_fun = function(model_sample, h, target = "value") {
+arima101_101_fun = function(model_sample, h = 0, target = "value") {
   # h is ignored!
   y = extract_value(model_sample, target = target)
   model = try(forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1)))
   if (is(model, "try-error")) {
     message('Switching to ML!')
-    model = forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1), method = "ML")
+    model = try(forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1), method = "ML"))
+    if (is(model, "try-error")) {
+      message('Fuck! It failed CSS-ML, it failed ML, we will use CSS')
+      model = try(forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1), method = "CSS"))
+      if (is(model, "try-error")) {
+        message('CSS also failed. Choose another model!')
+      }
+    }
   }
   return(model)
 }
@@ -684,7 +691,7 @@ estimate_and_forecast = function(model_list) {
 calculate_mae_table = function(model_list_fitted) {
   mae_table = model_list_fitted %>% dplyr::select(h, model_fun, value, point_forecast) %>%
     dplyr::mutate(abs_diff = abs(value - point_forecast))  %>%
-    dplyr::group_by(h, model_fun) %>% dplyr::summarise(mae = mean(abs_diff))
+    dplyr::group_by(h, model_fun) %>% dplyr::summarise(mae = mean(abs_diff, na.rm = TRUE))
 
   # sort by mae for each h:
   mae_table = dplyr::arrange(mae_table, h, mae)
