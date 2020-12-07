@@ -80,6 +80,7 @@ arima101_101_fun = function(model_sample, h, target = "value") {
   y = extract_value(model_sample, target = target)
   model = try(forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1)))
   if (is(model, "try-error")) {
+    message('Switching to ML!')
     model = forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1), method = "ML")
   }
   return(model)
@@ -586,7 +587,8 @@ estimate_nonduplicate_models = function(model_list, store_models = c("tibble", "
 
   model_list_half_fitted = dplyr::filter(model_list, !duplicate_model)
   model_list_half_fitted = model_list_half_fitted %>% dplyr::mutate(
-    fitted_model = purrr::pmap(list(train_sample, h, model_fun, target), ~ do.call(..3, list(h = ..2, model_sample = ..1, target = ..4)))
+    fitted_model = purrr::pmap(list(train_sample, h, model_fun, target),
+                               ~ do.call(..3, list(h = ..2, model_sample = ..1, target = ..4)))
   )
   return(model_list_half_fitted)
 }

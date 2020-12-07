@@ -15,7 +15,7 @@
 arima_estimator = function(train_sample, predicted, options, predictors = "") {
   selected_vars = c(predicted, "date")
   y = dplyr::select(train_sample, selected_vars) %>% stats::as.ts()
-  
+
   if (predictors == "") {
     regressors = NULL
   } else {
@@ -24,9 +24,9 @@ arima_estimator = function(train_sample, predicted, options, predictors = "") {
     # this allows to store column names!
     regressors = tsibble::as_tibble(train_sample) %>% dplyr::select(predictors) %>% stats::as.ts()
   }
-  
+
   options = param_string_2_tibble(options)
-  
+
   if ("p" %in% colnames(options)) {
     has_order = TRUE
     pdq = c(options$p, options$d, options$q)
@@ -34,20 +34,20 @@ arima_estimator = function(train_sample, predicted, options, predictors = "") {
     has_order = FALSE
     pdq = c(0, 0, 0)
   }
-  
+
   if ("pseas" %in% colnames(options)) {
     pdq_seas = c(options$pseas, options$dseas, options$qseas)
   } else {
     pdq_seas = c(0, 0, 0)
   }
-  
+
   if ("method" %in% colnames(options)) {
     method = options$method
   } else {
     method = "CSS-ML"
   }
-  
-  
+
+
   if (!has_order) {
     if (is.null(regressors)) {
       fit = try(forecast::auto.arima(y = y, method = method))
@@ -62,7 +62,7 @@ arima_estimator = function(train_sample, predicted, options, predictors = "") {
       fit = try(forecast::Arima(y = y, order = pdq, seasonal = pdq_seas, method = method, xreg = regressors))
     }
   }
-  
+
   return(fit)
 }
 
@@ -70,7 +70,7 @@ arima_estimator = function(train_sample, predicted, options, predictors = "") {
 #' @title arima forecastor
 #' @description Envelope function that forecasts arima model
 #' @details Envelope function that forecasts arima model.
-#' @param fit fitted arima model 
+#' @param fit fitted arima model
 #' @param test_sample tsibble with predictors for test sample
 #' @param predicted name of all the predicted variables. Not used as is determined by the fit.
 #' @param predicted_ name of the perdicted variable. Not used as is determined by the fit.
@@ -97,13 +97,13 @@ arima_forecastor = function(fit, test_sample = NA, predicted = "", predicted_ = 
     # if we have just one obs in test_sample then frequency in tsibble is equal to "?"
     # and automatic conversion to ts type is not possible
     # so we have automatic conversion to tibble and then to ts
-    regressors = tibble::as_tibble(test_sample) %>% 
+    regressors = tibble::as_tibble(test_sample) %>%
       dplyr::select(predictors) %>% stats::as.ts(frequency = frequency)
   }
   if ("try-error" %in% class(fit)) {
     fcst = NA
   } else {
-    
+
     if (is.null(regressors)) {
       fcst = forecast::forecast(fit, h = h)
     } else {
@@ -115,7 +115,7 @@ arima_forecastor = function(fit, test_sample = NA, predicted = "", predicted_ = 
 
 #' @title tbats estimator
 #' @description Envelope function that estimates tbats model
-#' @details Envelope function that estimates tbats model. 
+#' @details Envelope function that estimates tbats model.
 #' @param train_sample tsibble with train sample
 #' @param predicted name of the predicted variable
 #' @param predictors not supported by tbats model
@@ -130,7 +130,7 @@ arima_forecastor = function(fit, test_sample = NA, predicted = "", predicted_ = 
 tbats_estimator = function(train_sample, predicted, options, predictors = "") {
   options = param_string_2_tibble(options)
   y = dplyr::select(train_sample, !!predicted) %>% stats::as.ts()
-  fit = forecast::tbats(y) 
+  fit = try(forecast::tbats(y))
   return(fit)
 }
 
@@ -138,7 +138,7 @@ tbats_estimator = function(train_sample, predicted, options, predictors = "") {
 #' @title tbats forecastor
 #' @description Envelope function that forecasts tbats model
 #' @details Envelope function that forecasts tbats model.
-#' @param fit fitted tbats model 
+#' @param fit fitted tbats model
 #' @param test_sample not used by tbats model
 #' @param predicted name of all the predicted variables. Not used as is determined by the fit.
 #' @param predicted_ name of the perdicted variable. Not used as is determined by the fit.
@@ -166,7 +166,7 @@ tbats_forecastor = function(fit, test_sample = NA, predicted = "", predicted_ = 
 
 #' @title ets estimator
 #' @description Envelope function that estimates ets model
-#' @details Envelope function that estimates ets model. 
+#' @details Envelope function that estimates ets model.
 #' @param train_sample tsibble with train sample
 #' @param predicted name of the predicted variable
 #' @param predictors not supported by ets model
@@ -181,14 +181,14 @@ tbats_forecastor = function(fit, test_sample = NA, predicted = "", predicted_ = 
 ets_estimator = function(train_sample, predicted, options, predictors) {
   options = param_string_2_tibble(options)
   y = dplyr::select(train_sample, !!predicted) %>% stats::as.ts()
-  fit = forecast::ets(y) 
+  fit = try(forecast::ets(y))
   return(fit)
 }
 
 #' @title ets forecastor
 #' @description Envelope function that forecasts ets model
 #' @details Envelope function that forecasts ets model.
-#' @param fit fitted ets model 
+#' @param fit fitted ets model
 #' @param test_sample not used by ets model
 #' @param predicted name of all the predicted variables. Not used as is determined by the fit.
 #' @param predicted_ name of the perdicted variable. Not used as is determined by the fit.
