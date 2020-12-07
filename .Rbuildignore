@@ -1,2 +1,4 @@
 ^README.Rmd
 ^docs
+^.*\.Rproj$
+^\.Rproj\.user$

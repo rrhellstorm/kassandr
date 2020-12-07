@@ -1,3 +1,4 @@
 .Rhistory
 *.Rproj
 R/test2.R
+.Rproj.user
