@@ -22,7 +22,7 @@ convert_i_ipc_xlsx = function(path_to_source = "https://rosstat.gov.ru/storage/m
   data = data[5:16, -1]
   data = tidyr::gather(data, year, value)
   data = dplyr::select(data, -year)
-  cpi_ts = stats::ts(data, start = c(1991, 1), freq = 12)
+  cpi_ts = stats::ts(data$value, start = c(1991, 1), freq = 12)
   cpi_infl = tsibble::as_tsibble(cpi_ts) %>% stats::na.omit() %>% dplyr::rename(date = index, cpi = value)
 
   data_tsibble = dplyr::mutate(cpi_infl, access_date = access_date)
