@@ -4,7 +4,7 @@
 \alias{arima101_101_fun}
 \title{Do forecast using ARIMA(1,0,1)-SARIMA(1,0,1)}
 \usage{
-arima101_101_fun(model_sample, h, target = "value")
+arima101_101_fun(model_sample, h = 0, target = "value")
 }
 \arguments{
 \item{model_sample}{preferably tsibble with "value" column}

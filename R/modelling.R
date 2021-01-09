@@ -79,13 +79,13 @@ arima101_101_fun = function(model_sample, h = 0, target = "value") {
   # h is ignored!
   y = extract_value(model_sample, target = target)
   model = try(forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1)))
-  if (is(model, "try-error")) {
+  if (methods::is(model, "try-error")) {
     message('Switching to ML!')
     model = try(forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1), method = "ML"))
-    if (is(model, "try-error")) {
+    if (methods::is(model, "try-error")) {
       message('Fuck! It failed CSS-ML, it failed ML, we will use CSS')
       model = try(forecast::Arima(y, order = c(1, 0, 1), seasonal = c(1, 0, 1), method = "CSS"))
-      if (is(model, "try-error")) {
+      if (methods::is(model, "try-error")) {
         message('CSS also failed. Choose another model!')
       }
     }

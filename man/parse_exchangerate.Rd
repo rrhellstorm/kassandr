@@ -4,9 +4,17 @@
 \alias{parse_exchangerate}
 \title{Parse exchange rates from cbr}
 \usage{
-parse_exchangerate(access_date = Sys.Date())
+parse_exchangerate(
+  currency = "R01235",
+  from = "1991-01-01",
+  access_date = Sys.Date()
+)
 }
 \arguments{
+\item{currency}{currency code, default is R01235 (US Dollar). One may use R01239 (euro) etc}
+
+\item{from}{starting date}
+
 \item{access_date}{date of access is appended to every observation}
 }
 \value{

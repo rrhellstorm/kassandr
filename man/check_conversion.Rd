@@ -20,7 +20,7 @@ Checks some basic requirements for converted data from raw formats.
 }
 \examples{
 \donttest{
-cpi = convert_i_ipc_xlsx()
-check_conversion(cpi)
+# cpi = convert_i_ipc_xlsx()
+# check_conversion(cpi)
 }
 }

@@ -27,6 +27,6 @@ Converts I_ipc file from rosstat to tibble
 \donttest{
 # 2020-11-04: Access denied
 # https://rosstat.gov.ru/storage/mediabank/jRjVxbDx/i_ipc.xlsx
-cpi = convert_i_ipc_xlsx()
+# cpi = convert_i_ipc_xlsx()
 }
 }

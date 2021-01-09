@@ -13,7 +13,7 @@
 #' \donttest{
 #' # 2020-11-04: Access denied
 #' # https://rosstat.gov.ru/storage/mediabank/jRjVxbDx/i_ipc.xlsx
-#' cpi = convert_i_ipc_xlsx()
+#' # cpi = convert_i_ipc_xlsx()
 #' }
 convert_i_ipc_xlsx = function(path_to_source = "https://rosstat.gov.ru/storage/mediabank/HOKNtZra/i_ipc.xlsx",
                                access_date = Sys.Date()) {
@@ -592,8 +592,8 @@ convert_1_06_0_xlsx = function(path_to_source = "http://www.gks.ru/bgd/regl/b20_
 #' @export
 #' @examples
 #' \donttest{
-#' cpi = convert_i_ipc_xlsx()
-#' check_conversion(cpi)
+#' # cpi = convert_i_ipc_xlsx()
+#' # check_conversion(cpi)
 #' }
 check_conversion = function(data_tsibble) {
   if (!"tbl_df" %in% class(data_tsibble)) {
