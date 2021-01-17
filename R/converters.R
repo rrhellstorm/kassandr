@@ -222,77 +222,67 @@ convert_urov_12kv_doc = function(path_to_source =
 #' # Sys.setenv(LD_LIBRARY_PATH = "/usr/lib/libreoffice/program/") # ubuntu protection against libreglo.so not found
 #' # docxtractr::set_libreoffice_path("C:/Program Files/LibreOffice/program/soffice.exe")  # windows
 #' # one = convert_1_nn_doc()
-#' # one = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc")
-#' # two = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-03.doc")
-#' # three = convert_1_nn_doc("http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-11.doc")
+#' # one = convert_1_nn_doc("https://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-07.xlsx")
+#' # two = convert_1_nn_doc("https://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-03.xlsx")
+#' # three = convert_1_nn_doc("https://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-11.xlsx")
 #' }
-convert_1_nn_doc = function(path_to_source =
-                               "http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc",
-                             access_date = Sys.Date()) {
-  tbl = docxtractr::read_docx(path_to_source)
-  table_1 = docxtractr::docx_extract_tbl(tbl,
-    tbl_number = 1, header = TRUE,
-    preserve = FALSE, trim = FALSE
-  )
-
-
-
-  ncols = ncol(table_1)
-  if (ncols == 18) {
-    colnames(table_1) = c(
-      "year", "yearly", "i", "ii", "iii", "iv", "jan", "feb", "mar", "apr",
-      "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"
-    )
-  } else if (ncols == 13) {
-    colnames(table_1) = c(
-      "year", "dec", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug",
-      "sep", "oct", "nov"
-    )
-    table_1 = table_1[c(1, 3:13, 2)]
-  } else {
-    stop("Wrong number of columns in parsed doc: ", path_to_source)
-  }
-
-  # try to guess table id :)
-  id_column = dplyr::select(table_1, year) %>% dplyr::filter(stringr::str_count(year) > 10)
-  id_guess = dplyr::pull(id_column, year)[1]
-  variable_name = dplyr::case_when(
-    stringr::str_detect(id_guess, "Dwelling put in place") ~ "construction",
-    stringr::str_detect(id_guess, "Agriculture production index") ~ "agriculture",
+convert_1_nn_doc = function (path_to_source = "https://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-11.xlsx", access_date = Sys.Date())
+{
+    
+    table_1 = rio::import(path_to_source, skip = 1, sheet = 1)
+    
+    ###pattern recognition until which we subset
+    pattern = '/ percent of'
+    id_untill = which(stringr::str_detect(table_1$...1, pattern))[1]
+    
+    if (id_untill >= 8){
+        table_1 = table_1[1:(id_untill-2),]
+    }
+    
+    
+    ncols = ncol(table_1)
+    if (ncols == 18) {
+        colnames(table_1) = c(
+        "year", "yearly", "i", "ii", "iii", "iv", "jan", "feb", "mar", "apr",
+        "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"
+        )
+    } else if (ncols == 13) {
+        colnames(table_1) = c(
+        "year", "dec", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug",
+        "sep", "oct", "nov"
+        )
+        table_1 = table_1[c(1, 3:13, 2)]
+    } else {
+        stop("Wrong number of columns in parsed doc: ", path_to_source)
+    }
+    
+    # try to guess table id :)
+    id_column = dplyr::select(table_1, year) %>% dplyr::filter(stringr::str_count(year) > 10)
+    id_guess = dplyr::pull(id_column, year)[2]
+    variable_name = dplyr::case_when(
+    stringr::str_detect(id_guess, "construction activity") ~ "constr_vol_cur_price",
+    stringr::str_detect(id_guess, "Agricultural production index") ~ "agriculture",
     stringr::str_detect(id_guess, "consolidated budget") ~ "budget",
+    stringr::str_detect(id_guess, "buildings commissioned") ~ "constr_total_area",
     TRUE ~ "value"
-  )
-
-
-  table_1 = subset(table_1, year >= 1999, select = c(
+    )
+    
+    table_1 = subset(table_1, year >= 1999, select = c(
     "jan", "feb", "mar", "apr", "may", "jun",
     "jul", "aug", "sep", "oct", "nov", "dec"
-  ))
-
-  table_1$jan = sub(",", ".", table_1$jan, fixed = TRUE)
-  table_1$feb = sub(",", ".", table_1$feb, fixed = TRUE)
-  table_1$mar = sub(",", ".", table_1$mar, fixed = TRUE)
-  table_1$apr = sub(",", ".", table_1$apr, fixed = TRUE)
-  table_1$may = sub(",", ".", table_1$may, fixed = TRUE)
-  table_1$jun = sub(",", ".", table_1$jun, fixed = TRUE)
-  table_1$jul = sub(",", ".", table_1$jul, fixed = TRUE)
-  table_1$aug = sub(",", ".", table_1$aug, fixed = TRUE)
-  table_1$sep = sub(",", ".", table_1$sep, fixed = TRUE)
-  table_1$oct = sub(",", ".", table_1$oct, fixed = TRUE)
-  table_1$nov = sub(",", ".", table_1$nov, fixed = TRUE)
-  table_1$dec = sub(",", ".", table_1$dec, fixed = TRUE)
-
-  table = dplyr::mutate_all(table_1, function(x) as.numeric(as.character(x))) %>% t() %>% as.data.frame()
-  table = tidyr::gather(table)[2]
-  table[table == ""] = NA
-  table = stats::na.omit(table)
-
-  data_ts = stats::ts(table, start = c(1999, 1), freq = 12)
-  data_tsibble = tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, !!variable_name := value)
-  data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
-  check_conversion(data_tsibble)
-
-  return(data_tsibble)
+    ))
+    
+    table = dplyr::mutate_all(table_1, function(x) as.numeric(as.character(x))) %>% t() %>% as.data.frame()
+    table = tidyr::gather(table)[2]
+    table[table == ""] = NA
+    table = stats::na.omit(table)
+    
+    data_ts = stats::ts(table, start = c(1999, 1), freq = 12)
+    data_tsibble = tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, !!variable_name := value)
+    data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
+    check_conversion(data_tsibble)
+    
+    return(data_tsibble)
 }
 
 
